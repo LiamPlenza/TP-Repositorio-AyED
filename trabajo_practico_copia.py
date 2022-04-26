@@ -10,7 +10,7 @@ def menu_administraciones():
     while option != 0:
         if option == 1:
             menu_terciario()    
-
+nicococo
 def menu_terciario():
     clear_shell()
     print("1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación \n0 - Volver al menu anterior ")
