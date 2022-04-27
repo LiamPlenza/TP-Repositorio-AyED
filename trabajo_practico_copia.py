@@ -83,6 +83,4 @@ if __name__ == "__main__":
         
         menu_principal()
         option = int(input("Seleccione una opción del menu: "))
-wardo sos cagon
-
     print("Salio")
