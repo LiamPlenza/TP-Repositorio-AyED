@@ -1,8 +1,6 @@
-from calendar import c
-import os
-import string
-c = 0
+import os, time
 def menu_principal():
+    clear_shell()
     return print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
 
 def menu_administraciones():
@@ -11,88 +9,42 @@ def menu_administraciones():
     
     option = int(input("Seleccione una opción del menu: "))
     while option != 0:
-        if 1 == option :
+        if option == 1 :
             menu_opciones()
-        elif option != 0 and option > 8:
-            print("Esta Función está en desarrollo")
-            #poner la funcion para el enter para continuar
+        elif 1 < option < 8:
+            print("Esta Función está en desarrollo...")
+            time.sleep(2)
             menu_administraciones()
-        elif option == 0:
-            menu_principal()
         else:
-            print("La opcion elegida no se encuentra entre las dadas imbecil. Rompiste todo ")    
+            print("La opcion elegida no se encuentra entre las dadas imbecil. Rompiste todo ")  
+            time.sleep(2)
+            menu_administraciones()  
 
 def menu_opciones():
     clear_shell()
-    titulares = [str]
-    print("1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación \n0 - Volver al menu anterior ")
-    my_dict_funciones = {
-        1: alta,
-        2: baja,
-        3: consultar,
-        4: modificacion,
-        0: volver_al_menu
-    }
+    print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
     
-#def alta(titulares):
-#    titulares[c]= input("Ingrese el nombre del titular" )
-#    c= c+1
-#    #poner lo del enter para continuar
-#    menu_opciones()
-
-#def baja(titulares):
-#        titularF = input("Ingrese el nombre del titular a eliminar")
-#        co = 0
-#        while co < c:
-#            if titulares[c] == titularF:
-#                pass
-#            else:
-#                co= co +1
-        
-#def consultar(titulares):
-#    titularF = input("Ingrese el nombre del titular a consultar")
-#    co = 0
-#    while co < c:
-#        if titulares[c] == titularF:
-#            print("El titular se encuentra en el sistema")
-#            menu_opciones()
-#        else:
-#            co= co + 1
-#            if co==c:
-#                print("El titular no se encuentra en el sistema")
-#                menu_opciones()
-
-#def modificacion(titulares):
-#    pass
-
-def volver_al_menu():
-    menu_principal()
-
     option = int(input("Seleccione una opción del menu: "))
+    while option != 0:
+        if 1 <= option <= 4:
+            print("Esta Función está en desarrollo...")
+        else:
+            print("La opcion elegida no se encuentra entre las dadas imbecil. Rompiste todo ")  
+        time.sleep(2)
+        menu_opciones()
 
 def menu_recepcion():
-    camtot = 0
-    camsojtot = 0
-    cammaiztot = 0
-    pnsojtot = 0
-    pnmaiztot = 0    
-
-    print("1 - Ingresar nuevo camión/n2 - Volver")
-    my_dict_recepciones = {
-        1: ingresar_camión,
-        2: volver_al_menu()
-    }
-
+    clear_shell()
+    print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
+    
     option = int(input("Seleccione una opción del menu: "))
-
-    while option != 2:
-        my_dict_recepciones.get(option, lambda: print("Seleccion una opción afuera"))
+    while option != 0:
         if option == 1:
-            print("Ingrese los datos del camión:")
-            camion[1](input("Ingrese la patente:"))
-            camion[2](input("Ingrese la el producto que carga:"))
-            camion[3](input("Ingrese el peso bruto del camión:"))
-            camion[4](input("Ingrese la tara del camión:"))
+            print("ingreso de datos")
+        else:
+            print("Ingrese una opción valida del menu... Imbecil")
+            time.sleep(2) 
+        menu_recepcion()
         
 def menu_reportes():
     pass
