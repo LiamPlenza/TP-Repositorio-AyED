@@ -58,7 +58,7 @@ if __name__ == "__main__":
                         os.system("clear")
                         tipoCamion = input("Ingrese si el camion contiene Soja o Maíz: ").upper()
 
-                        if not tipoCamion == "SOJA" or tipoCamion == "MAIZ": # en caso de que se ingrese otro tipo de producto
+                        if not (tipoCamion == "SOJA" or tipoCamion == "MAIZ"): # en caso de que se ingrese otro tipo de producto
                             print("Ingrese un Proucto valido")
                             
                             time.sleep(1)
@@ -72,23 +72,23 @@ if __name__ == "__main__":
                             print("El peso neto del camión ingresado es: ",pesoNeto)
                             time.sleep(1)
                             if tipoCamion == "SOJA": # si se ingresa un camión de soja, mantengo los valores correspondientes al maíz sumandole cero para poder retornarlos
-                                camionesSoja =+ 1 
-                                pesoNetoSoja =+ pesoNeto
+                                camionesSoja += 1 
+                                pesoNetoSoja += pesoNeto
                                 promPesoNetoS = pesoNetoSoja / camionesSoja
                                 if pesoNetoSoja > pesoMayorSoja:
                                     pesoMayorSoja = pesoNetoSoja
                                     patMayorSoja = patCamion
-                                camionesMaiz =+ 0
-                                pesoNetoMaiz =+ 0
+                                camionesMaiz += 0
+                                pesoNetoMaiz += 0
                             else: # si se ingresa un camión de maíz, mantengo los valores correspondientes al soja sumandole cero para poder retornarlos
-                                camionesMaiz =+ 1
-                                pesoNetoMaiz =+ pesoNeto
+                                camionesMaiz += 1
+                                pesoNetoMaiz += pesoNeto
                                 promPesoNetoM = pesoNetoMaiz / camionesMaiz
                                 if pesoNetoMaiz < pesoMenorMaiz:
                                     pesoMenorMaiz = pesoNetoMaiz
                                     patMenorMaiz = patCamion
-                                camionesSoja =+ 0
-                                pesoNetoSoja =+ 0
+                                camionesSoja += 0
+                                pesoNetoSoja += 0
                     else:
                         print("La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo ")
                     time.sleep(1)
