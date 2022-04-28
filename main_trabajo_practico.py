@@ -51,23 +51,23 @@ def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, ca
         print("El peso neto del camión ingresado es: ",pesoNeto)
         time.sleep(1)
         if tipoCamion == "SOJA": # si se ingresa un camión de soja, mantengo los valores correspondientes al maíz sumandole cero para poder retornarlos
-            camionesSoja =+ 1 
-            pesoNetoSoja =+ pesoNeto
+            camionesSoja += 1 
+            pesoNetoSoja += pesoNeto
             promPesoNetoS = pesoNetoSoja / camionesSoja
             if pesoNetoSoja > pesoMayorSoja:
                 pesoMayorSoja = pesoNetoSoja
                 patMayorSoja = patCamion
-            camionesMaiz =+ 0
-            pesoNetoMaiz =+ 0
+            camionesMaiz += 0
+            pesoNetoMaiz += 0
         else: # si se ingresa un camión de maíz, mantengo los valores correspondientes al soja sumandole cero para poder retornarlos
-            camionesMaiz =+ 1
-            pesoNetoMaiz =+ pesoNeto
+            camionesMaiz += 1
+            pesoNetoMaiz += pesoNeto
             promPesoNetoM = pesoNetoMaiz / camionesMaiz
             if pesoNetoMaiz < pesoMenorMaiz:
                 pesoMenorMaiz = pesoNetoMaiz
                 patMenorMaiz = patCamion
-            camionesSoja =+ 0
-            pesoNetoSoja =+ 0
+            camionesSoja += 0
+            pesoNetoSoja += 0
     return camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM
 
 def menu_recepcion(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM):
