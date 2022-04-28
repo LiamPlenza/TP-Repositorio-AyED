@@ -15,11 +15,11 @@ def clear_shell():
     else:
         return os.system("clear")
 
-def mostrar_reporte(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja):
-    print(f"La cantidad total de camiones es: {camionesMaiz + camionesSoja}\nLa cantidad de camiones de maiz es: {camionesMaiz}\nLa cantidad de camiones de soja es: {camionesSoja}\nEl peso neto correspondiente al maiz es: {pesoNetoMaiz}\nEl peso neto correspondiente a la soja es: {pesoNetoSoja}\nEl promedio del peso neto correspondiente al maíz es: {pesoNetoMaiz/camionesMaiz}\nEl promedio del peso neto correspondiente a la soja es: {pesoNetoSoja/camionesSoja}\nLa patente correspondiente al camión que menos maíz descargo es: {patMenorMaiz}\nLa patente correspondiente al camión que más soja descargo es: {patMayorSoja}")
+def mostrar_reporte(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM):
+    print(f"------------------------------\nLa cantidad total de camiones es: {camionesMaiz + camionesSoja}\nLa cantidad de camiones de maiz es: {camionesMaiz}\nLa cantidad de camiones de soja es: {camionesSoja}\nEl peso neto correspondiente al maiz es: {pesoNetoMaiz}\nEl peso neto correspondiente a la soja es: {pesoNetoSoja}\nEl promedio del peso neto correspondiente al maíz es: {promPesoNetoM}\nEl promedio del peso neto correspondiente a la soja es: {promPesoNetoS}\nLa patente correspondiente al camión que menos maíz descargo es: {patMenorMaiz}\nLa patente correspondiente al camión que más soja descargo es: {patMayorSoja}")
     time.sleep(5)
 
-def menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja):
+def menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
 
@@ -29,22 +29,21 @@ def menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camio
             if camionesMaiz == camionesSoja == 0: # en caso de que no se hayan ingresado camiones aún
                 print("Todavía no ingreso ningun camión") 
             else:
-                mostrar_reporte(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja)
+                mostrar_reporte(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
         else:
             print("Ingrese una opcion válida")
         time.sleep(1)
         option = 0 # ver porque no funciona el flujo de código, esta linea no deberia ser necesaria
-        menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja)
+        menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
 
-def ingreso_maide_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja): 
+def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM): 
     clear_shell()
     tipoCamion = input("Ingrese si el camion contiene Soja o Maíz: ").upper()
-    print(tipoCamion)
 
     if not (tipoCamion == "SOJA" or tipoCamion == "MAIZ"): # en caso de que se ingrese otro tipo de producto
         print("Ingrese un Proucto valido")
         time.sleep(1)
-        ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja)
+        ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
     else:
         patCamion = input("Ingrese la patente: ").upper()
         pesoNeto = float(input("Ingrese el peso bruto del camión: ")) - float(input("Ingrese la tara del camión: "))
@@ -69,22 +68,22 @@ def ingreso_maide_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz,
                 patMenorMaiz = patCamion
             camionesSoja =+ 0
             pesoNetoSoja =+ 0
-    return camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja
+    return camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM
 
-def menu_recepcion(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja):
+def menu_recepcion(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
     
     option = int(input("Seleccione una opción del menu: "))
     while option != 0:
         if option == 1:
-            camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja = ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja)
+            camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM = ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
         else:
             print("La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo ")
         time.sleep(1)
         option = 0 # ver porque no funciona el flujo de código, esta linea no deberia ser necesaria
-        menu_recepcion(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja)
-    return camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja
+        menu_recepcion(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
+    return camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM
 
 def menu_opciones():
     clear_shell()
@@ -116,7 +115,7 @@ def menu_administraciones():
         time.sleep(1)
         menu_administraciones()
 
-def menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja):
+def menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM):
     clear_shell()
 
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
@@ -128,18 +127,18 @@ def menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, cami
             if option == 1:
                 menu_administraciones()
             elif option == 3:
-                camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja = menu_recepcion(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja)
+                camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM = menu_recepcion(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
             elif option == 8:
-                menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja)
+                menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
             else:
                 print("Esta funcionalidad está en construcción \n")
         option = 0 # ver porque no funciona el flujo de código, esta linea no deberia ser necesaria
         time.sleep(1)
-        menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja) 
+        menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM) 
 
 if __name__ == "__main__":
     # inicialización de las variables a mostrar
-    camionesMaiz = pesoNetoMaiz = pesoMenorMaiz = camionesSoja = pesoNetoSoja = pesoMayorSoja = 0
+    camionesMaiz = pesoNetoMaiz = pesoMenorMaiz = camionesSoja = pesoNetoSoja = pesoMayorSoja = promPesoNetoS = promPesoNetoM = 0
     patMayorSoja = patMenorMaiz = ""
     
-    menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja)
+    menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
