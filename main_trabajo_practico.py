@@ -16,8 +16,8 @@ def clear_shell():
         return os.system("clear")
 
 def mostrar_reporte(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM):
-    print(f"------------------------------\nLa cantidad total de camiones es: {camionesMaiz + camionesSoja}\nLa cantidad de camiones de maiz es: {camionesMaiz}\nLa cantidad de camiones de soja es: {camionesSoja}\nEl peso neto correspondiente al maiz es: {pesoNetoMaiz}\nEl peso neto correspondiente a la soja es: {pesoNetoSoja}\nEl promedio del peso neto correspondiente al maíz es: {promPesoNetoM}\nEl promedio del peso neto correspondiente a la soja es: {promPesoNetoS}\nLa patente correspondiente al camión que menos maíz descargo es: {patMenorMaiz}\nLa patente correspondiente al camión que más soja descargo es: {patMayorSoja}")
-    time.sleep(5)
+    print(f"------------------------------\nLa cantidad total de camiones es: {camionesMaiz + camionesSoja}\nLa cantidad de camiones de maiz es: {camionesMaiz}\nLa cantidad de camiones de soja es: {camionesSoja}\nEl peso neto total correspondiente al maiz es: {pesoNetoMaiz}\nEl peso neto total correspondiente a la soja es: {pesoNetoSoja}\nEl promedio del peso neto correspondiente al maíz por camión es: {promPesoNetoM}\nEl promedio del peso neto correspondiente a la soja por camión es: {promPesoNetoS}\nLa patente correspondiente al camión que menos maíz descargo es: {patMenorMaiz}\nLa patente correspondiente al camión que más soja descargo es: {patMayorSoja}")
+    time.sleep(10)
 
 def menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM):
     clear_shell()
@@ -54,18 +54,18 @@ def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, ca
             camionesSoja += 1 
             pesoNetoSoja += pesoNeto
             promPesoNetoS = pesoNetoSoja / camionesSoja
-            if pesoNetoSoja > pesoMayorSoja:
-                pesoMayorSoja = pesoNetoSoja
+            if pesoNeto > pesoMayorSoja:
+                pesoMayorSoja = pesoNeto
                 patMayorSoja = patCamion
             camionesMaiz += 0
             pesoNetoMaiz += 0
         else: # si se ingresa un camión de maíz, mantengo los valores correspondientes al soja sumandole cero para poder retornarlos
-            camionesMaiz += 1
             pesoNetoMaiz += pesoNeto
-            promPesoNetoM = pesoNetoMaiz / camionesMaiz
-            if pesoNetoMaiz < pesoMenorMaiz:
-                pesoMenorMaiz = pesoNetoMaiz
+            if camionesMaiz == 0 or pesoNeto < pesoMenorMaiz:
+                pesoMenorMaiz = pesoNeto
                 patMenorMaiz = patCamion
+            camionesMaiz += 1
+            promPesoNetoM = pesoNetoMaiz / camionesMaiz
             camionesSoja += 0
             pesoNetoSoja += 0
     return camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM
