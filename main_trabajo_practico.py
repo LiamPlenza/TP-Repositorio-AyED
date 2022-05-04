@@ -57,13 +57,15 @@ def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, ca
             pesoNetoMaiz += 0
         else: # si se ingresa un camión de maíz, mantengo los valores correspondientes al soja sumandole cero para poder retornarlos
             pesoNetoMaiz += pesoNeto
-            if pesoNeto < pesoMenorMaiz:
+            if camionesMaiz == 0 or pesoNeto < pesoMenorMaiz:
                 pesoMenorMaiz = pesoNeto
                 patMenorMaiz = patCamion
             camionesMaiz += 1
             promPesoNetoM = pesoNetoMaiz / camionesMaiz
             camionesSoja += 0
             pesoNetoSoja += 0
+    
+    
     else:
         print("Ingrese un Proucto valido")
         time.sleep(1)
@@ -138,8 +140,7 @@ def menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, cami
 
 if __name__ == "__main__":
     # inicialización de las variables a mostrar
-    camionesMaiz = pesoNetoMaiz = camionesSoja = pesoNetoSoja = pesoMayorSoja = promPesoNetoS = promPesoNetoM = 0
+    camionesMaiz = pesoNetoMaiz = pesoMenorMaiz = camionesSoja = pesoNetoSoja = pesoMayorSoja = promPesoNetoS = promPesoNetoM = 0
     patMayorSoja = patMenorMaiz = ""
-    pesoMenorMaiz = -1000000000
     
     menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
