@@ -2,10 +2,10 @@ import os, time
 """
 Trabajo Práctico N1 - Algoritmos y Estructura de Datos - Ingeniería en Sistemas - UTN
 Integrantes:
-    Nicolás García - Comisión 107
+    Nicolás Maximiliano García - Comisión 107
     Lucio Mondelli - Comisión 107
-    Liam Plenza - Comisión 104
-    Tomas Wardoloff - Comisión 108
+    Liam Nahuel Plenza - Comisión 104
+    Tomas Joel Wardoloff - Comisión 108
 """
 
 # para determinar el sistema operativo donde se ejecuta el programa y limpiar la consola
@@ -40,11 +40,7 @@ def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, ca
     clear_shell()
     tipoCamion = input("Ingrese si el camion contiene Soja o Maíz: ").upper()
 
-    if not (tipoCamion == "SOJA" or tipoCamion == "MAIZ"): # en caso de que se ingrese otro tipo de producto
-        print("Ingrese un Proucto valido")
-        time.sleep(1)
-        ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
-    else:
+    if tipoCamion == "SOJA" or tipoCamion == "MAIZ":
         patCamion = input("Ingrese la patente: ").upper()
         pesoNeto = float(input("Ingrese el peso bruto del camión: ")) - float(input("Ingrese la tara del camión: "))
 
@@ -61,13 +57,17 @@ def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, ca
             pesoNetoMaiz += 0
         else: # si se ingresa un camión de maíz, mantengo los valores correspondientes al soja sumandole cero para poder retornarlos
             pesoNetoMaiz += pesoNeto
-            if camionesMaiz == 0 or pesoNeto < pesoMenorMaiz:
+            if pesoNeto < pesoMenorMaiz:
                 pesoMenorMaiz = pesoNeto
                 patMenorMaiz = patCamion
             camionesMaiz += 1
             promPesoNetoM = pesoNetoMaiz / camionesMaiz
             camionesSoja += 0
             pesoNetoSoja += 0
+    else:
+        print("Ingrese un Proucto valido")
+        time.sleep(1)
+        ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
     return camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM
 
 def menu_recepcion(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM):
@@ -138,7 +138,8 @@ def menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, cami
 
 if __name__ == "__main__":
     # inicialización de las variables a mostrar
-    camionesMaiz = pesoNetoMaiz = pesoMenorMaiz = camionesSoja = pesoNetoSoja = pesoMayorSoja = promPesoNetoS = promPesoNetoM = 0
+    camionesMaiz = pesoNetoMaiz = camionesSoja = pesoNetoSoja = pesoMayorSoja = promPesoNetoS = promPesoNetoM = 0
     patMayorSoja = patMenorMaiz = ""
+    pesoMenorMaiz = -1000000000
     
     menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
