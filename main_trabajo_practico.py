@@ -42,8 +42,16 @@ def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, ca
 
     if tipoCamion == "SOJA" or tipoCamion == "MAIZ":
         patCamion = input("Ingrese la patente: ").upper()
-        pesoNeto = float(input("Ingrese el peso bruto del camión: ")) - float(input("Ingrese la tara del camión: "))
+        pesoBruto = float(input("Ingrese el peso bruto del camión en kilogramos: "))
+        while 0 >= pesoBruto or pesoBruto>52500: 
+            pesoBruto = float(input("Ingrese el peso bruto del camión en kilogramos en kilogramos (debe ser un num positivo menor a 52500): "))
 
+        tara = float(input("Ingrese la tara del camión en kilogramos: "))
+        while tara < 0 or tara < pesoBruto:
+            print(pesoBruto)
+            tara = float(input("Ingrese la tara del camión en kilogramos (debe ser un num positivo): "))
+        
+        pesoNeto = pesoBruto - tara
         print("El peso neto del camión ingresado es: ",pesoNeto)
         time.sleep(1)
         if tipoCamion == "SOJA": # si se ingresa un camión de soja, mantengo los valores correspondientes al maíz sumandole cero para poder retornarlos
