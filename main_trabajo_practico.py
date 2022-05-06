@@ -131,7 +131,7 @@ def menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, cami
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
     option = int(input("Seleccione una opción del menu: "))
     while option != 0:
-        if 1 < option > 8:
+        if 1 < option or option > 8:
             print("La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo a")
         else:
             if option == 1:
