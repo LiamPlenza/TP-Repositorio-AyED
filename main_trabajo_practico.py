@@ -33,7 +33,7 @@ def menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camio
         else:
             print("Ingrese una opcion válida")
         time.sleep(1)
-        option = 0 # ver porque no funciona el flujo de código, esta linea no deberia ser necesaria
+        option = 0
         menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
 
 def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM): 
@@ -43,11 +43,11 @@ def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, ca
     if tipoCamion == "SOJA" or tipoCamion == "MAIZ":
         patCamion = input("Ingrese la patente: ").upper()
         pesoBruto = float(input("Ingrese el peso bruto del camión en kilogramos: "))
-        while 0 >= pesoBruto or pesoBruto>52500: 
+        while pesoBruto <= 0 or pesoBruto > 52500: 
             pesoBruto = float(input("Ingrese el peso bruto del camión en kilogramos en kilogramos (debe ser un num positivo menor a 52500): "))
 
         tara = float(input("Ingrese la tara del camión en kilogramos: "))
-        while tara < 0 or tara < pesoBruto:
+        while tara < 0 or tara > pesoBruto:
             print(pesoBruto)
             tara = float(input("Ingrese la tara del camión en kilogramos (debe ser un num positivo): "))
         
@@ -72,8 +72,6 @@ def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, ca
             promPesoNetoM = pesoNetoMaiz / camionesMaiz
             camionesSoja += 0
             pesoNetoSoja += 0
-    
-    
     else:
         print("Ingrese un Proucto valido")
         time.sleep(1)
@@ -91,7 +89,7 @@ def menu_recepcion(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, cami
         else:
             print("La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo ")
         time.sleep(1)
-        option = 0 # ver porque no funciona el flujo de código, esta linea no deberia ser necesaria
+        option = 0
         menu_recepcion(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
     return camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM
 
@@ -121,7 +119,7 @@ def menu_administraciones():
             print("Esta funcionalidad está en construcción")
         else:
             print("La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo ")  
-        option = 0 # ver porque no funciona el flujo de código, esta linea no deberia ser necesaria
+        option = 0 
         time.sleep(1)
         menu_administraciones()
 
@@ -131,7 +129,7 @@ def menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, cami
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
     option = int(input("Seleccione una opción del menu: "))
     while option != 0:
-        if 1 < option or option > 8:
+        if option < 1 or option > 8:
             print("La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo a")
         else:
             if option == 1:
@@ -142,7 +140,7 @@ def menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, cami
                 menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
             else:
                 print("Esta funcionalidad está en construcción \n")
-        option = 0 # ver porque no funciona el flujo de código, esta linea no deberia ser necesaria
+        option = 0 
         time.sleep(1)
         menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM) 
 
