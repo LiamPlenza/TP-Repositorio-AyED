@@ -48,7 +48,6 @@ def ingreso_de_datos(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, ca
 
         tara = float(input("Ingrese la tara del camión en kilogramos: "))
         while tara < 0 or tara > pesoBruto:
-            print(pesoBruto)
             tara = float(input("Ingrese la tara del camión en kilogramos (debe ser un num positivo): "))
         
         pesoNeto = pesoBruto - tara
@@ -139,9 +138,10 @@ def menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, cami
             elif option == 8:
                 menu_reportes(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM)
             else:
+                clear_shell()
                 print("Esta funcionalidad está en construcción \n")
         option = 0 
-        time.sleep(1)
+        time.sleep(2)
         menu_principal(camionesMaiz, pesoNetoMaiz, patMenorMaiz, pesoMenorMaiz, camionesSoja, pesoNetoSoja, patMayorSoja, pesoMayorSoja, promPesoNetoS, promPesoNetoM) 
 
 if __name__ == "__main__":
