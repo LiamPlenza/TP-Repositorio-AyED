@@ -7,16 +7,28 @@ Integrantes:
     Liam Nahuel Plenza - Comisión 104
     Tomas Joel Wardoloff - Comisión 108
 """
+WARNING = '\033[1;31m'
+NORMAL = '\033[0m'
+
+def check_float(mensaje):
+    validacion = False
+    while not validacion:
+        try:
+            option = float((input(mensaje)))
+            validacion = True
+        except ValueError:
+            print(f"{WARNING}Ingrese un valor numérico valido{NORMAL}")
+    return option
 
 # valido que el ingreso de las opciones del menu sean numericos
-def checkeonum():
+def check_int():
     validacion = False
     while not validacion:
         try:
             option = int((input("Seleccione una opción del menu: ")))
             validacion = True
         except ValueError:
-            print("Ingrese un valor numérico")
+            print(f"{WARNING}Ingrese un valor numérico valido{NORMAL}")
     return option
 
 # para determinar el sistema operativo donde se ejecuta el programa y limpiar la consola
@@ -35,15 +47,15 @@ def menu_reportes(dict_data):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
 
-    option = checkeonum()
+    option = check_int()
     while option != 0:
         if option == 1:
             if dict_data["camionesMaiz"] == dict_data["camionesSoja"] == 0: # en caso de que no se hayan ingresado camiones aún
-                print("Todavía no ingreso ningun camión")
+                print(f"{WARNING}Todavía no ingreso ningun camión{NORMAL}")
             else:
                 mostrar_reporte(dict_data)
         else:
-            print("Ingrese una opcion válida")
+            print(f"{WARNING}Ingrese una opcion válida{NORMAL}")
         time.sleep(1)
         option = 0
         menu_reportes(dict_data)
@@ -54,13 +66,13 @@ def ingreso_de_datos(dict_data):
 
     if tipoCamion in ["SOJA", "S", "MAIZ", "MAÍZ", "M"]:
         patCamion = input("Ingrese la patente: ").upper()
-        pesoBruto = float(input("Ingrese el peso bruto del camión en kilogramos: "))
+        pesoBruto = check_float(mensaje="Ingrese el peso bruto del camión en kilogramos: ")
         while pesoBruto <= 0 or pesoBruto > 52500: 
-            pesoBruto = float(input("El peso bruto del camión es incorrecto\nIngrese el peso bruto en kilogramos en kilogramos (debe ser un num positivo menor a 52500): "))
+            pesoBruto = check_float(mensaje=f"{WARNING}El peso bruto del camión es incorrecto{NORMAL}\nIngrese el peso bruto en kilogramos en kilogramos (debe ser un num positivo menor a 52500): ")
 
-        tara = float(input("Ingrese la tara del camión en kilogramos: "))
+        tara = check_float(mensaje="Ingrese la tara del camión en kilogramos: ")
         while tara < 0 or tara > pesoBruto:
-            tara = float(input("La tara del camión es incorrecta\nIngrese la tara del camión en kilogramos (debe ser un num positivo menor al peso bruto): "))
+            tara = check_float(mensaje=f"{WARNING}La tara del camión es incorrecta{NORMAL}\nIngrese la tara del camión en kilogramos (debe ser un num positivo menor al peso bruto): ")
         
         pesoNeto = pesoBruto - tara
         print("El peso neto del camión ingresado es: ",pesoNeto)
@@ -88,12 +100,12 @@ def menu_recepcion(dict_data):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
     
-    option = checkeonum()
+    option = check_int()
     while option != 0:
         if option == 1:
             dict_data = ingreso_de_datos(dict_data)
         else:
-            print("La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo ")
+            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(1)
         option = 0
         menu_recepcion(dict_data)
@@ -103,12 +115,12 @@ def menu_opciones():
     clear_shell()
     print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
     
-    option = checkeonum()
+    option = check_int()
     while option != 0:
         if 1 <= option <= 4:
-            print("Esta funcionalidad está en construcción")
+            print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         else:
-            print("La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo ")  
+            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(1)
         option = 0 # ver porque no funciona el flujo de código, esta linea no deberia ser necesaria
         menu_opciones()
@@ -117,14 +129,14 @@ def menu_administraciones():
     clear_shell()
     print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
     
-    option = checkeonum()
+    option = check_int()
     while option != 0:
         if option == 1 :
             menu_opciones()
         elif 1 < option < 8:
-            print("Esta funcionalidad está en construcción")
+            print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         else:
-            print("La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo ")  
+            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         option = 0 
         time.sleep(1)
         menu_administraciones()
@@ -133,10 +145,10 @@ def menu_principal(dict_data):
     clear_shell()
 
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
-    option = checkeonum()
+    option = check_int()
     while option != 0:
         if option < 1 or option > 8:
-            print("La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo a")
+            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         else:
             if option == 1:
                 menu_administraciones()
@@ -146,7 +158,7 @@ def menu_principal(dict_data):
                 menu_reportes(dict_data)
             else:
                 clear_shell()
-                print("Esta funcionalidad está en construcción \n")
+            print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         option = 0 
         time.sleep(1)
         menu_principal(dict_data) 
