@@ -35,7 +35,14 @@ def clear_shell():
         return os.system("clear")
 
 def mostrar_reporte(dict_data: dict):
-    print("------------------------------\nLa cantidad total de camiones es: {totalCamiones}\nLa cantidad de camiones de maiz es: {camionesMaiz}\nLa cantidad de camiones de soja es: {camionesSoja}\nEl peso neto total correspondiente al maiz es: {pesoNetoTotalMaiz}\nEl peso neto total correspondiente a la soja es: {pesoNetoTotalSoja}\nEl promedio del peso neto correspondiente al maíz por camión es: {promPesoNetoM}\nEl promedio del peso neto correspondiente a la soja por camión es: {promPesoNetoS}\nLa patente correspondiente al camión que menos maíz descargo es: {patMenorMaiz}\nLa patente correspondiente al camión que más soja descargo es: {patMayorSoja}".format(totalCamiones=dict_data["camionesMaiz"] + dict_data["camionesSoja"], camionesMaiz=dict_data["camionesMaiz"], camionesSoja=dict_data["camionesSoja"], pesoNetoTotalMaiz=dict_data["pesoNetoMaiz"], pesoNetoTotalSoja=dict_data["pesoNetoSoja"],promPesoNetoM=dict_data["promPesoNetoM"], promPesoNetoS=dict_data["promPesoNetoS"], patMenorMaiz=dict_data["patMenorMaiz"], patMayorSoja=dict_data["patMayorSoja"]))
+    if dict_data["camionesMaiz"] == 0:
+        print("------------------------------\nLa cantidad total de camiones es: {totalCamiones}\nLa cantidad de camiones de soja es: {camionesSoja}\nEl peso neto total correspondiente a la soja es: {pesoNetoTotalSoja}\nEl promedio del peso neto correspondiente a la soja por camión es: {promPesoNetoS}\nLa patente correspondiente al camión que más soja descargo es: {patMayorSoja}".format(totalCamiones=dict_data["camionesMaiz"] + dict_data["camionesSoja"], camionesSoja=dict_data["camionesSoja"], pesoNetoTotalSoja=dict_data["pesoNetoSoja"], promPesoNetoS=dict_data["promPesoNetoS"], patMayorSoja=dict_data["patMayorSoja"]))
+        print("------------------------------\nNo se han ingresado camiones de Maiz...\n------------------------------")
+    elif dict_data["camionesSoja"] == 0:
+        print("------------------------------\nLa cantidad total de camiones es: {totalCamiones}\nLa cantidad de camiones de maiz es: {camionesMaiz}\nEl peso neto total correspondiente al maiz es: {pesoNetoTotalMaiz}\nEl promedio del peso neto correspondiente al maíz por camión es: {promPesoNetoM}\nLa patente correspondiente al camión que menos maíz descargo es: {patMenorMaiz}".format(totalCamiones=dict_data["camionesMaiz"] + dict_data["camionesSoja"], camionesMaiz=dict_data["camionesMaiz"], pesoNetoTotalMaiz=dict_data["pesoNetoMaiz"],promPesoNetoM=dict_data["promPesoNetoM"], patMenorMaiz=dict_data["patMenorMaiz"],))
+        print("------------------------------\nNo se han ingresado camiones de Soja...\n------------------------------")
+    else:
+        print("------------------------------\nLa cantidad total de camiones es: {totalCamiones}\nLa cantidad de camiones de maiz es: {camionesMaiz}\nLa cantidad de camiones de soja es: {camionesSoja}\nEl peso neto total correspondiente al maiz es: {pesoNetoTotalMaiz}\nEl peso neto total correspondiente a la soja es: {pesoNetoTotalSoja}\nEl promedio del peso neto correspondiente al maíz por camión es: {promPesoNetoM}\nEl promedio del peso neto correspondiente a la soja por camión es: {promPesoNetoS}\nLa patente correspondiente al camión que menos maíz descargo es: {patMenorMaiz}\nLa patente correspondiente al camión que más soja descargo es: {patMayorSoja}".format(totalCamiones=dict_data["camionesMaiz"] + dict_data["camionesSoja"], camionesMaiz=dict_data["camionesMaiz"], camionesSoja=dict_data["camionesSoja"], pesoNetoTotalMaiz=dict_data["pesoNetoMaiz"], pesoNetoTotalSoja=dict_data["pesoNetoSoja"],promPesoNetoM=dict_data["promPesoNetoM"], promPesoNetoS=dict_data["promPesoNetoS"], patMenorMaiz=dict_data["patMenorMaiz"], patMayorSoja=dict_data["patMayorSoja"]))
     input("Precione una tecla para continuar... ")
     #os.system("pause")
 
@@ -52,12 +59,12 @@ def menu_reportes(dict_data: dict):
                 mostrar_reporte(dict_data)
         else:
             print(f"{WARNING}Ingrese una opcion válida{NORMAL}")
-        time.sleep(1)
+        time.sleep(1.5)
         option = 0
         menu_reportes(dict_data)
 
-def store_data(tipoCamion: str, patCamion: str, pesoNeto: float):
-    if tipoCamion == "SOJA":
+def guardar_datos(tipoCamion: str, patCamion: str, pesoNeto: float):
+    if tipoCamion in ["S","SOJA"]:
             dict_data['camionesSoja'] += 1 
             dict_data['pesoNetoSoja'] += pesoNeto
             dict_data['promPesoNetoS'] = dict_data['pesoNetoSoja'] / dict_data['camionesSoja']
@@ -87,11 +94,11 @@ def ingreso_de_datos(dict_data: dict):
             tara = check_float(mensaje=f"{WARNING}La tara del camión es incorrecta{NORMAL}\nIngrese la tara del camión en kilogramos (debe ser un num positivo menor al peso bruto): ")
         
         print("El peso neto del camión ingresado es: ",pesoBruto - tara)
-        store_data(tipoCamion, patCamion, pesoNeto = pesoBruto - tara)
-        time.sleep(1)
+        guardar_datos(tipoCamion, patCamion, pesoNeto = pesoBruto - tara)
+        time.sleep(1.5)
     else:
         print("Ingrese un Proucto valido")
-        time.sleep(1)
+        time.sleep(2)
         ingreso_de_datos(dict_data)
 
 def menu_recepcion(dict_data: dict) -> dict:
@@ -119,7 +126,7 @@ def menu_opciones():
             print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
-        time.sleep(1)
+        time.sleep(1.5)
         option = 0
         menu_opciones()
 
@@ -136,7 +143,7 @@ def menu_administraciones():
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         option = 0 
-        time.sleep(1)
+        time.sleep(1.5)
         menu_administraciones()
 
 def menu_principal(dict_data: dict):
@@ -158,7 +165,7 @@ def menu_principal(dict_data: dict):
                 clear_shell()
                 print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         option = 0 
-        time.sleep(1)
+        time.sleep(1.5)
         menu_principal(dict_data) 
 
 if __name__ == "__main__":
