@@ -10,26 +10,22 @@ Integrantes:
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
 
-def check_float(mensaje):
-    validacion = False
-    while not validacion:
+def check_float(mensaje: str)-> float:
+    while True:
         try:
             option = float((input(mensaje)))
-            validacion = True
+            return option
         except ValueError:
             print(f"{WARNING}Ingrese un valor numérico valido{NORMAL}")
-    return option
 
 # valido que el ingreso de las opciones del menu sean numericos
-def check_int():
-    validacion = False
-    while not validacion:
+def check_int()-> int:
+    while True:
         try:
             option = int((input("Seleccione una opción del menu: ")))
-            validacion = True
+            return option
         except ValueError:
             print(f"{WARNING}Ingrese un valor numérico valido{NORMAL}")
-    return option
 
 # para determinar el sistema operativo donde se ejecuta el programa y limpiar la consola
 def clear_shell():
@@ -38,12 +34,12 @@ def clear_shell():
     else:
         return os.system("clear")
 
-def mostrar_reporte(dict_data):
+def mostrar_reporte(dict_data: dict):
     print("------------------------------\nLa cantidad total de camiones es: {totalCamiones}\nLa cantidad de camiones de maiz es: {camionesMaiz}\nLa cantidad de camiones de soja es: {camionesSoja}\nEl peso neto total correspondiente al maiz es: {pesoNetoTotalMaiz}\nEl peso neto total correspondiente a la soja es: {pesoNetoTotalSoja}\nEl promedio del peso neto correspondiente al maíz por camión es: {promPesoNetoM}\nEl promedio del peso neto correspondiente a la soja por camión es: {promPesoNetoS}\nLa patente correspondiente al camión que menos maíz descargo es: {patMenorMaiz}\nLa patente correspondiente al camión que más soja descargo es: {patMayorSoja}".format(totalCamiones=dict_data["camionesMaiz"] + dict_data["camionesSoja"], camionesMaiz=dict_data["camionesMaiz"], camionesSoja=dict_data["camionesSoja"], pesoNetoTotalMaiz=dict_data["pesoNetoMaiz"], pesoNetoTotalSoja=dict_data["pesoNetoSoja"],promPesoNetoM=dict_data["promPesoNetoM"], promPesoNetoS=dict_data["promPesoNetoS"], patMenorMaiz=dict_data["patMenorMaiz"], patMayorSoja=dict_data["patMayorSoja"]))
     input("Precione una tecla para continuar... ")
     #os.system("pause")
 
-def menu_reportes(dict_data):
+def menu_reportes(dict_data: dict):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
 
@@ -60,7 +56,23 @@ def menu_reportes(dict_data):
         option = 0
         menu_reportes(dict_data)
 
-def ingreso_de_datos(dict_data): 
+def store_data(tipoCamion: str, patCamion: str, pesoNeto: float):
+    if tipoCamion == "SOJA":
+            dict_data['camionesSoja'] += 1 
+            dict_data['pesoNetoSoja'] += pesoNeto
+            dict_data['promPesoNetoS'] = dict_data['pesoNetoSoja'] / dict_data['camionesSoja']
+            if pesoNeto > dict_data['pesoMayorSoja']:
+                dict_data['pesoMayorSoja'] = pesoNeto
+                dict_data['patMayorSoja'] = patCamion
+    else: 
+        dict_data['pesoNetoMaiz'] += pesoNeto
+        if dict_data['camionesMaiz'] == 0 or pesoNeto < dict_data['pesoMenorMaiz']:
+            dict_data['pesoMenorMaiz'] = pesoNeto
+            dict_data['patMenorMaiz'] = patCamion
+        dict_data['camionesMaiz'] += 1
+        dict_data['promPesoNetoM'] = dict_data['pesoNetoMaiz'] / dict_data['camionesMaiz']
+
+def ingreso_de_datos(dict_data: dict): 
     clear_shell()
     tipoCamion = input("Ingrese si el camion contiene Soja o Maíz: ").upper()
 
@@ -74,29 +86,15 @@ def ingreso_de_datos(dict_data):
         while tara < 0 or tara > pesoBruto:
             tara = check_float(mensaje=f"{WARNING}La tara del camión es incorrecta{NORMAL}\nIngrese la tara del camión en kilogramos (debe ser un num positivo menor al peso bruto): ")
         
-        pesoNeto = pesoBruto - tara
-        print("El peso neto del camión ingresado es: ",pesoNeto)
+        print("El peso neto del camión ingresado es: ",pesoBruto - tara)
+        store_data(tipoCamion, patCamion, pesoNeto = pesoBruto - tara)
         time.sleep(1)
-        if tipoCamion == "SOJA": # si se ingresa un camión de soja, mantengo los valores correspondientes al maíz sumandole cero para poder retornarlos
-            dict_data['camionesSoja'] += 1 
-            dict_data['pesoNetoSoja'] += pesoNeto
-            dict_data['promPesoNetoS'] = dict_data['pesoNetoSoja'] / dict_data['camionesSoja']
-            if pesoNeto > dict_data['pesoMayorSoja']:
-                dict_data['pesoMayorSoja'] = pesoNeto
-                dict_data['patMayorSoja'] = patCamion
-        else: # si se ingresa un camión de maíz, mantengo los valores correspondientes al soja sumandole cero para poder retornarlos
-            dict_data['pesoNetoMaiz'] += pesoNeto
-            if dict_data['camionesMaiz'] == 0 or pesoNeto < dict_data['pesoMenorMaiz']:
-                dict_data['pesoMenorMaiz'] = pesoNeto
-                dict_data['patMenorMaiz'] = patCamion
-            dict_data['camionesMaiz'] += 1
-            dict_data['promPesoNetoM'] = dict_data['pesoNetoMaiz'] / dict_data['camionesMaiz']
     else:
         print("Ingrese un Proucto valido")
         time.sleep(1)
         ingreso_de_datos(dict_data)
 
-def menu_recepcion(dict_data):
+def menu_recepcion(dict_data: dict) -> dict:
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
     
@@ -122,7 +120,7 @@ def menu_opciones():
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(1)
-        option = 0 # ver porque no funciona el flujo de código, esta linea no deberia ser necesaria
+        option = 0
         menu_opciones()
 
 def menu_administraciones():
@@ -141,7 +139,7 @@ def menu_administraciones():
         time.sleep(1)
         menu_administraciones()
 
-def menu_principal(dict_data):
+def menu_principal(dict_data: dict):
     clear_shell()
 
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
@@ -158,7 +156,7 @@ def menu_principal(dict_data):
                 menu_reportes(dict_data)
             else:
                 clear_shell()
-            print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
+                print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         option = 0 
         time.sleep(1)
         menu_principal(dict_data) 
