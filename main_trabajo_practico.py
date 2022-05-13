@@ -1,3 +1,4 @@
+from binascii import crc32
 import os, time
 """
 Trabajo Práctico N1 - Algoritmos y Estructura de Datos - Ingeniería en Sistemas - UTN
@@ -9,6 +10,40 @@ Integrantes:
 """
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
+
+
+def check_pat():
+    c = 0
+    pat= input("Ingrese la patente: ").upper()
+    if len(pat) == 6:
+        for h in pat:
+            if c <3:
+                if pat[c].isdigit():
+                    print(f"{WARNING}Ingrese un formato de patente valido (aa111aa o aaa111) {NORMAL}")
+                    check_pat()
+            elif not pat[c].isdigit():
+                print(f"{WARNING}Ingrese un formato de patente valido (aa111aa o aaa111) {NORMAL}")
+                check_pat()
+            c += 1
+    elif len(pat) == 7:
+        for h in pat:
+            if c < 2 or c > 4:
+                if pat[c].isdigit():
+                    print(f"{WARNING}Ingrese un formato de patente valido (aa111aa o aaa111) {NORMAL}")
+                    check_pat()
+            elif not pat[c].isdigit():
+                print(f"{WARNING}Ingrese un formato de patente valido (aa111aa o aaa111) {NORMAL}")
+                check_pat()
+            c += 1
+    else:
+        print(f"{WARNING}Ingrese un formato de patente valido (aa111aa o aaa111) {NORMAL}")
+        check_pat()
+    return pat
+
+
+        
+
+
 
 def check_float(mensaje: str)-> float:
     while True:
@@ -84,7 +119,7 @@ def ingreso_de_datos(dict_data: dict):
     tipoCamion = input("Ingrese si el camion contiene Soja o Maíz: ").upper()
 
     if tipoCamion in ["SOJA", "S", "MAIZ", "MAÍZ", "M"]:
-        patCamion = input("Ingrese la patente: ").upper()
+        patCamion = check_pat()
         pesoBruto = check_float(mensaje="Ingrese el peso bruto del camión en kilogramos: ")
         while pesoBruto <= 0 or pesoBruto > 52500: 
             pesoBruto = check_float(mensaje=f"{WARNING}El peso bruto del camión es incorrecto{NORMAL}\nIngrese el peso bruto en kilogramos en kilogramos (debe ser un num positivo menor a 52500): ")
