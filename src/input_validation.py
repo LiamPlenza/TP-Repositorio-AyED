@@ -1,31 +1,13 @@
+import re
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
 
+# valido el formato de la patente, utilizando el modulo re -> [A-Z] corresponde a culquier letra y \d corresponde a cualquier dígito
 def check_pat() -> str:
     patente = input("Ingrese la patente: ").upper()
-    if len(patente) == 6:
-        for contador, caracter in enumerate(patente):
-            if contador < 3:
-                if caracter.isdigit():
-                    print(f"{WARNING}Ingrese un formato de patente valido (aa111aa o aaa111) {NORMAL}")
-                    check_pat()
-            elif "A" <= caracter <= "Z":
-                print(f"{WARNING}Ingrese un formato de patente valido (aa111aa o aaa111) {NORMAL}")
-                check_pat()
-            break
-    elif len(patente) == 7:
-        for contador, caracter in enumerate(patente):
-            if contador < 2 or 4 < contador < 7: #AA123AA
-                if caracter.isdigit():
-                    print(f"{WARNING}Ingrese un formato de patente valido (aa111aa o aaa111) {NORMAL}")
-                    check_pat()
-            elif "A" <= caracter <= "Z":
-                print(f"{WARNING}Ingrese un formato de patente valido (aa111aa o aaa111) {NORMAL}")
-                check_pat()
-            break
-    else:
+    while not re.match(r"[A-Z][A-Z][A-Z]\d\d\d", patente) and not re.match(r"[A-Z][A-Z]\d\d\d[A-Z][A-Z]", patente):
         print(f"{WARNING}Ingrese un formato de patente valido (aa111aa o aaa111) {NORMAL}")
-        check_pat()
+        patente = input("Ingrese la patente: ").upper()
     return patente
 
 # valido que el ingreso de los datos del camion, peso y tara sean núnmero flotante
