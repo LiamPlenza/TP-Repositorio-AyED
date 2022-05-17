@@ -11,13 +11,13 @@ def clear_shell():
 
 def mostrar_reporte(Maiz,Soja):
     if Maiz.camionesMaiz == 0:
-        print("------------------------------\nLa cantidad total de camiones es: ",Soja.camionesSoja,"\nLa cantidad de camiones de soja es: ",Soja.camionesSoja,"\nEl peso neto total correspondiente a la soja es: ",Soja.pesoNetoTotalSoja,"\nEl promedio del peso neto correspondiente a la soja por camión es: ",Soja.promPesoNetoS,"\nLa patente correspondiente al camión que más soja descargo es:",Soja.patMayorSoja)
+        print("------------------------------\nLa cantidad total de camiones es: ",Soja.camionesSoja,"\nLa cantidad de camiones de soja es: ",Soja.camionesSoja,"\nEl peso neto total correspondiente a la soja es: ",Soja.pesoNetoSoja,"\nEl promedio del peso neto correspondiente a la soja por camión es: ",Soja.promPesoNetoS,"\nLa patente correspondiente al camión que más soja descargo es:",Soja.patMayorSoja)
         print("------------------------------\nNo se han ingresado camiones de Maiz...\n------------------------------")
     elif Soja.camionesSoja == 0:
-        print("------------------------------\nLa cantidad total de camiones es: ",Maiz.camionesMaiz,"\nLa cantidad de camiones de maiz es: ",Maiz.camionesMaiz,"\nEl peso neto total correspondiente al maiz es: ",Maiz.pesoNetoTotalMaiz,"\nEl promedio del peso neto correspondiente al maíz por camión es: ",Maiz.promPesoNetoM,"\nLa patente correspondiente al camión que menos maíz descargo es: ",Maiz.patMenorMaiz)
+        print("------------------------------\nLa cantidad total de camiones es: ",Maiz.camionesMaiz,"\nLa cantidad de camiones de maiz es: ",Maiz.camionesMaiz,"\nEl peso neto total correspondiente al maiz es: ",Maiz.pesoNetoMaiz,"\nEl promedio del peso neto correspondiente al maíz por camión es: ",Maiz.promPesoNetoM,"\nLa patente correspondiente al camión que menos maíz descargo es: ",Maiz.patMenorMaiz)
         print("------------------------------\nNo se han ingresado camiones de Soja...\n------------------------------")
     else:
-        print("------------------------------\nLa cantidad total de camiones es: ", Soja.camionesSoja+Maiz.camionesMaiz,"\nLa cantidad de camiones de maiz es: ",Maiz.camionesMaiz,"\nLa cantidad de camiones de soja es: ",Soja.camionesSoja,"\nEl peso neto total correspondiente al maiz es: ",Maiz.pesoNetoTotalMaiz,"\nEl peso neto total correspondiente a la soja es: ",Soja.pesoNetoTotalSoja,"\nEl promedio del peso neto correspondiente al maíz por camión es: ",Maiz.promPesoNetoM,"\nEl promedio del peso neto correspondiente a la soja por camión es: ",Soja.promPesoNetoS,"\nLa patente correspondiente al camión que menos maíz descargo es: ",Maiz.patMenorMaiz,"\nLa patente correspondiente al camión que más soja descargo es: ",Soja.patMayorSoja)
+        print("------------------------------\nLa cantidad total de camiones es: ", Soja.camionesSoja+Maiz.camionesMaiz,"\nLa cantidad de camiones de maiz es: ",Maiz.camionesMaiz,"\nLa cantidad de camiones de soja es: ",Soja.camionesSoja,"\nEl peso neto total correspondiente al maiz es: ",Maiz.pesoNetoMaiz,"\nEl peso neto total correspondiente a la soja es: ",Soja.pesoNetoSoja,"\nEl promedio del peso neto correspondiente al maíz por camión es: ",Maiz.promPesoNetoM,"\nEl promedio del peso neto correspondiente a la soja por camión es: ",Soja.promPesoNetoS,"\nLa patente correspondiente al camión que menos maíz descargo es: ",Maiz.patMenorMaiz,"\nLa patente correspondiente al camión que más soja descargo es: ",Soja.patMayorSoja)
     input("Precione una tecla para continuar... ")
     #os.system("pause")
 
@@ -83,7 +83,7 @@ def menu_recepcion(Maiz,Soja) -> dict:
     option = input_validation.check_int()
     while option != 0:
         if option == 1:
-            Maiz,Soja = ingreso_de_datos(Maiz,Soja)
+            ingreso_de_datos(Maiz,Soja)
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(1)
