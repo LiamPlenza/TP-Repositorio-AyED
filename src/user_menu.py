@@ -9,52 +9,52 @@ def clear_shell():
     else:
         return os.system("clear")
 
-def mostrar_reporte(dictionary: dict):
-    if dictionary["camionesMaiz"] == 0:
-        print("------------------------------\nLa cantidad total de camiones es: {totalCamiones}\nLa cantidad de camiones de soja es: {camionesSoja}\nEl peso neto total correspondiente a la soja es: {pesoNetoTotalSoja}\nEl promedio del peso neto correspondiente a la soja por camión es: {promPesoNetoS}\nLa patente correspondiente al camión que más soja descargo es: {patMayorSoja}".format(totalCamiones=dictionary["camionesMaiz"] + dictionary["camionesSoja"], camionesSoja=dictionary["camionesSoja"], pesoNetoTotalSoja=dictionary["pesoNetoSoja"], promPesoNetoS=dictionary["promPesoNetoS"], patMayorSoja=dictionary["patMayorSoja"]))
+def mostrar_reporte(Maiz,Soja):
+    if Maiz.camionesMaiz == 0:
+        print("------------------------------\nLa cantidad total de camiones es: ",Soja.camionesSoja,"\nLa cantidad de camiones de soja es: ",Soja.camionesSoja,"\nEl peso neto total correspondiente a la soja es: ",Soja.pesoNetoTotalSoja,"\nEl promedio del peso neto correspondiente a la soja por camión es: ",Soja.promPesoNetoS,"\nLa patente correspondiente al camión que más soja descargo es:",Soja.patMayorSoja)
         print("------------------------------\nNo se han ingresado camiones de Maiz...\n------------------------------")
-    elif dictionary["camionesSoja"] == 0:
-        print("------------------------------\nLa cantidad total de camiones es: {totalCamiones}\nLa cantidad de camiones de maiz es: {camionesMaiz}\nEl peso neto total correspondiente al maiz es: {pesoNetoTotalMaiz}\nEl promedio del peso neto correspondiente al maíz por camión es: {promPesoNetoM}\nLa patente correspondiente al camión que menos maíz descargo es: {patMenorMaiz}".format(totalCamiones=dictionary["camionesMaiz"] + dictionary["camionesSoja"], camionesMaiz=dictionary["camionesMaiz"], pesoNetoTotalMaiz=dictionary["pesoNetoMaiz"],promPesoNetoM=dictionary["promPesoNetoM"], patMenorMaiz=dictionary["patMenorMaiz"],))
+    elif Soja.camionesSoja == 0:
+        print("------------------------------\nLa cantidad total de camiones es: ",Maiz.camionesMaiz,"\nLa cantidad de camiones de maiz es: ",Maiz.camionesMaiz,"\nEl peso neto total correspondiente al maiz es: ",Maiz.pesoNetoTotalMaiz,"\nEl promedio del peso neto correspondiente al maíz por camión es: ",Maiz.promPesoNetoM,"\nLa patente correspondiente al camión que menos maíz descargo es: ",Maiz.patMenorMaiz)
         print("------------------------------\nNo se han ingresado camiones de Soja...\n------------------------------")
     else:
-        print("------------------------------\nLa cantidad total de camiones es: {totalCamiones}\nLa cantidad de camiones de maiz es: {camionesMaiz}\nLa cantidad de camiones de soja es: {camionesSoja}\nEl peso neto total correspondiente al maiz es: {pesoNetoTotalMaiz}\nEl peso neto total correspondiente a la soja es: {pesoNetoTotalSoja}\nEl promedio del peso neto correspondiente al maíz por camión es: {promPesoNetoM}\nEl promedio del peso neto correspondiente a la soja por camión es: {promPesoNetoS}\nLa patente correspondiente al camión que menos maíz descargo es: {patMenorMaiz}\nLa patente correspondiente al camión que más soja descargo es: {patMayorSoja}".format(totalCamiones=dictionary["camionesMaiz"] + dictionary["camionesSoja"], camionesMaiz=dictionary["camionesMaiz"], camionesSoja=dictionary["camionesSoja"], pesoNetoTotalMaiz=dictionary["pesoNetoMaiz"], pesoNetoTotalSoja=dictionary["pesoNetoSoja"],promPesoNetoM=dictionary["promPesoNetoM"], promPesoNetoS=dictionary["promPesoNetoS"], patMenorMaiz=dictionary["patMenorMaiz"], patMayorSoja=dictionary["patMayorSoja"]))
+        print("------------------------------\nLa cantidad total de camiones es: ", Soja.camionesSoja+Maiz.camionesMaiz,"\nLa cantidad de camiones de maiz es: ",Maiz.camionesMaiz,"\nLa cantidad de camiones de soja es: ",Soja.camionesSoja,"\nEl peso neto total correspondiente al maiz es: ",Maiz.pesoNetoTotalMaiz,"\nEl peso neto total correspondiente a la soja es: ",Soja.pesoNetoTotalSoja,"\nEl promedio del peso neto correspondiente al maíz por camión es: ",Maiz.promPesoNetoM,"\nEl promedio del peso neto correspondiente a la soja por camión es: ",Soja.promPesoNetoS,"\nLa patente correspondiente al camión que menos maíz descargo es: ",Maiz.patMenorMaiz,"\nLa patente correspondiente al camión que más soja descargo es: ",Soja.patMayorSoja)
     input("Precione una tecla para continuar... ")
     #os.system("pause")
 
-def menu_reportes(dictionary: dict):
+def menu_reportes(Maiz,Soja):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
 
     option = input_validation.check_int()
     while option != 0:
         if option == 1:
-            if dictionary["camionesMaiz"] == dictionary["camionesSoja"] == 0: # en caso de que no se hayan ingresado camiones aún
+            if Maiz.camionesMaiz == Soja.camionesSoja == 0: # en caso de que no se hayan ingresado camiones aún
                 print(f"{WARNING}Todavía no ingreso ningun camión{NORMAL}")
             else:
-                mostrar_reporte(dictionary)
+                mostrar_reporte(Maiz,Soja)
         else:
             print(f"{WARNING}Ingrese una opcion válida{NORMAL}")
         time.sleep(1.5)
         option = 0
-        menu_reportes(dictionary)
+        menu_reportes(Maiz,Soja)
 
-def guardar_datos(dictionary, tipoCamion: str, patCamion: str, pesoNeto: float):
+def guardar_datos(Maiz,Soja , tipoCamion: str, patCamion: str, pesoNeto: float):
     if tipoCamion in ["S","SOJA"]:
-            dictionary['camionesSoja'] += 1 
-            dictionary['pesoNetoSoja'] += pesoNeto
-            dictionary['promPesoNetoS'] = dictionary['pesoNetoSoja'] / dictionary['camionesSoja']
-            if pesoNeto > dictionary['pesoMayorSoja']:
-                dictionary['pesoMayorSoja'] = pesoNeto
-                dictionary['patMayorSoja'] = patCamion
+            Soja.camionesSoja += 1 
+            Soja.pesoNetoSoja += pesoNeto
+            Soja.promPesoNetoS = Soja.pesoNetoSoja / Soja.camionesSoja
+            if pesoNeto > Soja.pesoMayorSoja:
+                Soja.pesoMayorSoja = pesoNeto
+                Soja.patMayorSoja = patCamion
     else: 
-        dictionary['pesoNetoMaiz'] += pesoNeto
-        if dictionary['camionesMaiz'] == 0 or pesoNeto < dictionary['pesoMenorMaiz']:
-            dictionary['pesoMenorMaiz'] = pesoNeto
-            dictionary['patMenorMaiz'] = patCamion
-        dictionary['camionesMaiz'] += 1
-        dictionary['promPesoNetoM'] = dictionary['pesoNetoMaiz'] / dictionary['camionesMaiz']
+        Maiz.pesoNetoMaiz += pesoNeto
+        if Maiz.camionesMaiz == 0 or pesoNeto < Maiz.pesoMenorMaiz:
+            Maiz.pesoMenorMaiz = pesoNeto
+            Maiz.patMenorMaiz = patCamion
+        Maiz.camionesMaiz += 1
+        Maiz.promPesoNetoM = Maiz.pesoNetoMaiz / Maiz.camionesMaiz
 
-def ingreso_de_datos(dictionary: dict): 
+def ingreso_de_datos(Maiz,Soja): 
     clear_shell()
     tipoCamion = input("Ingrese si el camion contiene Soja o Maíz: ").upper()
 
@@ -69,27 +69,27 @@ def ingreso_de_datos(dictionary: dict):
             tara = input_validation.check_float(mensaje=f"{WARNING}La tara del camión es incorrecta{NORMAL}\nIngrese la tara del camión en kilogramos (debe ser un num positivo menor al peso bruto): ")
         
         print("El peso neto del camión ingresado es: ",pesoBruto - tara)
-        guardar_datos(dictionary, tipoCamion, patCamion, pesoNeto = pesoBruto - tara)
+        guardar_datos(Maiz,Soja, tipoCamion, patCamion, pesoNeto = pesoBruto - tara)
         time.sleep(1.5)
     else:
         print("Ingrese un Proucto valido")
         time.sleep(2)
-        ingreso_de_datos(dictionary)
+        ingreso_de_datos(Maiz,Soja)
 
-def menu_recepcion(dictionary: dict) -> dict:
+def menu_recepcion(Maiz,Soja) -> dict:
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
     
     option = input_validation.check_int()
     while option != 0:
         if option == 1:
-            dictionary = ingreso_de_datos(dictionary)
+            Maiz,Soja = ingreso_de_datos(Maiz,Soja)
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(1)
         option = 0
-        menu_recepcion(dictionary)
-    return dictionary
+        menu_recepcion(Maiz,Soja)
+    return Maiz,Soja
 
 def menu_opciones():
     clear_shell()
@@ -121,7 +121,7 @@ def menu_administraciones():
         time.sleep(1.5)
         menu_administraciones()
 
-def menu_principal(dictionary: dict):
+def menu_principal(Maiz,Soja):
     clear_shell()
 
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
@@ -133,12 +133,12 @@ def menu_principal(dictionary: dict):
             if option == 1:
                 menu_administraciones()
             elif option == 3:
-                menu_recepcion(dictionary)
+                menu_recepcion(Maiz,Soja)
             elif option == 8:
-                menu_reportes(dictionary)
+                menu_reportes(Maiz,Soja)
             else:
                 clear_shell()
                 print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         option = 0 
         time.sleep(1.5)
-        menu_principal(dictionary) 
+        menu_principal(Maiz,Soja) 
