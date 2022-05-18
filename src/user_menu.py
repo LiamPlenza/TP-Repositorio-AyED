@@ -117,11 +117,43 @@ def alta(titulares):
             time.sleep
             (1.5)
             alta(titulares)
-
+    menu_opciones(titulares)
 
 
 def baja(titulares):
-    pass
+    clear_shell()
+    i = 0
+    if titulares[i] == 0:
+        print("No hay titulares ingresados")
+        time.sleep(1.5)
+        menu_opciones(titulares)
+    else:
+        print("La actual lista de titulares es:")
+        while titulares[i] != 0 and i <5:
+            print(i+1," - ",titulares[i])
+            i+=1
+    print("0 - Volver al menu anterior ")
+    option = input_validation.check_int()
+    i = option-1
+    
+        
+    while option != 0:
+        if i > 5:
+            print(f"{WARNING}Ingrese un entero <5{NORMAL}")
+            time.sleep(1.5)
+            baja(titulares)
+        elif titulares[i] == 0:    
+            print(f"{WARNING}Ingrese un titular existente{NORMAL}")
+            time.sleep(1.5)
+            baja(titulares)
+
+        while titulares[i] != 0:
+            titulares[i] = titulares[i+1]
+            i+=1
+        print("El titular a sido borrado")
+        option = 0
+        os.system("pause")
+
 
 def consulta(titulares):
     pass
@@ -138,7 +170,9 @@ def menu_opciones(titulares):
     while option != 0:
         if 1 == option:
             alta(titulares)
-        if 2 <= option <= 4:
+        elif 2 == option:
+            baja(titulares)
+        elif 3<= option <= 4:
             print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
