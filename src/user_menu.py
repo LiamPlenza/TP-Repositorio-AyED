@@ -146,20 +146,62 @@ def baja(titulares):
             print(f"{WARNING}Ingrese un titular existente{NORMAL}")
             time.sleep(1.5)
             baja(titulares)
-
-        while titulares[i] != 0:
+        else:
             titulares[i] = titulares[i+1]
             i+=1
-        print("El titular a sido borrado")
-        option = 0
-        os.system("pause")
+            print("El titular a sido borrado")
+            option = 0
+            os.system("pause")
 
 
 def consulta(titulares):
-    pass
+    clear_shell()
+    i = 0
+    if titulares[i] == 0:
+        print("No hay titulares ingresados")
+        time.sleep(1.5)
+        menu_opciones(titulares)
+    else:
+        print("La actual lista de titulares es:")
+        while titulares[i] != 0 and i <5:
+            print(i+1," - ",titulares[i])
+            i+=1
+    os.system("pause")
 
 def modificacion(titulares):
-    pass
+    clear_shell()
+    i = 0
+    if titulares[i] == 0:
+        print("No hay titulares ingresados")
+        time.sleep(1.5)
+        menu_opciones(titulares)
+    else:
+        print("La actual lista de titulares es:")
+        while titulares[i] != 0 and i <5:
+            print(i+1," - ",titulares[i])
+            i+=1
+    print("0 - Volver al menu anterior ")
+    option = input_validation.check_int()
+    i = option-1
+    
+        
+    while option != 0:
+        if i > 5:
+            print(f"{WARNING}Ingrese un entero <5{NORMAL}")
+            time.sleep(1.5)
+            modificacion(titulares)
+        elif titulares[i] == 0:    
+            print(f"{WARNING}Ingrese un titular existente{NORMAL}")
+            time.sleep(1.5)
+            modificacion(titulares)
+        else:
+            titulares[i] = input("Ingrese el nombre del nuevo titular: ")
+            print("El titular ha sido modificado")
+            option = 0
+            os.system("pause")
+
+    
+
 
 
 def menu_opciones(titulares):
@@ -172,8 +214,10 @@ def menu_opciones(titulares):
             alta(titulares)
         elif 2 == option:
             baja(titulares)
-        elif 3<= option <= 4:
-            print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
+        elif option == 3:
+            consulta(titulares)
+        elif option == 4:
+            modificacion(titulares)
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(1.5)
