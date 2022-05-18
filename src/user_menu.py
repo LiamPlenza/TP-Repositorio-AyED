@@ -91,37 +91,78 @@ def menu_recepcion(Maiz,Soja) -> dict:
         menu_recepcion(Maiz,Soja)
     return Maiz,Soja
 
-def menu_opciones():
+def alta(titulares):
+    clear_shell()
+    print("0 - Volver al menu anterior \n1 - Ingresar un nuevo titular")
+
+    option = input_validation.check_int()
+    i=0
+    while option != 0:
+        if option == 1:
+            while i < 5:
+                if titulares[i] == 0:
+                    titulares[i] = input("Ingrese el nombre del titular en cuestión: ")
+                    time.sleep(1.5)
+                    i = i + 1
+                    alta(titulares)
+                else: 
+                    i+=1
+                
+                if titulares [4] != 0:
+                    print("Se ha alcanzado la cantidad maxima de titulares (5) ")
+                    os.system("pause")
+                    menu_opciones(titulares)
+        else:
+            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
+            time.sleep
+            (1.5)
+            alta(titulares)
+
+
+
+def baja(titulares):
+    pass
+
+def consulta(titulares):
+    pass
+
+def modificacion(titulares):
+    pass
+
+
+def menu_opciones(titulares):
     clear_shell()
     print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
     
     option = input_validation.check_int()
     while option != 0:
-        if 1 <= option <= 4:
+        if 1 == option:
+            alta(titulares)
+        if 2 <= option <= 4:
             print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(1.5)
         option = 0
-        menu_opciones()
+        menu_opciones(titulares)
 
-def menu_administraciones():
+def menu_administraciones(titulares):
     clear_shell()
     print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
     
     option = input_validation.check_int()
     while option != 0:
         if option == 1 :
-            menu_opciones()
+            menu_opciones(titulares)
         elif 1 < option < 8:
             print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         option = 0 
         time.sleep(1.5)
-        menu_administraciones()
+        menu_administraciones(titulares)
 
-def menu_principal(Maiz,Soja):
+def menu_principal(Maiz,Soja,titulares):
     clear_shell()
 
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
@@ -131,7 +172,7 @@ def menu_principal(Maiz,Soja):
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         else:
             if option == 1:
-                menu_administraciones()
+                menu_administraciones(titulares)
             elif option == 3:
                 menu_recepcion(Maiz,Soja)
             elif option == 8:

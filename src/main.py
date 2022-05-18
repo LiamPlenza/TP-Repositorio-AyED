@@ -18,10 +18,12 @@ if __name__ == "__main__":
         promPesoNetoM = 0
         patMenorMaiz = ""
 
+    titulares= [0] * 5
+
     class Soja:
         camionesSoja = 0
         pesoNetoSoja = 0
         pesoMayorSoja = 0
         promPesoNetoS = 0
         patMenorSoja = ""
-    user_menu.menu_principal(Maiz,Soja)
+    user_menu.menu_principal(Maiz,Soja,titulares)
