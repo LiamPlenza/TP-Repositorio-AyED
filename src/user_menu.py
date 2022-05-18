@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import os, time, input_validation
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
@@ -79,7 +80,6 @@ def ingreso_de_datos(Maiz,Soja):
 def menu_recepcion(Maiz,Soja) -> dict:
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
-    
     option = input_validation.check_int()
     while option != 0:
         if option == 1:
@@ -94,24 +94,23 @@ def menu_recepcion(Maiz,Soja) -> dict:
 def alta(titulares):
     clear_shell()
     print("0 - Volver al menu anterior \n1 - Ingresar un nuevo titular")
-
     option = input_validation.check_int()
     i=0
     while option != 0:
         if option == 1:
-            while i < 5:
-                if titulares[i] == 0:
-                    titulares[i] = input("Ingrese el nombre del titular en cuestión: ")
-                    time.sleep(1.5)
-                    i = i + 1
-                    alta(titulares)
-                else: 
-                    i+=1
+            if i == 0:
+                titulares.append(input("Ingrese el nombre del titular en cuestión: "))
+                time.sleep(1.5)
+                i = i + 1
+                alta(titulares)
+            elif titulares[i] == 0:
+                titulares.append(input("Ingrese el nombre del titular en cuestión: "))
+                time.sleep(1.5)
+                i = i + 1
+                alta(titulares)
+            else: 
+                i+=1
                 
-                if titulares [4] != 0:
-                    print("Se ha alcanzado la cantidad maxima de titulares (5) ")
-                    os.system("pause")
-                    menu_opciones(titulares)
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
             time.sleep
@@ -119,78 +118,66 @@ def alta(titulares):
             alta(titulares)
     menu_opciones(titulares)
 
-
 def baja(titulares):
     clear_shell()
     i = 0
-    if titulares[i] == 0:
+    if titulares == []:
         print("No hay titulares ingresados")
         time.sleep(1.5)
         menu_opciones(titulares)
     else:
         print("La actual lista de titulares es:")
-        while titulares[i] != 0 and i <5:
-            print(i+1," - ",titulares[i])
-            i+=1
+        for x,i in enumerate(titulares):
+            print(x+1," - ",i)
     print("0 - Volver al menu anterior ")
     option = input_validation.check_int()
     i = option-1
-    
-        
+    x = len(titulares)
     while option != 0:
-        if i > 5:
-            print(f"{WARNING}Ingrese un entero <5{NORMAL}")
-            time.sleep(1.5)
-            baja(titulares)
-        elif titulares[i] == 0:    
+        if i > x:    
             print(f"{WARNING}Ingrese un titular existente{NORMAL}")
             time.sleep(1.5)
             baja(titulares)
+        elif x == i:
+            titulares[i] == NULL
         else:
-            titulares[i] = titulares[i+1]
-            i+=1
-            print("El titular a sido borrado")
-            option = 0
-            os.system("pause")
-
+            while x < i:
+                titulares[i] = titulares[i+1]
+                i+=1
+            titulares.pop()
+        print("El titular ha sido borrado")
+        option = 0
+        os.system("pause")
 
 def consulta(titulares):
     clear_shell()
-    i = 0
-    if titulares[i] == 0:
+    if titulares == []:
         print("No hay titulares ingresados")
         time.sleep(1.5)
         menu_opciones(titulares)
     else:
         print("La actual lista de titulares es:")
-        while titulares[i] != 0 and i <5:
-            print(i+1," - ",titulares[i])
-            i+=1
+        for x,i in enumerate(titulares):
+            print(x+1," - ",i)
     os.system("pause")
 
 def modificacion(titulares):
     clear_shell()
     i = 0
-    if titulares[i] == 0:
+    if titulares == []:
         print("No hay titulares ingresados")
         time.sleep(1.5)
         menu_opciones(titulares)
     else:
         print("La actual lista de titulares es:")
-        while titulares[i] != 0 and i <5:
-            print(i+1," - ",titulares[i])
-            i+=1
+        for x,i in enumerate(titulares):
+            print(x+1," - ",i)
     print("0 - Volver al menu anterior ")
     option = input_validation.check_int()
     i = option-1
-    
-        
+    x= len(titulares)
     while option != 0:
-        if i > 5:
-            print(f"{WARNING}Ingrese un entero <5{NORMAL}")
-            time.sleep(1.5)
-            modificacion(titulares)
-        elif titulares[i] == 0:    
+        if x > i:    
             print(f"{WARNING}Ingrese un titular existente{NORMAL}")
             time.sleep(1.5)
             modificacion(titulares)
@@ -201,8 +188,6 @@ def modificacion(titulares):
             os.system("pause")
 
     
-
-
 
 def menu_opciones(titulares):
     clear_shell()
