@@ -10,6 +10,7 @@ Integrantes:
 
 if __name__ == "__main__":
     # inicialización de las variables a mostrar
+    titulares = []
     maiz = user_menu.ObjetoMaiz()
     soja = user_menu.ObjetoSoja()
-    user_menu.menu_principal(maiz,soja)
+    user_menu.menu_principal(maiz,soja, titulares)

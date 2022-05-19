@@ -110,14 +110,116 @@ def menu_recepcion(Maiz: ObjetoMaiz, Soja: ObjetoSoja) -> dict:
         option = input_validation.check_int()
     return Maiz,Soja
 
-def menu_opciones():
+def alta(titulares):
+    clear_shell()
+    print("0 - Volver al menu anterior \n1 - Ingresar un nuevo titular")
+    option = input_validation.check_int()
+    i=0
+    while option != 0:
+        if option == 1:
+            if i == 0:
+                titulares.append(input("Ingrese el nombre del titular en cuestión: "))
+                time.sleep(1.5)
+                i = i + 1
+                alta(titulares)
+            elif titulares[i] == 0:
+                titulares.append(input("Ingrese el nombre del titular en cuestión: "))
+                time.sleep(1.5)
+                i = i + 1
+                alta(titulares)
+            else: 
+                i+=1
+                
+        else:
+            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
+            time.sleep
+            (1.5)
+            alta(titulares)
+    menu_opciones(titulares)
+
+def baja(titulares):
+    clear_shell()
+    i = 0
+    if titulares == []:
+        print("No hay titulares ingresados")
+        time.sleep(1.5)
+        menu_opciones(titulares)
+    else:
+        print("La actual lista de titulares es:")
+        for x,i in enumerate(titulares):
+            print(x+1," - ",i)
+    print("0 - Volver al menu anterior ")
+    option = input_validation.check_int()
+    i = option-1
+    x = len(titulares)
+    while option != 0:
+        if i > x:    
+            print(f"{WARNING}Ingrese un titular existente{NORMAL}")
+            time.sleep(1.5)
+            baja(titulares)
+        elif x == i:
+            titulares[i] == NULL
+        else:
+            while x < i:
+                titulares[i] = titulares[i+1]
+                i+=1
+            titulares.pop()
+        print("El titular ha sido borrado")
+        option = 0
+        os.system("pause")
+
+def consulta(titulares):
+    clear_shell()
+    if titulares == []:
+        print("No hay titulares ingresados")
+        time.sleep(1.5)
+        menu_opciones(titulares)
+    else:
+        print("La actual lista de titulares es:")
+        for x,i in enumerate(titulares):
+            print(x+1," - ",i)
+    os.system("pause")
+
+def modificacion(titulares):
+    clear_shell()
+    i = 0
+    if titulares == []:
+        print("No hay titulares ingresados")
+        time.sleep(1.5)
+        menu_opciones(titulares)
+    else:
+        print("La actual lista de titulares es:")
+        for x,i in enumerate(titulares):
+            print(x+1," - ",i)
+    print("0 - Volver al menu anterior ")
+    option = input_validation.check_int()
+    i = option-1
+    x= len(titulares)
+    while option != 0:
+        if x > i:    
+            print(f"{WARNING}Ingrese un titular existente{NORMAL}")
+            time.sleep(1.5)
+            modificacion(titulares)
+        else:
+            titulares[i] = input("Ingrese el nombre del nuevo titular: ")
+            print("El titular ha sido modificado")
+            option = 0
+            os.system("pause")
+    
+def menu_opciones(titulares):
     clear_shell()
 
     print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
     option = input_validation.check_int()
     while option != 0:
-        if 1 <= option <= 4:
-            print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
+        if 1 == option:
+            alta(titulares)
+        elif 2 == option:
+            baja(titulares)
+        elif option == 3:
+            consulta(titulares)
+        elif option == 4:
+            modificacion(titulares)
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(1.5)
@@ -125,14 +227,14 @@ def menu_opciones():
         print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
         option = input_validation.check_int()
 
-def menu_administraciones():
+def menu_administraciones(titulares):
     clear_shell()
     
     print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
     option = input_validation.check_int()
     while option != 0:
         if option == 1 :
-            menu_opciones()
+            menu_opciones(titulares)
         elif 1 < option < 8:
             print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         else:
@@ -142,7 +244,7 @@ def menu_administraciones():
         print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
         option = input_validation.check_int()
 
-def menu_principal(Maiz: ObjetoMaiz, Soja: ObjetoSoja):
+def menu_principal(Maiz: ObjetoMaiz, Soja: ObjetoSoja,titulares):
     clear_shell()
 
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
@@ -152,7 +254,7 @@ def menu_principal(Maiz: ObjetoMaiz, Soja: ObjetoSoja):
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         else:
             if option == 1:
-                menu_administraciones()
+                menu_administraciones(titulares)
             elif option == 3:
                 menu_recepcion(Maiz,Soja)
             elif option == 8:
