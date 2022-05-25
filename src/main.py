@@ -14,3 +14,4 @@ if __name__ == "__main__":
     maiz = user_menu.ObjetoMaiz()
     soja = user_menu.ObjetoSoja()
     user_menu.menu_principal(maiz,soja, titulares)
+    user_menu.clear_shell()
