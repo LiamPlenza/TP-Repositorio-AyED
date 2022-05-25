@@ -16,8 +16,8 @@ class ObjetoMaiz:
             self.pesoMenor = pesoNeto
             self.patMenor = patente
 
-    def mostrar_datos(self):
-        return f"La cantidad de camiones de soja es: {self.camiones}\nEl peso neto total correspondiente a la soja es: {self.pesoNeto}\nEl promedio del peso neto correspondiente a la soja por camión es: {self.promPesoNeto}\nLa patente correspondiente al camión que más soja descargo es: {self.patMenor}"
+    def get_data(self):
+        return self.camiones, self.pesoNeto, self.pesoMenor, self.promPesoNeto, self.patMenor
 
 class ObjetoSoja:
     def __init__(self):
@@ -33,8 +33,8 @@ class ObjetoSoja:
             self.pesoMayor = pesoNeto#pesoNeto
             self.patMayor = patente#patente
 
-    def mostrar_datos(self):
-        return f"La cantidad de camiones de soja es: {self.camiones}\nEl peso neto total correspondiente a la soja es: {self.pesoNeto}\nEl promedio del peso neto correspondiente a la soja por camión es: {self.promPesoNeto}\nLa patente correspondiente al camión que más soja descargo es: {self.patMayor}"
+    def get_data(self):
+        return self.camiones, self.pesoNeto, self.pesoMayor, self.promPesoNeto, self.patMayor
 
 # para determinar el sistema operativo donde se ejecuta el programa y limpiar la consola
 def clear_shell():
@@ -53,13 +53,19 @@ def menu_reportes(Maiz: ObjetoMaiz, Soja: ObjetoSoja):
             if Maiz.camiones == Soja.camiones == 0: # en caso de que no se hayan ingresado camiones aún
                 print(f"{WARNING}Todavía no ingreso ningun camión{NORMAL}")
             else: 
-                print(f"------------------------------\nLa cantidad total de camiones es: {Maiz.camiones+Soja.camiones}\n------------------------------\n")
-                if Maiz.camiones == 0:
-                    print(f"{Soja.mostrar_datos()}\n------------------------------\nNo se han ingresado camiones de Maiz...\n------------------------------")
-                elif Soja.camiones == 0: 
-                    print(f"{Maiz.mostrar_datos()}\n------------------------------\nNo se han ingresado camiones de Soja...\n------------------------------")
-                else:
-                    print(f"{Soja.mostrar_datos()}\n------------------------------\n{Maiz.mostrar_datos()}")
+                print(f"------------------------------\nLa cantidad total de camiones es: {Maiz.camiones+Soja.camiones}")
+                
+                print("*------------------------------------------------------------------------------------------------*")
+                print("|{:^28}|{:^20}|{:^20}|{:^25}|".format("TOTAL DE CAMIONES DE SOJA", "PESO NETO TOTAL", "PROMEDIO PESO NETO", "CAMIÓN QUE MÁS DESCARGÓ"))
+                print("*------------------------------------------------------------------------------------------------*")
+                print("|{:^28}|{:^20}|{:^20}|{:^25}|".format(Soja.get_data()[0], Soja.get_data()[1], Soja.get_data()[2], Soja.get_data()[3], Soja.get_data()[4]))
+                print("*------------------------------------------------------------------------------------------------*")
+                
+                print("*------------------------------------------------------------------------------------------------*")
+                print("|{:^28}|{:^20}|{:^20}|{:^25}|".format("TOTAL DE CAMIONES DE MAIZ", "PESO NETO TOTAL", "PROMEDIO PESO NETO", "CAMIÓN QUE MENOS DESCARGÓ"))
+                print("*------------------------------------------------------------------------------------------------*")
+                print("|{:^28}|{:^20}|{:^20}|{:^25}|".format(Maiz.get_data()[0], Maiz.get_data()[1], Maiz.get_data()[2], Maiz.get_data()[3], Maiz.get_data()[4]))
+                print("*------------------------------------------------------------------------------------------------*")
                 input("Precione una tecla para continuar... ")
         else:
             print(f"{WARNING}Ingrese una opcion válida{NORMAL}")
