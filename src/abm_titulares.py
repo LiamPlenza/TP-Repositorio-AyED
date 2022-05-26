@@ -26,11 +26,11 @@ def consulta(titulares):
         print(f"{WARNING}No hay titulares ingresados{NORMAL}")
         time.sleep(1.5)
     else:
-        print("La actual lista de titulares es:\n*----------------------------*")
+        print("La actual lista de titulares es:\n*-------------------------------*")
         for indice, titular in enumerate(titulares):
-            print("|{:^3}| {:22} |".format(indice+1, titular))
-        print("*----------------------------*")
-        input("Precione una tecla para continuar... ")
+            print("|{:^3}| {:25} |".format(indice+1, titular))
+        print("| 0 | Volver al menu anterior   |\n*-------------------------------*")
+        input("Precione enter para continuar... ")
     #os.system("pause")
 
 def baja(titulares):
@@ -40,7 +40,6 @@ def baja(titulares):
         consulta(titulares)
     else:
         consulta(titulares)
-        print("\n0 - Volver al menu anterior")
         option = input_validation.check_int()
 
         while option != 0:
@@ -56,7 +55,6 @@ def baja(titulares):
                     option = 0
                 else:
                     consulta(titulares)
-                    print("\n0 - Volver al menu anterior")
                     option = input_validation.check_int()
 
 
@@ -67,7 +65,6 @@ def modificacion(titulares):
         consulta(titulares)
     else:
         consulta(titulares)
-        print("\n0 - Volver al menu anterior")
         option = input_validation.check_int()
     
         while option != 0:
@@ -79,5 +76,4 @@ def modificacion(titulares):
                 print(f"{SUCCESS}El titular {option} ha sido actualizado{NORMAL}")
                 time.sleep(1)
                 consulta(titulares)
-                print("\n0 - Volver al menu anterior")
                 option = input_validation.check_int()
