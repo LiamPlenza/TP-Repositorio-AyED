@@ -1,14 +1,21 @@
 import os, time, abm_titulares, input_validation
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
-
 class ObjetoMaiz:
     def __init__(self):
         self.camiones = self.pesoNeto = self.pesoMenor = self.promPesoNeto = 0
         self.patMenor = ""
+    def actualizar_datos(self, patente, pesoNeto):
+        self.camiones += 1
+        self.pesoNeto += pesoNeto
+        self.promPesoNeto = self.pesoNeto / self.camiones
+        
+        if self.camiones == 0 or pesoNeto < self.pesoMenor:
+            self.pesoMenor = pesoNeto
+            self.patMenor = patente
 
-def get_data(self):
-        return self.camiones, self.pesoNeto, self.pesoMenor, self.promPesoNeto, self.patMenor
+    def get_data(self):
+        return self.camiones, self.pesoNeto, self.promPesoNeto, self.patMenor
 
 class ObjetoSoja:
     def __init__(self):
@@ -24,7 +31,7 @@ class ObjetoSoja:
             self.patMayor = patente#patente
 
     def get_data(self):
-        return self.camiones, self.pesoNeto, self.pesoMayor, self.promPesoNeto, self.patMayor
+        return self.camiones, self.pesoNeto, self.promPesoNeto, self.patMayor
 
 # para determinar el sistema operativo donde se ejecuta el programa y limpiar la consola
 def clear_shell():
@@ -32,10 +39,9 @@ def clear_shell():
         return os.system("cls")
     else:
         return os.system("clear")
-
-        
 def menu_reportes(Maiz: ObjetoMaiz, Soja: ObjetoSoja):
     clear_shell()
+
     print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
     option = input_validation.check_int()
     while option != 0:
@@ -48,13 +54,13 @@ def menu_reportes(Maiz: ObjetoMaiz, Soja: ObjetoSoja):
                 print("*------------------------------------------------------------------------------------------------*")
                 print("|{:^28}|{:^20}|{:^20}|{:^25}|".format("TOTAL DE CAMIONES DE SOJA", "PESO NETO TOTAL", "PROMEDIO PESO NETO", "CAMIÓN QUE MÁS DESCARGÓ"))
                 print("*------------------------------------------------------------------------------------------------*")
-                print("|{:^28}|{:^20}|{:^20}|{:^25}|".format(Soja.get_data()[0], Soja.get_data()[1], Soja.get_data()[2], Soja.get_data()[3], Soja.get_data()[4]))
+                print("|{:^28}|{:^20}|{:^20}|{:^25}|".format(Soja.get_data()[0], Soja.get_data()[1], Soja.get_data()[2], Soja.get_data()[3]))
                 print("*------------------------------------------------------------------------------------------------*")
 
                 print("*------------------------------------------------------------------------------------------------*")
                 print("|{:^28}|{:^20}|{:^20}|{:^25}|".format("TOTAL DE CAMIONES DE MAIZ", "PESO NETO TOTAL", "PROMEDIO PESO NETO", "CAMIÓN QUE MENOS DESCARGÓ"))
                 print("*------------------------------------------------------------------------------------------------*")
-                print("|{:^28}|{:^20}|{:^20}|{:^25}|".format(Maiz.get_data()[0], Maiz.get_data()[1], Maiz.get_data()[2], Maiz.get_data()[3], Maiz.get_data()[4]))
+                print("|{:^28}|{:^20}|{:^20}|{:^25}|".format(Maiz.get_data()[0], Maiz.get_data()[1], Maiz.get_data()[2], Maiz.get_data()[3]))
                 print("*------------------------------------------------------------------------------------------------*")
                 input("Precione una tecla para continuar... ")
         else:
@@ -63,11 +69,9 @@ def menu_reportes(Maiz: ObjetoMaiz, Soja: ObjetoSoja):
         clear_shell()
         print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
         option = input_validation.check_int()
-
 def ingreso_de_datos(Maiz: ObjetoMaiz, Soja: ObjetoSoja): 
     clear_shell()
     tipoCamion = input("Ingrese si el camion contiene Soja o Maíz: ").upper()
-
     while tipoCamion not in ["SOJA", "S", "MAIZ", "MAÍZ", "M"]:
             print(f"{WARNING}Ingrese un Proucto valido{NORMAL}")
             tipoCamion = input("Ingrese si el camion contiene Soja o Maíz: ").upper()
@@ -88,10 +92,8 @@ def ingreso_de_datos(Maiz: ObjetoMaiz, Soja: ObjetoSoja):
     else:
         Maiz.actualizar_datos(patCamion, pesoNeto= pesoBruto - tara)
     time.sleep(1.5)
-
 def menu_recepcion(Maiz: ObjetoMaiz, Soja: ObjetoSoja) -> dict:
     clear_shell()
-
     print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
     option = input_validation.check_int()
     while option != 0:
@@ -104,10 +106,8 @@ def menu_recepcion(Maiz: ObjetoMaiz, Soja: ObjetoSoja) -> dict:
         print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
         option = input_validation.check_int()
     return Maiz,Soja
-
 def menu_opciones(titulares):
     clear_shell()
-
     print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
     option = input_validation.check_int()
     while option != 0:
@@ -125,7 +125,6 @@ def menu_opciones(titulares):
         clear_shell()
         print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
         option = input_validation.check_int()
-
 def menu_administraciones(titulares):
     clear_shell()
     
@@ -142,10 +141,8 @@ def menu_administraciones(titulares):
         clear_shell()
         print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
         option = input_validation.check_int()
-
 def menu_principal(Maiz: ObjetoMaiz, Soja: ObjetoSoja,titulares):
     clear_shell()
-
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
     option = input_validation.check_int()
     while option != 0:
