@@ -44,6 +44,8 @@ def alta(productos):
                     time.sleep(1.5)
             else:
                 print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
+                option = input_validation_TP2.check_int()
+
 
 def consulta(productos):
     user_menu_TP2.clear_shell()    
@@ -62,34 +64,29 @@ def consulta(productos):
 
 def baja(productos):
     user_menu_TP2.clear_shell()
-
-    if productos[0] == 0:
+    if productos[0] == "":
         print(f"{WARNING}No hay productos ingresados{NORMAL}")
         time.sleep(1.5)
     else: 
         consulta(productos)# como la lista no está vacía, llamo a consulta para que la imprima
-        print("\n0- Volver al menu anterior\nIngrese el option del producto que desea eliminar: ")
         option = input_validation_TP2.check_int()
         
         while option != 0:
-            if option not in [x for x in range(1, len(productos)+1)]: # me fijo si la opcion seleccionada NO está en una lista [1...opcion] 
+            while 0 > option or option > 4 or productos[option-1] == "": # me fijo si la opcion no esta en el rango o si la opcion esta vacia
                 print(f"{WARNING}Ingrese un producto existente{NORMAL}") 
                 option = input_validation_TP2.check_int()
             else:
-                if productos[option-1] == 0:
-                    print(f"{WARNING}Ingrese una opción que no esté vacia{NORMAL}")
-                    option = input_validation_TP2.check_int()
-                else:
+                    option -= 1
                     if option == 2:
                         productos[option] = ""
                     elif option == 0:
                         productos[option] = productos[option + 1]
                         productos[option + 1] = productos[option + 2]
-                        productos[option + 2] = 0
+                        productos[option + 2] = ""
                     else:
                         productos[option] = productos[option + 1]
                         productos[option + 1] = ""
-                    print(f"{SUCCESS}El titular ha sido eliminado{NORMAL}")
+                    print(f"{SUCCESS}El producto ha sido eliminado{NORMAL}")
 
                     time.sleep(1.5)
                     
