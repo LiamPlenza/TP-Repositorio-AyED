@@ -29,7 +29,9 @@ def check_int()-> int:
             print(f"{WARNING}Ingrese un valor numérico valido{NORMAL}")
             
 #valido que el producto ingresado este entre las opciones dadas
-def check_producto(producto: str):
-    while producto not in ["Trigo", "trigo", "Soja", "soja", "Maíz", "maíz", "Maiz", "maiz"]:
+def check_producto(producto: str) -> str:
+    while producto not in ["TRIGO", "SOJA", "MAIZ", "CEBADA", "ARROZ"]:
         print(f"{WARNING}Ingrese una opción valida{NORMAL}")
         producto = input("(Las opciones valida de producto son: Trigo, Soja, Maíz)\nIngrese un producto: ")
+    
+    return producto

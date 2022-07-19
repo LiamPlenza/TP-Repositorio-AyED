@@ -7,8 +7,6 @@ Integrantes:
     Liam Nahuel Plenza - Comisión 104
     Tomas Joel Wardoloff - Comisión 108
 """
-print("NEWELLS")
-
 if __name__ == "__main__":
     # inicialización de las variables a mostrar
     #dict_data = {"camionesMaiz": 0,"pesoNetoMaiz": 0, "pesoMenorMaiz": 0, "camionesSoja": 0, "pesoNetoSoja": 0, "pesoMayorSoja": 0, "promPesoNetoS": 0, "promPesoNetoM": 0, "patMayorSoja": "", "patMenorMaiz": ""}
@@ -19,7 +17,7 @@ if __name__ == "__main__":
         promPesoNetoM = 0
         patMenorMaiz = ""
 
-    productos = [0] * 5
+    productos = [""] * 3
 
     class Soja:
         camionesSoja = 0
