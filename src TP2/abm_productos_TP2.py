@@ -87,8 +87,16 @@ def baja(productos):
                         productos[option] = productos[option + 1]
                         productos[option + 1] = ""
                     print(f"{SUCCESS}El producto ha sido eliminado{NORMAL}")
-
                     time.sleep(1.5)
+                    if productos[0] == "":
+                        print(f"{WARNING}No hay más productos ingresados. Volverá al menu anterior.{NORMAL}")
+                        time.sleep(1.5)
+                        option = 0
+                    else: 
+                        user_menu_TP2.clear_shell()
+                        consulta(productos)# como la lista no está vacía, llamo a consulta para que la imprima
+                        option = input_validation_TP2.check_int()
+    
                     
 def modificacion(productos):
     user_menu_TP2.clear_shell()
