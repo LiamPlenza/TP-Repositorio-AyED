@@ -1,4 +1,4 @@
-import os, time, user_menu
+import os, time, user_menu_TP2
 """
 Trabajo Práctico N1 - Algoritmos y Estructura de Datos - Ingeniería en Sistemas - UTN
 Integrantes:
@@ -7,6 +7,7 @@ Integrantes:
     Liam Nahuel Plenza - Comisión 104
     Tomas Joel Wardoloff - Comisión 108
 """
+print("NEWELLS")
 
 if __name__ == "__main__":
     # inicialización de las variables a mostrar
@@ -18,7 +19,7 @@ if __name__ == "__main__":
         promPesoNetoM = 0
         patMenorMaiz = ""
 
-    titulares= [0] * 5
+    productos = [0] * 5
 
     class Soja:
         camionesSoja = 0
@@ -26,4 +27,4 @@ if __name__ == "__main__":
         pesoMayorSoja = 0
         promPesoNetoS = 0
         patMenorSoja = ""
-    user_menu.menu_principal(Maiz,Soja,titulares)
+    user_menu_TP2.menu_principal(Maiz,Soja,productos)

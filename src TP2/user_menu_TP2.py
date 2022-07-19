@@ -1,4 +1,4 @@
-import os, time, input_validation
+import os, time, input_validation_TP2 , abm_productos_TP2, main_TP2
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
 
@@ -25,7 +25,7 @@ def menu_reportes(Maiz,Soja):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
 
-    option = input_validation.check_int()
+    option = input_validation_TP2.check_int()
     while option != 0:
         if option == 1:
             if Maiz.camionesMaiz == Soja.camionesSoja == 0: # en caso de que no se hayan ingresado camiones aún
@@ -35,8 +35,9 @@ def menu_reportes(Maiz,Soja):
         else:
             print(f"{WARNING}Ingrese una opcion válida{NORMAL}")
         time.sleep(1.5)
-        option = 0
-        menu_reportes(Maiz,Soja)
+        clear_shell()
+        print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
+        option = input_validation_TP2.check_int()
 
 def guardar_datos(Maiz,Soja , tipoCamion: str, patCamion: str, pesoNeto: float):
     if tipoCamion in ["S","SOJA"]:
@@ -57,200 +58,88 @@ def guardar_datos(Maiz,Soja , tipoCamion: str, patCamion: str, pesoNeto: float):
 def ingreso_de_datos(Maiz,Soja): 
     clear_shell()
     tipoCamion = input("Ingrese si el camion contiene Soja o Maíz: ").upper()
-
-    if tipoCamion in ["SOJA", "S", "MAIZ", "MAÍZ", "M"]:
-        patCamion = input_validation.check_pat()
-        pesoBruto = input_validation.check_float(mensaje="Ingrese el peso bruto del camión en kilogramos: ")
-        while pesoBruto <= 0 or pesoBruto > 52500: 
-            pesoBruto = input_validation.check_float(mensaje=f"{WARNING}El peso bruto del camión es incorrecto{NORMAL}\nIngrese el peso bruto en kilogramos en kilogramos (debe ser un num positivo menor a 52500): ")
-
-        tara = input_validation.check_float(mensaje="Ingrese la tara del camión en kilogramos: ")
-        while tara < 0 or tara > pesoBruto:
-            tara = input_validation.check_float(mensaje=f"{WARNING}La tara del camión es incorrecta{NORMAL}\nIngrese la tara del camión en kilogramos (debe ser un num positivo menor al peso bruto): ")
-        
-        print("El peso neto del camión ingresado es: ",pesoBruto - tara)
-        guardar_datos(Maiz,Soja, tipoCamion, patCamion, pesoNeto = pesoBruto - tara)
-        time.sleep(1.5)
-    else:
-        print("Ingrese un Proucto valido")
+    while tipoCamion not in ["SOJA", "S", "MAIZ", "MAÍZ", "M"]:
+        tipoCamion = input("Ingrese un Proucto valido").upper()
         time.sleep(2)
-        ingreso_de_datos(Maiz,Soja)
+
+    patCamion = input_validation_TP2.check_pat()
+    pesoBruto = input_validation_TP2.check_float(mensaje="Ingrese el peso bruto del camión en kilogramos: ")
+    while pesoBruto <= 0 or pesoBruto > 52500: 
+        pesoBruto = input_validation_TP2.check_float(mensaje=f"{WARNING}El peso bruto del camión es incorrecto{NORMAL}\nIngrese el peso bruto en kilogramos en kilogramos (debe ser un num positivo menor a 52500): ")
+
+    tara = input_validation_TP2.check_float(mensaje="Ingrese la tara del camión en kilogramos: ")
+    while tara < 0 or tara > pesoBruto:
+        tara = input_validation_TP2.check_float(mensaje=f"{WARNING}La tara del camión es incorrecta{NORMAL}\nIngrese la tara del camión en kilogramos (debe ser un num positivo menor al peso bruto): ")
+            
+    print("El peso neto del camión ingresado es: ",pesoBruto - tara)
+    guardar_datos(Maiz,Soja, tipoCamion, patCamion, pesoNeto = pesoBruto - tara)
+    time.sleep(1.5)
+      
 
 def menu_recepcion(Maiz,Soja) -> dict:
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
     
-    option = input_validation.check_int()
+    option = input_validation_TP2.check_int()
     while option != 0:
         if option == 1:
             ingreso_de_datos(Maiz,Soja)
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
-        time.sleep(1)
-        option = 0
-        menu_recepcion(Maiz,Soja)
+        time.sleep(1.5)
+        clear_shell()
+        print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
+        option = input_validation_TP2.check_int()
     return Maiz,Soja
 
-def alta(titulares):
-    clear_shell()
-    print("0 - Volver al menu anterior \n1 - Ingresar un nuevo titular")
-
-    option = input_validation.check_int()
-    i=0
-    while option != 0:
-        if option == 1:
-            while i < 5:
-                if titulares[i] == 0:
-                    titulares[i] = input("Ingrese el nombre del titular en cuestión: ")
-                    time.sleep(1.5)
-                    i = i + 1
-                    alta(titulares)
-                else: 
-                    i+=1
-                
-                if titulares [4] != 0:
-                    print("Se ha alcanzado la cantidad maxima de titulares (5) ")
-                    os.system("pause")
-                    menu_opciones(titulares)
-        else:
-            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
-            time.sleep
-            (1.5)
-            alta(titulares)
-    menu_opciones(titulares)
-
-
-def baja(titulares):
-    clear_shell()
-    i = 0
-    if titulares[i] == 0:
-        print("No hay titulares ingresados")
-        time.sleep(1.5)
-        menu_opciones(titulares)
-    else:
-        print("La actual lista de titulares es:")
-        while titulares[i] != 0 and i <5:
-            print(i+1," - ",titulares[i])
-            i+=1
-    print("0 - Volver al menu anterior ")
-    option = input_validation.check_int()
-    i = option-1
-    
-        
-    while option != 0:
-        if i > 5:
-            print(f"{WARNING}Ingrese un entero <5{NORMAL}")
-            time.sleep(1.5)
-            baja(titulares)
-        elif titulares[i] == 0:    
-            print(f"{WARNING}Ingrese un titular existente{NORMAL}")
-            time.sleep(1.5)
-            baja(titulares)
-        else:
-            titulares[i] = titulares[i+1]
-            i+=1
-            print("El titular a sido borrado")
-            option = 0
-            os.system("pause")
-
-
-def consulta(titulares):
-    clear_shell()
-    i = 0
-    if titulares[i] == 0:
-        print("No hay titulares ingresados")
-        time.sleep(1.5)
-        menu_opciones(titulares)
-    else:
-        print("La actual lista de titulares es:")
-        while titulares[i] != 0 and i <5:
-            print(i+1," - ",titulares[i])
-            i+=1
-    os.system("pause")
-
-def modificacion(titulares):
-    clear_shell()
-    i = 0
-    if titulares[i] == 0:
-        print("No hay titulares ingresados")
-        time.sleep(1.5)
-        menu_opciones(titulares)
-    else:
-        print("La actual lista de titulares es:")
-        while titulares[i] != 0 and i <5:
-            print(i+1," - ",titulares[i])
-            i+=1
-    print("0 - Volver al menu anterior ")
-    option = input_validation.check_int()
-    i = option-1
-    
-        
-    while option != 0:
-        if i > 5:
-            print(f"{WARNING}Ingrese un entero <5{NORMAL}")
-            time.sleep(1.5)
-            modificacion(titulares)
-        elif titulares[i] == 0:    
-            print(f"{WARNING}Ingrese un titular existente{NORMAL}")
-            time.sleep(1.5)
-            modificacion(titulares)
-        else:
-            titulares[i] = input("Ingrese el nombre del nuevo titular: ")
-            print("El titular ha sido modificado")
-            option = 0
-            os.system("pause")
-
-    
-
-
-
-def menu_opciones(titulares):
+def menu_opciones(productos):
     clear_shell()
     print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
-    
-    option = input_validation.check_int()
+    option = input_validation_TP2.check_int()
     while option != 0:
         if 1 == option:
-            alta(titulares)
+            abm_productos_TP2.alta(productos)
         elif 2 == option:
-            baja(titulares)
+            abm_productos_TP2.baja(productos)
         elif option == 3:
-            consulta(titulares)
+            abm_productos_TP2.consulta(productos)
         elif option == 4:
-            modificacion(titulares)
+            abm_productos_TP2.modificacion(productos)
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(1.5)
-        option = 0
-        menu_opciones(titulares)
+        clear_shell()
+        print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
+        option = input_validation_TP2.check_int()
 
-def menu_administraciones(titulares):
+def menu_administraciones(productos):
     clear_shell()
     print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
     
-    option = input_validation.check_int()
+    option = input_validation_TP2.check_int()
     while option != 0:
-        if option == 1 :
-            menu_opciones(titulares)
-        elif 1 < option < 8:
+        if option == 2:
+            menu_opciones(productos)
+        elif 1 == option or 2 < option < 8:
             print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
-        option = 0 
         time.sleep(1.5)
-        menu_administraciones(titulares)
+        clear_shell()
+        print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
+        option = input_validation_TP2.check_int()
 
-def menu_principal(Maiz,Soja,titulares):
+def menu_principal(Maiz,Soja,productos):
     clear_shell()
 
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
-    option = input_validation.check_int()
+    option = input_validation_TP2.check_int()
     while option != 0:
         if option < 1 or option > 8:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         else:
             if option == 1:
-                menu_administraciones(titulares)
+                menu_administraciones(productos)
             elif option == 3:
                 menu_recepcion(Maiz,Soja)
             elif option == 8:
@@ -258,6 +147,7 @@ def menu_principal(Maiz,Soja,titulares):
             else:
                 clear_shell()
                 print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
-        option = 0 
         time.sleep(1.5)
-        menu_principal(Maiz,Soja) 
+        clear_shell()
+        print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
+        option = input_validation_TP2.check_int()
