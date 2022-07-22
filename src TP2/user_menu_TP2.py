@@ -102,28 +102,34 @@ def registro_tara(pesos: list, estado: list, tara: list):
     else:
         print(f"{WARNING}El camión no tiene asignado un cupo válido{NORMAL}")
 
-def mostrar_reporte(Maiz,Soja):
+def mostrar_reporte(Maiz,Soja,cant_cupos_otorgados):
     if Maiz.camionesMaiz == 0:
-        print("------------------------------\nLa cantidad total de camiones es: ",Soja.camionesSoja,"\nLa cantidad de camiones de soja es: ",Soja.camionesSoja,"\nEl peso neto total correspondiente a la soja es: ",Soja.pesoNetoSoja,"\nEl promedio del peso neto correspondiente a la soja por camión es: ",Soja.promPesoNetoS,"\nLa patente correspondiente al camión que más soja descargo es:",Soja.patMayorSoja)
-        print("------------------------------\nNo se han ingresado camiones de Maiz...\n------------------------------")
+        print("------------------------------\nLa cantidad de cupos otorgados es: ", cant_cupos_otorgados, "La cantidad total de camiones es: ",Soja.camionesSoja,"\nLa cantidad de camiones de soja es: ",Soja.camionesSoja,"\nEl peso neto total correspondiente a la soja es: ",Soja.pesoNetoSoja,"\nEl promedio del peso neto correspondiente a la soja por camión es: ",Soja.promPesoNetoS,"\nLa patente correspondiente al camión que más soja descargo es:",Soja.patMayorSoja)
+        print("------------------------------\nLa cantidad de cupos otorgados es: ", cant_cupos_otorgados, "No se han ingresado camiones de Maiz...\n------------------------------")
     elif Soja.camionesSoja == 0:
-        print("------------------------------\nLa cantidad total de camiones es: ",Maiz.camionesMaiz,"\nLa cantidad de camiones de maiz es: ",Maiz.camionesMaiz,"\nEl peso neto total correspondiente al maiz es: ",Maiz.pesoNetoMaiz,"\nEl promedio del peso neto correspondiente al maíz por camión es: ",Maiz.promPesoNetoM,"\nLa patente correspondiente al camión que menos maíz descargo es: ",Maiz.patMenorMaiz)
-        print("------------------------------\nNo se han ingresado camiones de Soja...\n------------------------------")
+        print("------------------------------\nLa cantidad de cupos otorgados es: ", cant_cupos_otorgados, "La cantidad total de camiones es: ",Maiz.camionesMaiz,"\nLa cantidad de camiones de maiz es: ",Maiz.camionesMaiz,"\nEl peso neto total correspondiente al maiz es: ",Maiz.pesoNetoMaiz,"\nEl promedio del peso neto correspondiente al maíz por camión es: ",Maiz.promPesoNetoM,"\nLa patente correspondiente al camión que menos maíz descargo es: ",Maiz.patMenorMaiz)
+        print("------------------------------\nLa cantidad de cupos otorgados es: ", cant_cupos_otorgados, "No se han ingresado camiones de Soja...\n------------------------------")
     else:
-        print("------------------------------\nLa cantidad total de camiones es: ", Soja.camionesSoja+Maiz.camionesMaiz,"\nLa cantidad de camiones de maiz es: ",Maiz.camionesMaiz,"\nLa cantidad de camiones de soja es: ",Soja.camionesSoja,"\nEl peso neto total correspondiente al maiz es: ",Maiz.pesoNetoMaiz,"\nEl peso neto total correspondiente a la soja es: ",Soja.pesoNetoSoja,"\nEl promedio del peso neto correspondiente al maíz por camión es: ",Maiz.promPesoNetoM,"\nEl promedio del peso neto correspondiente a la soja por camión es: ",Soja.promPesoNetoS,"\nLa patente correspondiente al camión que menos maíz descargo es: ",Maiz.patMenorMaiz,"\nLa patente correspondiente al camión que más soja descargo es: ",Soja.patMayorSoja)
+        print("------------------------------\nLa cantidad de cupos otorgados es: ", cant_cupos_otorgados, "La cantidad total de camiones es: ", Soja.camionesSoja+Maiz.camionesMaiz,"\nLa cantidad de camiones de maiz es: ",Maiz.camionesMaiz,"\nLa cantidad de camiones de soja es: ",Soja.camionesSoja,"\nEl peso neto total correspondiente al maiz es: ",Maiz.pesoNetoMaiz,"\nEl peso neto total correspondiente a la soja es: ",Soja.pesoNetoSoja,"\nEl promedio del peso neto correspondiente al maíz por camión es: ",Maiz.promPesoNetoM,"\nEl promedio del peso neto correspondiente a la soja por camión es: ",Soja.promPesoNetoS,"\nLa patente correspondiente al camión que menos maíz descargo es: ",Maiz.patMenorMaiz,"\nLa patente correspondiente al camión que más soja descargo es: ",Soja.patMayorSoja)
     input("Precione una tecla para continuar... ")
 
-def menu_reportes(Maiz,Soja):
+def menu_reportes(Maiz,Soja,cupos):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
+    i = 0
 
     option = input_validation_TP2.check_int()
     while option != 0:
         if option == 1:
-            if Maiz.camionesMaiz == Soja.camionesSoja == 0: # en caso de que no se hayan ingresado camiones aún
-                print(f"{WARNING}Todavía no ingreso ningun camión{NORMAL}")
+            if cupos[0] != 0:
+                while cupos[i] != "":
+                    i= i+1
+                if Maiz.camionesMaiz == Soja.camionesSoja == 0: # en caso de que no se hayan ingresado camiones aún
+                    print(f"{WARNING}Todavía no ingreso ningun camión{NORMAL}")
+                else:
+                    mostrar_reporte(Maiz,Soja,i)
             else:
-                mostrar_reporte(Maiz,Soja)
+                print("Todavia no hay camiones con cupos asignados")
         else:
             print(f"{WARNING}Ingrese una opcion válida{NORMAL}")
         time.sleep(1.5)
