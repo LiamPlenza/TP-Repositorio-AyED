@@ -1,4 +1,4 @@
-import os, time, user_menu_TP2
+import user_menu_TP2
 """
 Trabajo Práctico N1 - Algoritmos y Estructura de Datos - Ingeniería en Sistemas - UTN
 Integrantes:
@@ -8,21 +8,8 @@ Integrantes:
     Tomas Joel Wardoloff - Comisión 108
 """
 if __name__ == "__main__":
-    # inicialización de las variables a mostrar
-    #dict_data = {"camionesMaiz": 0,"pesoNetoMaiz": 0, "pesoMenorMaiz": 0, "camionesSoja": 0, "pesoNetoSoja": 0, "pesoMayorSoja": 0, "promPesoNetoS": 0, "promPesoNetoM": 0, "patMayorSoja": "", "patMenorMaiz": ""}
-    class Maiz:
-        camionesMaiz = 0
-        pesoNetoMaiz = 0
-        pesoMenorMaiz = 0
-        promPesoNetoM = 0
-        patMenorMaiz = ""
-
+    identificador = pesos = tara = [0]*8
+    cupos = estado = [""]*8
     productos = [""] * 3
 
-    class Soja:
-        camionesSoja = 0
-        pesoNetoSoja = 0
-        pesoMayorSoja = 0
-        promPesoNetoS = 0
-        patMenorSoja = ""
-    user_menu_TP2.menu_principal(Maiz,Soja,productos)
+    user_menu_TP2.menu_principal(productos, cupos, identificador, pesos, estado, tara)
