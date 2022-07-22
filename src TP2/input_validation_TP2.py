@@ -36,25 +36,12 @@ def check_producto() -> str:
         producto = input("(Las opciones valida de producto son: Cebada, Arroz, Trigo, Soja, Maíz)\nIngrese un producto: ").upper()
     return producto
 
-"""
-    Devuelve una tupla (Bool, int)
-    
-    Verifica si la patente se encuentra dentro del array cupos.
-    Consultar si es valido el uso de metodos como index, en lugar
-    de utilizar ciclos while.
-    Seguramente no...XD
-    
-    Codigo en caso de que no se pueda utilizar:
-        indice = 0
-        while indice < len(cupos):
-            if patente == cupos[indice]:
-                return True, indice
-            else:
-                indice + =1
-        return False, 0
-"""
+#valido si la patente se encuentra dentro del array cupos, es decir, que haya pedido un cupo previamente
 def check_cupo_valido(cupos: list, patente: str):
-    clear_shell()
-    if patente in cupos:
-        return True, cupos.index(patente)
+    indice = 0
+    while indice < len(cupos):
+        if cupos[indice] == patente:
+            return True, indice
+        else:
+            indice += 1
     return False, 0
