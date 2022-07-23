@@ -1,8 +1,7 @@
-import os, time, input_validation_TP2 , abm_productos_TP2, main_TP2
+import os, time, input_validation_TP2, abm_productos_TP2
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
 SUCCESS = '\033[1;32m'
-
 
 # para determinar el sistema operativo donde se ejecuta el programa y limpiar la consola
 def clear_shell():
@@ -49,10 +48,12 @@ def entrega_de_cupos(cupos: list, identificador: list, estado: list):
         option = input_validation_TP2.check_int()   
 
 """
+
     Hacemos corresponder el indice de la patente en cupos con el peso bruto
     *--------------------*       *---------------* 
     | peso bruto[indice] |  -->  | cupos[indice] |
     *--------------------*       *---------------* 
+
 """
 def registro_peso_bruto(pesos: list, estado: list, cupos: list):
     print("Ingresar la patente del camión del cual desea registrar el peso")
@@ -151,41 +152,43 @@ def guardar_datos(Maiz,Soja , tipoCamion: str, patCamion: str, pesoNeto: float):
             Maiz.pesoMenorMaiz = pesoNeto
             Maiz.patMenorMaiz = patCamion
         Maiz.camionesMaiz += 1
-        Maiz.promPesoNetoM = Maiz.pesoNetoMaiz / Maiz.camionesMaiz
-
-def ingreso_de_datos(Maiz,Soja): 
-    pass      
+        Maiz.promPesoNetoM = Maiz.pesoNetoMaiz / Maiz.camionesMaiz  
         
-def menu_recepcion(cupos, identificador,estado, productos):
+def menu_recepcion(cupos: list, estado: list, productos: list):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
     
     option = input_validation_TP2.check_int()
     while option != 0:
         if option == 1:
-            cupoValido, aux = chequeo_cupo_valido(cupos)
-            if cupoValido:
-                if estado[aux] == 'P':
-                    
-                    estado[aux] = 'E'
-                    print(f"{SUCCESS}El camión se encuentra en proceso de recepción, ya puede cargar los datos faltantes.{NORMAL}")
-                    if productos[0] == "":
-                        time.sleep(0.7)
-                        print(f"{WARNING}Aún no has cargado ningun producto. No vas a poderyy")
-                    ingreso_de_datos()
-                elif estado[aux] == 'E':
-                    print(f"{WARNING}El camion ingresado ya ha sido recepcionado (se debe aclarar aún Peso Bruto y/o tara{NORMAL}")
-                else:
-                    print(f"{WARNING}El camion ingresado ya ha cumplido el proceso completo de ingreso{NORMAL}")
+            if productos[0] == "":
+                print(f"{WARNING}Aún no has cargado ningun producto. No vas a poderyy")
+            else:
+                print("Ingresar la patente del camión del cual desea registrar")
+                patente = input_validation_TP2.check_pat()
+                cupos_es_valido, indice = check_cupo_valido(cupos, patente)
 
+                if cupos_es_valido:
+                    if estado[indice] == 'P':
+                        estado[indice] = 'E'
+                        print(f"{SUCCESS}El camión se encuentra en proceso de recepción, ya puede cargar los datos faltantes.{NORMAL}")
+                        #registro_peso_bruto(pesos, estados, cupos)
+                        #registro_tara(pesos, estados, tara)
+                        
+                    elif estado[indice] == 'E':
+                        print(f"{WARNING}El camion ingresado ya ha sido recepcionado (se debe aclarar aún Peso Bruto y/o tara{NORMAL}")
+                    else:
+                        print(f"{WARNING}El camion ingresado ya ha cumplido el proceso completo de ingreso{NORMAL}")
+                else:
+                    print(f"{WARNING}El camión no tiene asignado un cupo válido{NORMAL}")
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
-        time.sleep(0.7)
+        time.sleep(1.5)
         clear_shell()
         print("0 - Volver al menu anterior\n1 - Ingresar otro camion")
         option = input_validation_TP2.check_int()
 
-def menu_opciones(productos):
+def menu_opciones(productos: list):
     clear_shell()
     print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
     
@@ -206,7 +209,7 @@ def menu_opciones(productos):
         print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
         option = input_validation_TP2.check_int()
 
-def menu_administraciones(productos):
+def menu_administraciones(productos: list):
     clear_shell()
     print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
     
@@ -237,11 +240,11 @@ def menu_principal(productos: list, cupos: list, identificador: list, pesos: lis
             elif option == 2:
                 entrega_de_cupos(cupos)
             elif option == 3:
-                menu_recepcion(Maiz,Soja)
+                menu_recepcion(cupos, estado productos)
             elif option == 5:
-                registro_peso_bruto(pesos, estados, cupos)
+                registro_peso_bruto(pesos, estado, cupos)
             elif option == 7:
-                registro_tara(pesos, estados, tara)
+                registro_tara(pesos, estado, tara)
             elif option == 8:
                 menu_reportes(Maiz,Soja)
             else:

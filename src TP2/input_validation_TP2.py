@@ -37,7 +37,7 @@ def check_producto() -> str:
     return producto
 
 #valido si la patente se encuentra dentro del array cupos, es decir, que haya pedido un cupo previamente
-def check_cupo_valido(cupos: list, patente: str):
+def check_cupo_valido(cupos: list, patente: str) -> tuple:
     indice = 0
     while indice < len(cupos):
         if cupos[indice] == patente:

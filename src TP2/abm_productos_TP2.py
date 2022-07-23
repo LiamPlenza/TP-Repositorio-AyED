@@ -57,7 +57,6 @@ def baja(productos):
     user_menu_TP2.clear_shell()
     if productos[0] == "":
         print(f"{WARNING}No hay productos ingresados{NORMAL}")
-        time.sleep(1.5)
     else: 
         consulta(productos)# como la lista no está vacía, llamo a consulta para que la imprima
         option = input_validation_TP2.check_int()
@@ -66,54 +65,51 @@ def baja(productos):
             while option not in [x for x in range(1, len(productos)+1)] or productos[option-1] == "":# me fijo si la opcion no esta en el rango o si la opcion esta vacia
                 print(f"{WARNING}Ingrese un producto existente{NORMAL}") 
                 option = input_validation_TP2.check_int()
+        
+            option -= 1 # resto uno a la posición ingresada, ya que internamente va de 0 a 2
+            
+            if option == 2:
+                productos[option] = ""
+            elif option == 0:
+                productos[option] = productos[option + 1]
+                productos[option + 1] = productos[option + 2]
+                productos[option + 2] = ""
             else:
-                option -= 1 # resto uno a la posición ingresada, ya que internamente va de 0 a 2
+                productos[option] = productos[option + 1]
+                productos[option + 1] = ""
                 
-                if option == 2:
-                    productos[option] = ""
-                elif option == 0:
-                    productos[option] = productos[option + 1]
-                    productos[option + 1] = productos[option + 2]
-                    productos[option + 2] = ""
-                else:
-                    productos[option] = productos[option + 1]
-                    productos[option + 1] = ""
-                    
-                print(f"{SUCCESS}El producto ha sido eliminado{NORMAL}")
-                if productos[0] == "":
-                    print(f"{WARNING}No hay más productos ingresados. Volverá al menu anterior.{NORMAL}")
-                    option = 0
-                else: 
-                    time.sleep(1.5)
-                    user_menu_TP2.clear_shell()
-                    consulta(productos)# como la lista no está vacía, llamo a consulta para que la imprima
-                    option = input_validation_TP2.check_int()
+            print(f"{SUCCESS}El producto ha sido eliminado{NORMAL}")
+            time.sleep(1.5)
+            if productos[0] == "":
+                print(f"{WARNING}No hay más productos ingresados. Volverá al menu anterior.{NORMAL}")
+                option = 0 # hago que salga del ciclo
+            else: 
+                user_menu_TP2.clear_shell()
+                consulta(productos)# como la lista no está vacía, llamo a consulta para que la imprima
+                option = input_validation_TP2.check_int()
                      
 def modificacion(productos):
     user_menu_TP2.clear_shell()
 
     if productos[0] == "":
         print(f"{WARNING}No hay productos ingresados{NORMAL}")
-        time.sleep(1.5)
+        #time.sleep(1.5)
     else:# como el array de productos no está vacía la función consulta va a mostrar el array completo
         consulta(productos)
         option = input_validation_TP2.check_int()
     
         while option != 0:
-            if option not in [x for x in range(1, len(productos)+1)]: # me fijo si la opcion seleccionada NO está en una lista [1...opcion] 
+            while option not in [x for x in range(1, len(productos)+1)] or productos[option-1] == "": # me fijo si la opcion seleccionada NO está en una lista [1...opcion], o es una opción vacía
                 print(f"{WARNING}Ingrese un titular existente{NORMAL}")
                 option = input_validation_TP2.check_int() 
-            else:
-                if productos[option - 1] == "":
-                    print(f"{WARNING}No es posible modificar un elemento que está vacio{NORMAL}")
-                else:
-                    producto_ingresado = input_validation_TP2.check_producto()
-                    while producto_ingresado in productos:# si el producto ya fue ingresado hago que ingrese otro hasta que no se encuentre en la lista
-                        print(f"{WARNING}El producto ya ha sido ingresado. Elija otro de la lista {NORMAL}")
-                        producto_ingresado = input_validation_TP2.check_producto()
-                    productos[option - 1] = producto_ingresado# guardo el producto
-                    print(f"{SUCCESS}El titular {option} ha sido actualizado{NORMAL}")
+                
+            producto_ingresado = input_validation_TP2.check_producto()
+            while producto_ingresado in productos:# si el producto ya fue ingresado hago que ingrese otro hasta que no se encuentre en la lista
+                print(f"{WARNING}El producto ya ha sido ingresado. Elija otro de la lista {NORMAL}")
+                producto_ingresado = input_validation_TP2.check_producto()
+            productos[option - 1] = producto_ingresado# guardo el producto
+            print(f"{SUCCESS}El titular {option} ha sido actualizado{NORMAL}")
                     
             time.sleep(1.5)
-            consulta(productos)
-            option = input_validation_TP2.check_int()#muestro la lista actualizada de productos
+            consulta(productos)# muestro la lista actualizada de productos
+            option = input_validation_TP2.check_int()
