@@ -27,18 +27,24 @@ def entrega_de_cupos(matriz_camiones: list, estado: list):
                 print("Ingrese la patente del camión para el que desea hacer cupo")
                 patente_ingresada = input_validation_TP2.check_pat()
                 
-                for camion in matriz_camiones:
-                    if patente_ingresada in camion:
+                x=0
+                while x > 0:
+                    x=0
+                    for i in range(0,7):
+                        if patente_ingresada == matriz_camiones[i][0]:
+                            x+=1
+                    if x > 0:
                         print(f"{WARNING}La patente ya se ingreso el día de hoy.{NORMAL}")
                         patente_ingresada = input_validation_TP2.check_pat()
-                
-                while indice < len(matriz_camiones):# busco el primer espacio en blanco dentro de cupos
+
+                while indice < 8:# busco el primer espacio en blanco dentro de cupos
                     if matriz_camiones[indice][0] == "":
                         matriz_camiones[indice][0] = patente_ingresada
                         estado[indice] = 'P'
                         print(f"{SUCCESS}Se ha otorgado el cupo con éxito{NORMAL}")
-                        indice = 8# hago que salga del ciclo
-                    indice += 1
+                        indice = 100# hago que salga del ciclo
+                    else:
+                        indice += 1
         else:
             print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
              
@@ -135,10 +141,11 @@ def registro_tara(matriz_camiones: list, pesos: list, estado: list):
 def menu_reportes(matriz_camiones: list, pesos: list, estado: list):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
-    total_camiones = menor_arroz = menor_cebada = menor_trigo = menor_soja = menor_maiz = 0
-    mayor_arroz = mayor_cebada = mayor_trigo = mayor_soja = mayor_maiz = menor_maiz = menor_trigo = menor_arroz = menor_cebada = menor_soja = 0
-    mayor_maiz_pat = mayor_trigo_pat = mayor_arroz_pat = mayor_cebada_pat = mayor_soja_pat = menor_maiz_pat = menor_trigo_pat = menor_arroz_pat = menor_cebada_pat = menor_soja_pat = "No se ingresaron camiones con este producto"
+    total_camiones = 0
+    may_men_pat = ["No se ingresaron camiones con este producto"]*2,["No se ingresaron camiones con este producto"]*2,["No se ingresaron camiones con este producto"]*2,["No se ingresaron camiones con este producto"]*2,["No se ingresaron camiones con este producto"]*2
+    may_men = [0]*2,[0]*2,[0]*2,[0]*2,[0]*2
     total_productos = [0]*3,[0]*3,[0]*3,[0]*3,[0]*3
+    prom_peso_neto = [0]*5
     aux = [0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3
     option = input_validation_TP2.check_int()
     cupos_otorgados = 0
@@ -163,82 +170,82 @@ def menu_reportes(matriz_camiones: list, pesos: list, estado: list):
                         total_camiones += 1
                         total_productos [0][1] += pesos[i][0]
                         total_productos [0][2] += pesos[i][0] - pesos[i][1]
-                        if total_productos [0][0] == 1 or total_productos [0][2] > mayor_maiz:
-                            mayor_maiz = total_productos [0][2]
-                            mayor_maiz_pat = matriz_camiones [i][0]
+                        if total_productos [0][0] == 1 or total_productos [0][2] > may_men[0][0]:
+                            may_men[0][0] = total_productos [0][2]
+                            may_men_pat[0][0] = matriz_camiones [i][0]
 
-                        if total_productos [0][0] == 1 or total_productos [0][2] < menor_maiz:
-                            menor_maiz = total_productos [0][2]
-                            menor_maiz_pat = matriz_camiones [i][0]
+                        if total_productos [0][0] == 1 or total_productos [0][2] < may_men[0][1]:
+                            may_men[0][1] = total_productos [0][2]
+                            may_men_pat[0][1] = matriz_camiones [i][0]
                             
                     if matriz_camiones [i][1] == "TRIGO":
                         total_camiones += 1
                         total_productos [1][0] += 1
                         total_productos [1][1] += pesos[i][0]
                         total_productos [1][2] += pesos[i][0] - pesos[i][1]
-                        if total_productos [1][0] == 1 or total_productos [1][2] > mayor_trigo:
-                            mayor_trigo = total_productos [1][2]
-                            mayor_trigo_pat = matriz_camiones [i][0]
-                        if total_productos [1][0] == 1 or total_productos [1][2] < menor_trigo:
-                            menor_trigo = total_productos [1][2]
-                            menor_trigo_pat = matriz_camiones [i][0]
+                        if total_productos [1][0] == 1 or total_productos [1][2] > may_men[1][0]:
+                            may_men[1][0] = total_productos [1][2]
+                            may_men_pat[1][0] = matriz_camiones [i][0]
+                        if total_productos [1][0] == 1 or total_productos [1][2] < may_men[1][1]:
+                            may_men[1][1] = total_productos [1][2]
+                            may_men_pat[1][1] = matriz_camiones [i][0]
                             
                     if matriz_camiones [i][1] == "CEBADA":
                         total_camiones += 1
                         total_productos [2][0] += 1
                         total_productos [2][1] += pesos[i][0]
                         total_productos [2][2] += pesos[i][0] - pesos[i][1]
-                        if total_productos [2][0] == 1 or total_productos [2][2] > mayor_cebada:
-                            mayor_cebada = total_productos [2][2]
-                            mayor_cebada_pat = matriz_camiones [i][0]
-                        if total_productos [2][0] == 1 or total_productos [2][2] < menor_cebada:
-                            menor_cebada = total_productos [2][2]
-                            menor_cebada_pat = matriz_camiones [i][0]
+                        if total_productos [2][0] == 1 or total_productos [2][2] > may_men[2][0]:
+                            may_men[2][0] = total_productos [2][2]
+                            may_men_pat[2][0] = matriz_camiones [i][0]
+                        if total_productos [2][0] == 1 or total_productos [2][2] < may_men[2][1]:
+                            may_men[2][1] = total_productos [2][2]
+                            may_men_pat[2][1] = matriz_camiones [i][0]
                             
                     if matriz_camiones [i][1] == "ARROZ":
                         total_camiones += 1
                         total_productos [3][0] += 1
                         total_productos [3][1] += pesos[i][0]
                         total_productos [3][2] += pesos[i][0] - pesos[i][1]
-                        if total_productos [3][0] == 1 or total_productos [3][2] > mayor_arroz:
-                            mayor_arroz = total_productos [3][2]
-                            mayor_arroz_pat = matriz_camiones [i][0]
-                        if total_productos [3][0] == 1 or total_productos [3][2] < menor_arroz:
-                            menor_arroz = total_productos [3][2]
-                            menor_arroz_pat = matriz_camiones [i][0]
+                        if total_productos [3][0] == 1 or total_productos [3][2] > may_men[3][0]:
+                            may_men[3][0] = total_productos [3][2]
+                            may_men_pat[3][0] = matriz_camiones [i][0]
+                        if total_productos [3][0] == 1 or total_productos [3][2] < may_men[3][1]:
+                            may_men[3][1] = total_productos [3][2]
+                            may_men_pat[3][1] = matriz_camiones [i][0]
                             
                     if matriz_camiones [i][1] == "SOJA":
                         total_camiones += 1
                         total_productos [4][0] += 1
                         total_productos [4][1] += pesos[i][0]
                         total_productos [4][2] += pesos[i][0] - pesos[i][1]
-                        if total_productos [4][0] == 1 or total_productos [4][2] > mayor_soja:
-                            mayor_soja = pesos[i][1]
-                            mayor_soja_pat = matriz_camiones [i][0]
-                        if total_productos [4][0] == 1 or total_productos [4][2] < menor_soja:
-                            menor_soja = total_productos [4][2]
-                            menor_soja_pat = matriz_camiones [i][0]
+                        if total_productos [4][0] == 1 or total_productos [4][2] > may_men[4][0]:
+                            may_men[4][0] = pesos[i][1]
+                            may_men_pat[4][0] = matriz_camiones [i][0]
+                        if total_productos [4][0] == 1 or total_productos [4][2] < may_men[4][1]:
+                            may_men[4][1] = total_productos [4][2]
+                            may_men_pat[4][1] = matriz_camiones [i][0]
             
             if total_productos[0][0] != 0:               
-                prom_peso_neto_maiz = total_productos[0][2] / total_productos [0][0]
+                prom_peso_neto[0] = total_productos[0][2] / total_productos [0][0]
             else:
-                prom_peso_neto_maiz = 0
+                prom_peso_neto[0] = 0
             if total_productos[1][0] != 0:
-                prom_peso_neto_trigo = total_productos[1][2] / total_productos [1][0]
+                prom_peso_neto[1] = total_productos[1][2] / total_productos [1][0]
             else:
-                prom_peso_neto_trigo = 0
+                prom_peso_neto[1] = 0
             if total_productos[2][0] != 0:
-                prom_peso_neto_cebada = total_productos[2][2] / total_productos [2][0]
+                prom_peso_neto[2] = total_productos[2][2] / total_productos [2][0]
             else:
-                prom_peso_neto_cebada = 0
+                prom_peso_neto[2] = 0
             if total_productos[3][0] != 0:
-                prom_peso_neto_arroz = total_productos[3][2] / total_productos [3][0]
+                prom_peso_neto[3] = total_productos[3][2] / total_productos [3][0]
             else:
-                prom_peso_neto_arroz = 0
+                prom_peso_neto[3] = 0
             if total_productos[4][0] != 0:
-                prom_peso_neto_soja = total_productos[4][2] / total_productos [4][0]
+                prom_peso_neto[4] = total_productos[4][2] / total_productos [4][0]
             else:
-                prom_peso_neto_soja = 0
+                prom_peso_neto[4] = 0
             
             if cupos_otorgados == 0:
                 print(f"{WARNING}No se han entregado cupos por lo tanto, no hay camiones ingresados{NORMAL}")
@@ -254,11 +261,11 @@ def menu_reportes(matriz_camiones: list, pesos: list, estado: list):
                     input("Presione ENTER para continuar...")
                     print("--------------------\nEl peso neto total de camiones de MAIZ que se ingresaron es: ",total_productos[0][2],"\n--------------------\nEl peso neto total de camiones de TRIGO que se ingresaron es: ",total_productos[1][2],"\n--------------------\nEl peso neto total de camiones de CEBADA que se ingresaron es: ",total_productos[2][2],"\n--------------------\nEl peso neto total de camiones de ARROZ que se ingresaron es: ",total_productos[3][2],"\n--------------------\nEl peso neto total de camiones de SOJA que se ingresaron es: ",total_productos[4][2])
                     input("Presione ENTER para continuar...")
-                    print("--------------------\nEl peso neto promedio de los camiones de MAIZ que se ingresaron es: ",prom_peso_neto_maiz,"\n--------------------\nEl peso neto promedio de los camiones de TRIGO que se ingresaron es: ",prom_peso_neto_trigo,"\n--------------------\nEl peso neto promedio de los camiones de CEBADA que se ingresaron es: ",prom_peso_neto_cebada,"\n--------------------\nEl peso neto promedio de los camiones de ARROZ que se ingresaron es: ",prom_peso_neto_arroz,"\n--------------------\nEl peso neto promedio de los camiones de SOJA que se ingresaron es: ",prom_peso_neto_soja)
+                    print("--------------------\nEl peso neto promedio de los camiones de MAIZ que se ingresaron es: ",prom_peso_neto[0],"\n--------------------\nEl peso neto promedio de los camiones de TRIGO que se ingresaron es: ",prom_peso_neto[1],"\n--------------------\nEl peso neto promedio de los camiones de CEBADA que se ingresaron es: ",prom_peso_neto[2],"\n--------------------\nEl peso neto promedio de los camiones de ARROZ que se ingresaron es: ",prom_peso_neto[3],"\n--------------------\nEl peso neto promedio de los camiones de SOJA que se ingresaron es: ",prom_peso_neto[4])
                     input("Presione ENTER para continuar...")
-                    print("--------------------\nLa patente del camion de MAIZ que mas producto descargó es: ",mayor_maiz_pat,"\n--------------------\nLa patente del camion de TRIGO que mas producto descargó es ",mayor_trigo_pat,"\n--------------------\nLa patente del camion de CEBADA que mas producto descargó es ",mayor_cebada_pat,"\n--------------------\nLa patente del camion de ARROZ que mas producto descargó es ",mayor_arroz_pat,"\n--------------------\nLa patente del camion de SOJA que mas producto descargó es ",mayor_soja_pat)
+                    print("--------------------\nLa patente del camion de MAIZ que mas producto descargó es: ",may_men_pat[0][0],"\n--------------------\nLa patente del camion de TRIGO que mas producto descargó es ",may_men_pat[1][0],"\n--------------------\nLa patente del camion de CEBADA que mas producto descargó es ",may_men_pat[2][0],"\n--------------------\nLa patente del camion de ARROZ que mas producto descargó es ",may_men_pat[3][0],"\n--------------------\nLa patente del camion de SOJA que mas producto descargó es ",may_men_pat[4][0])
                     input("Presione ENTER para continuar...")
-                    print("--------------------\nLa patente del camion de MAIZ que menos producto descargó es: ",menor_maiz_pat,"\n--------------------\nLa patente del camion de TRIGO que menos producto descargó es ",menor_trigo_pat,"\n--------------------\nLa patente del camion de CEBADA que menos producto descargó es ",menor_cebada_pat,"\n--------------------\nLa patente del camion de ARROZ que menos producto descargó es ",menor_arroz_pat,"\n--------------------\nLa patente del camion de SOJA que menos producto descargó es ",menor_soja_pat,"\n--------------------")
+                    print("--------------------\nLa patente del camion de MAIZ que menos producto descargó es: ",may_men_pat[0][1],"\n--------------------\nLa patente del camion de TRIGO que menos producto descargó es ",may_men_pat[1][1],"\n--------------------\nLa patente del camion de CEBADA que menos producto descargó es ",may_men_pat[2][1],"\n--------------------\nLa patente del camion de ARROZ que menos producto descargó es ",may_men_pat[3][1],"\n--------------------\nLa patente del camion de SOJA que menos producto descargó es ",may_men_pat[4][1],"\n--------------------")
                     input("Presione ENTER para continuar...")
             i=0
             co=1
