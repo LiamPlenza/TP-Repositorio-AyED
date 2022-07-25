@@ -1,4 +1,4 @@
-import os, time, input_validation_TP2, user_menu_TP2
+import time, input_validation_TP2, user_menu_TP2
 WARNING = '\033[1;31m'
 SUCCESS = '\033[1;32m'
 NORMAL = '\033[0m'
@@ -10,7 +10,7 @@ def alta(productos):
     while option != 0:
         indice = 0
         if option == 1:
-            if "" in productos:
+            if "" in productos: 
                 while indice < len(productos):
                     if productos[indice] == "":#si encuentra un espacio vacio en producto lo agrego
                         producto_ingresado = input_validation_TP2.check_producto()
@@ -40,19 +40,13 @@ def consulta(productos):
     else:
         indice = 0
         print("La actual lista de productos es:\n*-------------------------------*")
-        #for indice, producto in enumerate(productos):
-        #    if productos[indice] != "":
-        #        print("|{:^3}| {:25} |".format(indice+1, producto))
         while indice < len(productos):
             if productos[indice] != "":
                 print("|{:^3}| {:25} |".format(indice+1, productos[indice]))
             indice +=1
         print("*-------------------------------*\n| 0 | Volver al menu anterior   |\n*-------------------------------*")
-        input("Precione enter para continuar... ")
+        input("Presione enter para continuar... ")
 
-"""
-    Ver como reacomodar la lista de una mejor manera
-"""
 def baja(productos):
     user_menu_TP2.clear_shell()
     if productos[0] == "":
@@ -93,14 +87,13 @@ def modificacion(productos):
 
     if productos[0] == "":
         print(f"{WARNING}No hay productos ingresados{NORMAL}")
-        #time.sleep(1.5)
     else:# como el array de productos no está vacía la función consulta va a mostrar el array completo
         consulta(productos)
         option = input_validation_TP2.check_int()
     
         while option != 0:
             while option not in [x for x in range(1, len(productos)+1)] or productos[option-1] == "": # me fijo si la opcion seleccionada NO está en una lista [1...opcion], o es una opción vacía
-                print(f"{WARNING}Ingrese un titular existente{NORMAL}")
+                print(f"{WARNING}Ingrese un producto existente{NORMAL}")
                 option = input_validation_TP2.check_int() 
                 
             producto_ingresado = input_validation_TP2.check_producto()

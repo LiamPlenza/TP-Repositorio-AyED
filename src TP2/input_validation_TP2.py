@@ -30,17 +30,17 @@ def check_int()-> int:
             
 #valido que el producto ingresado este entre las opciones dadas
 def check_producto() -> str:
-    producto = input("(Las opciones valida de producto son: Cebada, Arroz, Trigo, Soja, Maiz)\nIngrese un producto: ").upper()
+    producto = input("(Las opciones validas de producto son: Cebada, Arroz, Trigo, Soja, Maiz)\nIngrese un producto: ").upper()
     while producto not in ["TRIGO", "SOJA", "MAIZ", "CEBADA", "ARROZ"]:
         print(f"{WARNING}Ingrese una opción valida{NORMAL}")
-        producto = input("(Las opciones valida de producto son: Cebada, Arroz, Trigo, Soja, Maíz)\nIngrese un producto: ").upper()
+        producto = input("(Las opciones validas de producto son: Cebada, Arroz, Trigo, Soja, Maíz)\nIngrese un producto: ").upper()
     return producto
 
 #valido si la patente se encuentra dentro del array cupos, es decir, que haya pedido un cupo previamente
-def check_cupo_valido(cupos: list, patente: str) -> tuple:
+def check_cupo_valido(matriz_camiones: list, patente: str) -> tuple:
     indice = 0
-    while indice < len(cupos):
-        if cupos[indice] == patente:
+    while indice < len(matriz_camiones):
+        if matriz_camiones[indice][0] == patente:
             return True, indice
         else:
             indice += 1

@@ -8,8 +8,17 @@ Integrantes:
     Tomas Joel Wardoloff - Comisión 108
 """
 if __name__ == "__main__":
-    identificador = pesos = tara = [0]*8
-    cupos = estado = [""]*8
+    pesos = [0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3
+    estado = [""]*8
     productos = [""] * 3
+    matriz_camiones = [""]*3,[""]*3,[""]*3,[""]*3,[""]*3,[""]*3,[""]*3,[""]*3
+"""
+DECLARATORIA DE MATRICES
 
-    user_menu_TP2.menu_principal(productos, cupos, identificador, pesos, estado, tara)
+pesos[0..7][0..3] of int
+estado[0..7] of char (en python se declara como string pero lo utilizamos como char por lo dicho en la consigna)
+productos[0..2] of string
+matriz_camiones[0..7][0..3] of string
+
+"""
+user_menu_TP2.menu_principal(productos, matriz_camiones, pesos, estado)
