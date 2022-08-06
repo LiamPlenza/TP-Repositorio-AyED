@@ -133,6 +133,9 @@ def registro_tara(matriz_camiones: list, pesos: list, estado: list):
                     print(f"{WARNING}El estado del camión debe ser 'En proceso' para poder registrar su tara.\nDirijase a recepción antes de ingresar la tara correspondiente{NORMAL}")
             else:
                 print(f"{WARNING}El camión no tiene asignado un cupo válido{NORMAL}")
+        else:
+            print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
+
         time.sleep(2.5)
         clear_shell()
         print("0 - Volver al menu anterior\n1 - Ingresar la tara de otro camion")
@@ -152,8 +155,8 @@ def menu_reportes(matriz_camiones: list, pesos: list, estado: list):
     
     while option != 0:
         if option == 1:
-            for cupo in matriz_camiones:
-                if cupo[0] != "":
+            for i in range(0,7):
+                if matriz_camiones[i][0] != "":
                     cupos_otorgados += 1
                 """
                 Dentro de la matriz total producto le asignamos una fila a cada producto donde vamos a cargar sus datos
@@ -267,41 +270,41 @@ def menu_reportes(matriz_camiones: list, pesos: list, estado: list):
                     input("Presione ENTER para continuar...")
                     print("--------------------\nLa patente del camion de MAIZ que menos producto descargó es: ",may_men_pat[0][1],"\n--------------------\nLa patente del camion de TRIGO que menos producto descargó es ",may_men_pat[1][1],"\n--------------------\nLa patente del camion de CEBADA que menos producto descargó es ",may_men_pat[2][1],"\n--------------------\nLa patente del camion de ARROZ que menos producto descargó es ",may_men_pat[3][1],"\n--------------------\nLa patente del camion de SOJA que menos producto descargó es ",may_men_pat[4][1],"\n--------------------")
                     input("Presione ENTER para continuar...")
-            i=0
-            co=1
-            while i < total_camiones:
-                aux[i][0] = matriz_camiones[i][0]
-                aux[i][1] = matriz_camiones[i][1]
-                aux[i][2] = pesos[i][0]-pesos[i][1]
-                i+=1
-            while co < total_camiones:
-                if aux[co][2] > aux[co - 1][2]:
-                    aux2 = aux[co - 1][2]
-                    aux[co - 1][2] = aux [co][2]
-                    aux[co][2] = aux2
-                    
-                    aux2 = aux[co - 1][0]
-                    aux[co - 1][0] = aux [co][0]
-                    aux[co][0] = aux2
-                    
-                    aux2 = aux[co - 1][1]
-                    aux[co - 1][1] = aux [co][1]
-                    aux[co][1] = aux2
+                    i=0
+                    co=1
+                    while i < total_camiones:
+                        aux[i][0] = matriz_camiones[i][0]
+                        aux[i][1] = matriz_camiones[i][1]
+                        aux[i][2] = pesos[i][0]-pesos[i][1]
+                        i+=1
+                    while co < total_camiones:
+                        if aux[co][2] > aux[co - 1][2]:
+                            aux2 = aux[co - 1][2]
+                            aux[co - 1][2] = aux [co][2]
+                            aux[co][2] = aux2
+                            
+                            aux2 = aux[co - 1][0]
+                            aux[co - 1][0] = aux [co][0]
+                            aux[co][0] = aux2
+                            
+                            aux2 = aux[co - 1][1]
+                            aux[co - 1][1] = aux [co][1]
+                            aux[co][1] = aux2
 
-                    if co == 1:
-                        co = co + 1
-                    else:
-                        co = co - 1
-                else:
-                    co = co + 1
-                
-            co=0
-            print("La lista de camiones ingresados ordenada por peso neto descendente quedaria asi:")
-            while co <total_camiones:
-                print(co+1," - El camion de patente ",aux[co][0]," que llevaba",aux[co][2],"kilogramos de ",aux[co][1])
+                            if co == 1:
+                                co = co + 1
+                            else:
+                                co = co - 1
+                        else:
+                            co = co + 1
+                        
+                    co=0
+                    print("La lista de camiones ingresados ordenada por peso neto descendente quedaria asi:")
+                    while co <total_camiones:
+                        print(co+1," - El camion de patente ",aux[co][0]," que llevaba",aux[co][2],"kilogramos de ",aux[co][1])
 
-                co+=1
-            input("Presione ENTER para continuar...")
+                        co+=1
+                    input("Presione ENTER para continuar...")
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
             time.sleep(2.5)

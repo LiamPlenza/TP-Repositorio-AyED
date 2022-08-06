@@ -15,10 +15,10 @@ if __name__ == "__main__":
 """
 DECLARATORIA DE MATRICES
 
-pesos[0..7][0..3] of int
+pesos[0..7][0..2] of int
 estado[0..7] of char (en python se declara como string pero lo utilizamos como char por lo dicho en la consigna)
 productos[0..2] of string
-matriz_camiones[0..7][0..3] of string
+matriz_camiones[0..7][0..2] of string
 
 """
 user_menu_TP2.menu_principal(productos, matriz_camiones, pesos, estado)
