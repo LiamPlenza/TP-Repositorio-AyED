@@ -1,5 +1,5 @@
 
-import time, input_validation_TP2, user_menu_TP2
+import time, input_validation_TP3, user_menu_TP3
 WARNING = '\033[1;31m'
 SUCCESS = '\033[1;32m'
 NORMAL = '\033[0m'
@@ -21,11 +21,11 @@ def alta(abm_list, menu):
                         if indice == 2: 
                             while abm_list[indice] == abm_list[0] or abm_list[indice] == abm_list [1]:
                                 print(f"{WARNING}Ya ha sido ingresado. Elija otro de la lista {NORMAL}")
-                                abm_list[indice] = input_validation_TP2.check_producto()
+                                abm_list[indice] = input_validation_TP2.check_producto(menu)
                         elif indice == 1:
                             while abm_list[1] == abm_list[0]:
                                 print(f"{WARNING}Ya ha sido ingresado. Elija otro de la lista {NORMAL}")
-                                abm_list[indice] = input_validation_TP2.check_producto()
+                                abm_list[indice] = input_validation_TP2.check_producto(menu)
                         indice = 10
                         print(f"{SUCCESS}Se ha sido ingresado con éxito{NORMAL}")
                         time.sleep(0.7)
