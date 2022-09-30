@@ -21,4 +21,4 @@ productos[0..2] of string
 matriz_camiones[0..7][0..2] of string
 
 """
-user_menu_TP2.menu_principal(productos, matriz_camiones, pesos, estado)
+user_menu_TP3.menu_principal(productos, matriz_camiones, pesos, estado)
