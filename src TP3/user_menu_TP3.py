@@ -358,28 +358,32 @@ def menu_recepcion(matriz_camiones,estado,productos):
         print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
         option = input_validation_TP3.check_int()
 
-def menu_opciones(productos: list,menu: str):
+def menu_opciones(productos: list,menu: str, matriz_camiones: list):
     clear_shell()
     print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
     
     option = input_validation_TP3.check_int()
     while option != 0:
-        if 1 == option:
-            abm_productos_TP3.alta(productos, menu)
-        elif 2 == option and menu == "productos":
-            abm_productos_TP3.baja(productos)
-        elif option == 3 and menu == "productos":
-            abm_productos_TP3.consulta(productos)
-        elif option == 4 and menu == "productos":
-            abm_productos_TP3.modificacion(productos)
-        elif option not in [x for x in range(5)]:
-            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
+        if matriz_camiones[0][0] == "":
+            if 1 == option:
+                abm_productos_TP3.alta(productos, menu)
+            elif 2 == option and menu == "productos":
+                abm_productos_TP3.baja(productos)
+            elif option == 3 and menu == "productos":
+                abm_productos_TP3.consulta(productos)
+            elif option == 4 and menu == "productos":
+                abm_productos_TP3.modificacion(productos)
+            elif option not in [x for x in range(5)]:
+                print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
+            else:
+                print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
+            time.sleep(2.5)
+            clear_shell()
+            print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
+            option = input_validation_TP3.check_int()
         else:
-            print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
-        time.sleep(2.5)
-        clear_shell()
-        print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
-        option = input_validation_TP3.check_int()
+            print(f"{WARNING}Ya se ha solicitado un cupo. Las listas no pueden ser modificados hasta mañana{NORMAL}")
+            option = 0
 
 def menu_administraciones(productos: list):
     clear_shell()
