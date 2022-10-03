@@ -393,8 +393,10 @@ def menu_administraciones(productos: list):
     while option != 0:
         if option == 2:
             menu_opciones(productos, "productos")
-        elif option == 3 or option == 4:
+        elif option == 3:
             menu_opciones(productos, "rubros")
+        elif option == 4:
+            menu_opciones(productos, "rubros por productos")
         elif option == 5:
             menu_opciones(productos, "silos")
         elif option not in [x for x in range(8)]:
