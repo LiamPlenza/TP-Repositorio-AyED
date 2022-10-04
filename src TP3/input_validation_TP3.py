@@ -21,15 +21,9 @@ def check_float(mensaje: str)-> float:
 
 # valido que el ingreso de las opciones del menu sean numericos
 def check_int()-> int:
-    x=0
     while True:
         try:
-            
-            if x == 0:
-                option = int(input())
-                x += 1
-            else:
-                option = int((input("Seleccione una opción del menu: ")))
+            option = int(input("Seleccione una opción del menu: "))
             return option
         except ValueError:
             print(f"{WARNING}Ingrese un valor numérico valido{NORMAL}")

@@ -1,1 +1,5 @@
 *.pyc
+PRODUCTOS.dat
+RUBROS.dat
+RUBROS-X-PRODUCTOS.dat
+SILOS.dat

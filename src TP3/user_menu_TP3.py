@@ -1,4 +1,5 @@
-import os, time, input_validation_TP3, abm_productos_TP3
+import os, time
+import input_validation_TP3, archivos_TP3
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
 SUCCESS = '\033[1;32m'
@@ -358,47 +359,43 @@ def menu_recepcion(matriz_camiones,estado,productos):
         print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
         option = input_validation_TP3.check_int()
 
-def menu_opciones(productos: list,menu: str, matriz_camiones: list):
+def menu_opciones(menu: str):
     clear_shell()
     print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
     
     option = input_validation_TP3.check_int()
     while option != 0:
-        if matriz_camiones[0][0] == "":
-            if 1 == option:
-                abm_productos_TP3.alta(productos, menu)
-            elif 2 == option and menu == "productos":
-                abm_productos_TP3.baja(productos)
-            elif option == 3 and menu == "productos":
-                abm_productos_TP3.consulta(productos)
-            elif option == 4 and menu == "productos":
-                abm_productos_TP3.modificacion(productos)
-            elif option not in [x for x in range(5)]:
-                print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
-            else:
-                print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
-            time.sleep(2.5)
-            clear_shell()
-            print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
-            option = input_validation_TP3.check_int()
+        if 1 == option:
+            archivos_TP3.alta(menu)
+        elif 2 == option and menu == "productos":
+            archivos_TP3.baja()
+        elif option == 3 and menu == "productos":
+            archivos_TP3.consulta()
+        elif option == 4 and menu == "productos":
+            archivos_TP3.modificacion()
+        elif option not in [x for x in range(5)]:
+            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         else:
-            print(f"{WARNING}Ya se ha solicitado un cupo. Las listas no pueden ser modificados hasta mañana{NORMAL}")
-            option = 0
+            print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
+        time.sleep(2.5)
+        clear_shell()
+        print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
+        option = input_validation_TP3.check_int()
 
-def menu_administraciones(productos: list):
+def menu_administraciones():
     clear_shell()
     print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
     
     option = input_validation_TP3.check_int()
     while option != 0:
         if option == 2:
-            menu_opciones(productos, "productos")
+            menu_opciones("productos")
         elif option == 3:
-            menu_opciones(productos, "rubros")
+            menu_opciones("rubros")
         elif option == 4:
-            menu_opciones(productos, "rubros por productos")
+            menu_opciones("rubros por productos")
         elif option == 5:
-            menu_opciones(productos, "silos")
+            menu_opciones("silos")
         elif option not in [x for x in range(8)]:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         else:
@@ -408,7 +405,7 @@ def menu_administraciones(productos: list):
         print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
         option = input_validation_TP3.check_int()
 
-def menu_principal(productos: list, matriz_camiones: list, pesos: list, estado: list):
+def menu_principal():
     clear_shell()
 
     print("1 - Adminitraciones \n2 - Entrega de Cupos \n3 - Recepcion \n4 - Registrar Calidad \n5 - Registrar Peso Bruto \n6 - Registrar Descarga \n7 - Registrar Tara \n8 - Reportes \n0 - Salir del programa \n")
@@ -418,17 +415,22 @@ def menu_principal(productos: list, matriz_camiones: list, pesos: list, estado: 
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         else:
             if option == 1:
-                menu_administraciones(productos)
+                menu_administraciones()
             elif option == 2:
-                entrega_de_cupos(matriz_camiones, estado)
+                pass
+                #entrega_de_cupos()
             elif option == 3:
-                menu_recepcion(matriz_camiones, estado, productos)
+                pass
+                #menu_recepcion()
             elif option == 5:
-                registro_peso_bruto(matriz_camiones, pesos, estado)
+                pass
+                #registro_peso_bruto()
             elif option == 7:
-                registro_tara(matriz_camiones, pesos, estado)
+                pass
+                #registro_tara()
             elif option == 8:
-                menu_reportes(matriz_camiones,pesos,estado)
+                pass
+                #menu_reportes()
             else:
                 print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         time.sleep(2.5)

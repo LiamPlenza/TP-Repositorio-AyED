@@ -10,6 +10,7 @@ class Productos:
     def __init__(self):
         self.codprod = 0
         self.nomprod = ""
+        self.activo = False
 
 class Rubros:
     def __init__(self):
@@ -31,21 +32,4 @@ class Silos:
         self.stock = 0
 
 if __name__ == "__main__":
-    pesos = [0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3
-    estado = [""]*8
-    matriz_camiones = [""]*3,[""]*3,[""]*3,[""]*3,[""]*3,[""]*3,[""]*3,[""]*3
-
-
-
-
-
-"""
-DECLARATORIA DE MATRICES
-
-pesos[0..7][0..2] of int
-estado[0..7] of char (en python se declara como string pero lo utilizamos como char por lo dicho en la consigna)
-productos[0..2] of string
-matriz_camiones[0..7][0..2] of string
-
-"""
-user_menu_TP3.menu_principal(matriz_camiones, pesos, estado, Productos, Rubros, RubrosxProducto, Silos)
+    user_menu_TP3.menu_principal()
