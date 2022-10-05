@@ -1,5 +1,5 @@
-import os, time
-import input_validation_TP3, archivos_TP3
+import os, time, pickle, io, os.path
+import input_validation_TP3, archivos_TP3, main_TP3
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
 SUCCESS = '\033[1;32m'
@@ -21,31 +21,40 @@ def entrega_de_cupos(matriz_camiones: list, estado: list):
     
     while option != 0:
         if option == 1:
-            if matriz_camiones[7][0] != "":
-                print(f"{WARNING}Se han acabado los cupos por el día de hoy, vuelva mañana. Saludos.{NORMAL}")
+            if input_validation_TP3.check_producto:
+                print(f"{WARNING}No hay productos activos.{NORMAL}")
             else:
-                indice = 0
-                print("Ingrese la patente del camión para el que desea hacer cupo")
-                patente_ingresada = input_validation_TP3.check_pat()
-                
-                x=0
-                while x > 0:
+                registro = main_TP3.Operaciones()
+                if os.path.exists("OPERACIONES.dat"):
+                    archivo_logico = open("OPERACIONES.dat", "r+b")
+                    longitud_archivo = os.path.getsize("OPERACIONES.dat")
+                    print("Ingrese la patente del camión para el que desea hacer cupo")
+                    patente_ingresada = input_validation_TP3.check_pat(input("Ingrese la patente del camión para el que desea hacer cupo"))
+                    fecha_ingresada = input_validation_TP3.check_fecha(print("Ingrese la fecha deseada para el cupo"))
+                    
                     x=0
-                    for i in range(0,7):
-                        if patente_ingresada == matriz_camiones[i][0]:
-                            x+=1
-                    if x > 0:
-                        print(f"{WARNING}La patente ya se ingreso el día de hoy.{NORMAL}")
-                        patente_ingresada = input_validation_TP3.check_pat()
+                    while x > 0:
+                        x=0
+                        for i in range(0,7):
+                            if patente_ingresada == matriz_camiones[i][0]:
+                                x+=1
+                        if x > 0:
+                            print(f"{WARNING}La patente ya se ingreso el día de hoy.{NORMAL}")
+                            patente_ingresada = input_validation_TP3.check_pat()
 
-                while indice < 8:# busco el primer espacio en blanco dentro de cupos
-                    if matriz_camiones[indice][0] == "":
-                        matriz_camiones[indice][0] = patente_ingresada
-                        estado[indice] = 'P'
-                        print(f"{SUCCESS}Se ha otorgado el cupo con éxito{NORMAL}")
-                        indice = 100# hago que salga del ciclo
-                    else:
-                        indice += 1
+                    while indice < 8:# busco el primer espacio en blanco dentro de cupos
+                        if matriz_camiones[indice][0] == "":
+                            matriz_camiones[indice][0] = patente_ingresada
+                            estado[indice] = 'P'
+                            print(f"{SUCCESS}Se ha otorgado el cupo con éxito{NORMAL}")
+                            indice = 100# hago que salga del ciclo
+                        else:
+                            indice += 1
+                else:
+                    archivo_logico = open("OPERACIONES.dat", "w+b")
+                    registro.patente = input_validation_TP3.check_pat()
+                    registro.fecha = input_validation_TP3.check_fecha()
+
         else:
             print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
              
@@ -54,14 +63,7 @@ def entrega_de_cupos(matriz_camiones: list, estado: list):
         print("0 - Volver al menu anterior\n1 - Solicitar cupo")
         option = input_validation_TP3.check_int()   
 
-"""
 
-    Hacemos corresponder el indice de la patente en cupos con el peso bruto
-    *--------------------*       *---------------* 
-    | peso bruto[indice] |  -->  | cupos[indice] |
-    *--------------------*       *---------------* 
-
-"""
 def registro_peso_bruto(matriz_camiones: list, pesos: list, estado: list):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Registrar peso bruto")

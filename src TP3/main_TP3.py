@@ -6,6 +6,15 @@ Integrantes:
     Liam Nahuel Plenza - Comisión 104
     Tomas Joel Wardoloff - Comisión 108
 """
+class Operaciones:
+    def __init__(self):
+        self.patente = ""
+        self.codprod = 0
+        self.estado = ""
+        self.fecha = ""
+        self.pesobruto = 0
+        self.tara = 0
+
 class Productos:
     def __init__(self):
         self.codprod = 0
