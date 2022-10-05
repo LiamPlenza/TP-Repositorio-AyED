@@ -1,4 +1,4 @@
-import os, time, pickle, io, os.path
+import os, time, pickle, io, os.path, datetime
 import input_validation_TP3, archivos_TP3, main_TP3
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
@@ -14,11 +14,11 @@ def clear_shell():
 """
     Ver el uso del metodo index para evitar la salida forzada del ciclo
 """
-def entrega_de_cupos(matriz_camiones: list, estado: list):
+def entrega_de_cupos():
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Solicitar cupo")
     option = input_validation_TP3.check_int()
-    
+    bandera = 0
     while option != 0:
         if option == 1:
             if input_validation_TP3.check_producto:
@@ -28,32 +28,33 @@ def entrega_de_cupos(matriz_camiones: list, estado: list):
                 if os.path.exists("OPERACIONES.dat"):
                     archivo_logico = open("OPERACIONES.dat", "r+b")
                     longitud_archivo = os.path.getsize("OPERACIONES.dat")
-                    print("Ingrese la patente del camión para el que desea hacer cupo")
-                    patente_ingresada = input_validation_TP3.check_pat(input("Ingrese la patente del camión para el que desea hacer cupo"))
+                    patente_ingresada = input_validation_TP3.check_pat()
                     fecha_ingresada = input_validation_TP3.check_fecha(print("Ingrese la fecha deseada para el cupo"))
                     
-                    x=0
-                    while x > 0:
-                        x=0
-                        for i in range(0,7):
-                            if patente_ingresada == matriz_camiones[i][0]:
-                                x+=1
-                        if x > 0:
-                            print(f"{WARNING}La patente ya se ingreso el día de hoy.{NORMAL}")
-                            patente_ingresada = input_validation_TP3.check_pat()
-
-                    while indice < 8:# busco el primer espacio en blanco dentro de cupos
-                        if matriz_camiones[indice][0] == "":
-                            matriz_camiones[indice][0] = patente_ingresada
-                            estado[indice] = 'P'
-                            print(f"{SUCCESS}Se ha otorgado el cupo con éxito{NORMAL}")
-                            indice = 100# hago que salga del ciclo
-                        else:
-                            indice += 1
+                    while pickle.tell(archivo_logico) < longitud_archivo:
+                        registro = pickle.load(archivo_logico)
+                        if patente_ingresada == registro.patente and fecha_ingresada == registro.fecha:
+                            print(f"{WARNING}Cupo ya otorgado.{NORMAL}")
+                            bandera = 1
+                    if bandera == 0:
+                        producto_ingresado = input_validation_TP3.check_producto_valido() 
+                        registro.patente = patente_ingresada
+                        registro.fecha = fecha_ingresada
+                        registro.estado = "P"
+                        registro.codprod = producto_ingresado
+                        registro.pesobruto = 0
+                        registro.tara = 0
                 else:
                     archivo_logico = open("OPERACIONES.dat", "w+b")
                     registro.patente = input_validation_TP3.check_pat()
                     registro.fecha = input_validation_TP3.check_fecha()
+                    registro.codprod = input_validation_TP3.check_producto_valido() 
+                    registro.estado = "P"
+                    registro.pesobruto = 0
+                    registro.tara = 0
+                    pickle.dump(registro,"OPERACIONES.dat")
+                pickle.flush()
+                pickle.close(archivo_logico)
 
         else:
             print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
@@ -63,6 +64,76 @@ def entrega_de_cupos(matriz_camiones: list, estado: list):
         print("0 - Volver al menu anterior\n1 - Solicitar cupo")
         option = input_validation_TP3.check_int()   
 
+def registrar_calidad():
+    clear_shell()
+    print("0 - Volver al menu anterior\n1 - Registrar peso bruto")
+    option = input_validation_TP3.check_int()
+    
+    while option != 0:
+        if option == 1:
+            if not os.path.exists("OPERACIONES.dat"):
+                print(f"{WARNING}Aún no hay operaciones registradas.{NORMAL}")
+            else:
+                archivo_logico = open ("OPERACIONES.dat")
+                archivo_logico_r = open("RUBROS.dat", "r+b")
+                archivo_logico_p= open("PRODUCTOS.dat", "r+b")
+                archivo_logico_rxp = open ("RUBROS-X-PRODUCTO.dat")
+                registro = main_TP3.Operaciones()
+                registro_r = main_TP3.Rubros()
+                registro_p = main_TP3.Productos()
+                registro_rxp = main_TP3.RubrosxProducto
+                longitud_archivo = os.path.getsize("OPERACIONES.dat")
+                longitud_archivo_p = os.path.getsize("PRODUCTOS.dat")
+                longitud_archivo_r = os.path.getsize("RUBROS.dat")
+                longitud_archivo_rxp = os.path.getsize("RUBROS-X-PRODUCTO.dat")
+
+                bandera = False
+                print("Ingresar la patente del camión del cual desea ingresar")
+                patente_ingresada = input_validation_TP3.check_pat()
+                while pickle.tell(archivo_logico) < longitud_archivo:
+                    registro = pickle.load(archivo_logico)
+                    
+                    if patente_ingresada == registro.patente and registro.estado == "A": #Chequeo si el estado del camion es el correcto
+                        bandera = True
+                        rubros = []
+                        while pickle.tell(archivo_logico_rxp) < longitud_archivo_rxp:
+                            registro_rxp = pickle.load("RUBROS-X-PRODUCTO.dat") 
+                            if registro.codprod == registro_rxp.codprod: #Busco el producto del camion dentro del archivo rubro por producto
+                               rubros.append(registro_rxp.codrub)
+                        if len(rubros) > 0: 
+                            while pickle.tell(archivo_logico_p) < longitud_archivo_p:
+                                registro_p = pickle.load(archivo_logico_p)
+                                if registro_p.codprod == registro_rxp.codprod:
+                                    print(f"El camion contiene {registro_p.nomprod} ingrese la calidad correspondiente a los siguientes rubros:")
+                                r=0
+                                g=0
+                                while g < len(rubros):
+                                    while pickle.tell(archivo_logico_r) < longitud_archivo_r:
+                                        registro_r = pickle.load(archivo_logico_r)
+                                        if registro_r.codrub == rubros[g]:
+                                            valor = int(input(f"Ingrese el valor para el rubro {registro_r.nomrub}:"))
+                                            archivo_logico_rxp.seek(io.SEEK_SET) # me muevo al inicio del archivo
+                                            while pickle.tell(archivo_logico_rxp) < longitud_archivo_rxp:
+                                                registro_rxp = pickle.load("RUBROS-X-PRODUCTO.dat")
+                                                if registro_rxp == rubros[g] and registro_p.codprod == registro_rxp.codprod:
+                                                    if valor < registro_rxp.vmin or valor > registro_rxp.vmax:
+                                                        r +=1
+                                    if r == 2:
+                                        registro.estado = "R"
+                                    g += 1                            
+                                if registro.estado != "R":
+                                    registro.estado = "A" #Aceptado =  Con Calidad
+                        else:
+                            print(f"{WARNING}No hay Rubros ingresados para el producto del camion en cuestion, por lo tanto, no se puede realizar el control de calidad.{NORMAL}")
+                if not bandera:
+                    print(f"{WARNING}El camion no cumple con los requisitos para realizar esta acción{NORMAL}")    
+        else:
+            print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
+            
+        time.sleep(2.5)
+        clear_shell()
+        print("0 - Volver al menu anterior\n1 - Ingresar el peso bruto de otro camion")
+        option = input_validation_TP3.check_int()    
 
 def registro_peso_bruto(matriz_camiones: list, pesos: list, estado: list):
     clear_shell()
@@ -320,40 +391,34 @@ def menu_reportes(matriz_camiones: list, pesos: list, estado: list):
         print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
         option = input_validation_TP3.check_int()
     
-def menu_recepcion(matriz_camiones,estado,productos):
+def menu_recepcion():
     clear_shell()
+    bandera = False
     print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
     
     option = input_validation_TP3.check_int()
     while option != 0:
         if option == 1:
-            if productos[0] == "":
-                print(f"{WARNING}Aún no has cargado ningun producto. No vas a poder recepcionar un camion sin antes hacerlo{NORMAL}")
+            if not os.path.exists("OPERACIONES.dat"):
+                print(f"{WARNING}Aún no hay operaciones registradas.{NORMAL}")
             else:
-                print("Ingresar la patente del camión del cual desea registrar")
-                patente = input_validation_TP3.check_pat()
-                cupos_es_valido, indice = input_validation_TP3.check_cupo_valido(matriz_camiones, patente)
+                archivo_logico = open ("OPERACIONES.dat")
+                registro = main_TP3.Operaciones()
+                longitud_archivo = os.path.getsize("OPERACIONES.dat")
 
-                if cupos_es_valido:# si el camion ya posee un cupo, verifico su estado
-                    if estado[indice] == 'P':
-                        print("Que producto contiene el camion?")           
-                        producto_ingresado = input_validation_TP3.check_producto()# le pido que ingrese el producto correspondiente al camión ingresado
-                        while producto_ingresado not in productos:# si el producto ya fue ingresado hago que ingrese otro hasta que no se encuentre en la lista
-                            print(f"{WARNING}El producto no ha sido ingresado anteriormente.{NORMAL}")
-                            producto_ingresado = input_validation_TP3.check_producto()
-                        
-                        estado[indice] = 'E'# modifico su estado 
-                        matriz_camiones[indice][0] = patente
-                        matriz_camiones[indice][2] = indice + 1#guardo el identificador
-                        matriz_camiones[indice][1] = producto_ingresado
-                        #Guardo la patente y el producto, el identificador ya lo tengo
-                        print(f"{SUCCESS}El camión se encuentra en proceso de recepción, ya puede cargar los datos faltantes.{NORMAL}")
-                    elif estado[indice] == 'E':
-                        print(f"{WARNING}El camion ingresado ya ha sido recepcionado (se debe aclarar aún Peso Bruto y/o tara{NORMAL}")
-                    else:
-                        print(f"{WARNING}El camion ingresado ya ha cumplido el proceso completo de ingreso{NORMAL}")
+                print("Ingresar la patente del camión del cual desea ingresar")
+                patente_ingresada = input_validation_TP3.check_pat()
+                while pickle.tell(archivo_logico) < longitud_archivo:
+                    registro = pickle.load(archivo_logico)
+                    if patente_ingresada == registro.patente and registro.fecha == datetime.now() and registro.estado == "P":
+                        registro.estado = "A"
+                        pickle.dump(registro,archivo_logico)
+                        pickle.flush()
+                        bandera = True
+                if bandera:
+                    print(f"{SUCCESS}El camion ha sido ingresado con exito{NORMAL}")
                 else:
-                    print(f"{WARNING}El camión no tiene asignado un cupo válido{NORMAL}")
+                    print(f"{WARNING}El camión no ha podido ser recibido. Chequee los datos del mismo{NORMAL}")
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(2.5)
@@ -424,6 +489,9 @@ def menu_principal():
             elif option == 3:
                 pass
                 #menu_recepcion()
+            elif option == 4:
+                pass
+                #registrar_calidad()
             elif option == 5:
                 pass
                 #registro_peso_bruto()

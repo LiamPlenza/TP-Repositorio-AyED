@@ -7,7 +7,7 @@ Integrantes:
     Tomas Joel Wardoloff - Comisión 108
 """
 class Operaciones:
-    def __init__(self):
+    def _init_(self):
         self.patente = ""
         self.codprod = 0
         self.estado = ""
@@ -16,29 +16,29 @@ class Operaciones:
         self.tara = 0
 
 class Productos:
-    def __init__(self):
+    def _init_(self):
         self.codprod = 0
         self.nomprod = ""
         self.activo = False
 
 class Rubros:
-    def __init__(self):
+    def _init_(self):
         self.codrub = 0
         self.nomrub = ""
 
 class RubrosxProducto:
-    def __init__(self):
+    def _init_(self):
         self.codrubx = 0
         self.codprodx = ""
         self.vmin = 0.0
         self.vmax = 0.0
 
 class Silos:
-    def __init__(self):
+    def _init_(self):
         self.codsil = 0
         self.nomsil = ""
         self.codprods = 0
         self.stock = 0
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     user_menu_TP3.menu_principal()
