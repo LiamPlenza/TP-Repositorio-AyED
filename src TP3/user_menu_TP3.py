@@ -1,4 +1,5 @@
-import os, time, pickle, io, os.path, datetime
+import os, time, pickle, io, os.path
+from datetime import datetime
 import input_validation_TP3, archivos_TP3, main_TP3
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
@@ -11,9 +12,7 @@ def clear_shell():
     else:
         return os.system("clear")
     
-"""
-    Ver el uso del metodo index para evitar la salida forzada del ciclo
-"""
+
 def entrega_de_cupos():
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Solicitar cupo")
@@ -21,7 +20,7 @@ def entrega_de_cupos():
     bandera = 0
     while option != 0:
         if option == 1:
-            if input_validation_TP3.check_producto:
+            if not input_validation_TP3.check_producto():
                 print(f"{WARNING}No hay productos activos.{NORMAL}")
             else:
                 registro = main_TP3.Operaciones()
@@ -29,9 +28,10 @@ def entrega_de_cupos():
                     archivo_logico = open("OPERACIONES.dat", "r+b")
                     longitud_archivo = os.path.getsize("OPERACIONES.dat")
                     patente_ingresada = input_validation_TP3.check_pat()
-                    fecha_ingresada = input_validation_TP3.check_fecha(print("Ingrese la fecha deseada para el cupo"))
-                    
-                    while pickle.tell(archivo_logico) < longitud_archivo:
+                    print("Ingrese la fecha deseada para el cupo:")
+                    fecha_ingresada = input_validation_TP3.check_fecha()
+                    archivo_logico.seek(io.SEEK_SET)
+                    while archivo_logico.tell() < longitud_archivo:
                         registro = pickle.load(archivo_logico)
                         if patente_ingresada == registro.patente and fecha_ingresada == registro.fecha:
                             print(f"{WARNING}Cupo ya otorgado.{NORMAL}")
@@ -44,6 +44,8 @@ def entrega_de_cupos():
                         registro.codprod = producto_ingresado
                         registro.pesobruto = 0
                         registro.tara = 0
+                        print(f"{SUCCESS}El cupo ha sido otorgado con éxito.{NORMAL}")
+
                 else:
                     archivo_logico = open("OPERACIONES.dat", "w+b")
                     registro.patente = input_validation_TP3.check_pat()
@@ -53,8 +55,8 @@ def entrega_de_cupos():
                     registro.pesobruto = 0
                     registro.tara = 0
                     pickle.dump(registro,"OPERACIONES.dat")
-                pickle.flush()
-                pickle.close(archivo_logico)
+                archivo_logico.flush()
+                archivo_logico.close()
 
         else:
             print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
@@ -66,7 +68,7 @@ def entrega_de_cupos():
 
 def registrar_calidad():
     clear_shell()
-    print("0 - Volver al menu anterior\n1 - Registrar peso bruto")
+    print("0 - Volver al menu anterior\n1 - Registrar calidad")
     option = input_validation_TP3.check_int()
     
     while option != 0:
@@ -74,10 +76,10 @@ def registrar_calidad():
             if not os.path.exists("OPERACIONES.dat"):
                 print(f"{WARNING}Aún no hay operaciones registradas.{NORMAL}")
             else:
-                archivo_logico = open ("OPERACIONES.dat")
+                archivo_logico = open ("OPERACIONES.dat", "r+b")
                 archivo_logico_r = open("RUBROS.dat", "r+b")
                 archivo_logico_p= open("PRODUCTOS.dat", "r+b")
-                archivo_logico_rxp = open ("RUBROS-X-PRODUCTO.dat")
+                archivo_logico_rxp = open ("RUBROS-X-PRODUCTO.dat", "r+b")
                 registro = main_TP3.Operaciones()
                 registro_r = main_TP3.Rubros()
                 registro_p = main_TP3.Productos()
@@ -90,30 +92,30 @@ def registrar_calidad():
                 bandera = False
                 print("Ingresar la patente del camión del cual desea ingresar")
                 patente_ingresada = input_validation_TP3.check_pat()
-                while pickle.tell(archivo_logico) < longitud_archivo:
+                while archivo_logico.tell() < longitud_archivo:
                     registro = pickle.load(archivo_logico)
                     
                     if patente_ingresada == registro.patente and registro.estado == "A": #Chequeo si el estado del camion es el correcto
                         bandera = True
                         rubros = []
-                        while pickle.tell(archivo_logico_rxp) < longitud_archivo_rxp:
+                        while archivo_logico_rxp.tell() < longitud_archivo_rxp:
                             registro_rxp = pickle.load("RUBROS-X-PRODUCTO.dat") 
                             if registro.codprod == registro_rxp.codprod: #Busco el producto del camion dentro del archivo rubro por producto
                                rubros.append(registro_rxp.codrub)
                         if len(rubros) > 0: 
-                            while pickle.tell(archivo_logico_p) < longitud_archivo_p:
+                            while archivo_logico_p.tell() < longitud_archivo_p:
                                 registro_p = pickle.load(archivo_logico_p)
                                 if registro_p.codprod == registro_rxp.codprod:
                                     print(f"El camion contiene {registro_p.nomprod} ingrese la calidad correspondiente a los siguientes rubros:")
                                 r=0
                                 g=0
                                 while g < len(rubros):
-                                    while pickle.tell(archivo_logico_r) < longitud_archivo_r:
+                                    while archivo_logico_r.tell() < longitud_archivo_r:
                                         registro_r = pickle.load(archivo_logico_r)
                                         if registro_r.codrub == rubros[g]:
                                             valor = int(input(f"Ingrese el valor para el rubro {registro_r.nomrub}:"))
                                             archivo_logico_rxp.seek(io.SEEK_SET) # me muevo al inicio del archivo
-                                            while pickle.tell(archivo_logico_rxp) < longitud_archivo_rxp:
+                                            while archivo_logico_rxp.tell() < longitud_archivo_rxp:
                                                 registro_rxp = pickle.load("RUBROS-X-PRODUCTO.dat")
                                                 if registro_rxp == rubros[g] and registro_p.codprod == registro_rxp.codprod:
                                                     if valor < registro_rxp.vmin or valor > registro_rxp.vmax:
@@ -134,45 +136,47 @@ def registrar_calidad():
         clear_shell()
         print("0 - Volver al menu anterior\n1 - Ingresar el peso bruto de otro camion")
         option = input_validation_TP3.check_int()    
+    archivo_logico.flush()
+    archivo_logico_p.flush()
+    archivo_logico_r.flush()
+    archivo_logico_rxp.flush()
+    archivo_logico_p.close()
+    archivo_logico_r.close()
+    archivo_logico_rxp.close()
+    archivo_logico.close()
 
-def registro_peso_bruto(matriz_camiones: list, pesos: list, estado: list):
+def registro_peso_bruto():
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Registrar peso bruto")
     option = input_validation_TP3.check_int()
     
     while option != 0:
         if option == 1:
-    
-    
-            print("Ingresar la patente del camión del cual desea registrar el peso")
-            patente = input_validation_TP3.check_pat()
-            
-            cupo_es_valido, indice = input_validation_TP3.check_cupo_valido(matriz_camiones, patente)# verifico que la patente ingresada ya haya sacado su cupo    
-            if cupo_es_valido:
-                if estado[indice] == 'E':# si posee su cupo verifico su estado 
-                    if pesos[indice][0] == 0:
-                        peso_ingresado = input_validation_TP3.check_float("Ahora ingrese el peso bruto del camión: ")
-                        
-                        while 0 > peso_ingresado or peso_ingresado > 52500:
-                            print(f"{WARNING}Peso fuera de los límites, ingrese un número entre 0 y 52500{NORMAL}")
-                            peso_ingresado= input_validation_TP3.check_float("Ahora ingrese el peso bruto del camión: ")
-                            
-                        pesos[indice][0] = peso_ingresado
-                        pesos[indice][2] = indice+1 #guardo el identificador
-                        print(f"{SUCCESS}Peso registrado con éxito{NORMAL}")
-                    else:
-                        print(f"{WARNING}El camión ya tiene un peso bruto asignado{NORMAL}")
-                else:
-                    print(f"{WARNING}El estado del camión debe ser 'En proceso' para poder registrar su peso bruto.\nDirijase a recepción antes de ingresar el peso bruto correspondiente{NORMAL}")
+            if not os.path.exists("OPERACIONES.dat"):
+                print(f"{WARNING}Aún no hay operaciones registradas.{NORMAL}")
             else:
-                print(f"{WARNING}El camión no tiene asignado un cupo válido{NORMAL}")
-        else:
-            print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
-            
-        time.sleep(2.5)
-        clear_shell()
-        print("0 - Volver al menu anterior\n1 - Ingresar el peso bruto de otro camion")
-        option = input_validation_TP3.check_int()    
+                archivo_logico = open("OPERACIONES.dat", "r+b")
+                registro = main_TP3.Operaciones()
+                longitud_archivo = os.path.getsize("OPERACIONES.dat")
+                print("Ingresar la patente del camión del cual desea ingresar")
+                patente_ingresada = input_validation_TP3.check_pat()
+                
+                while archivo_logico.tell() < longitud_archivo:
+                    print("ENTRA")
+                    registro = pickle.load(archivo_logico)
+                    if patente_ingresada == registro.patente and registro.estado == "A":
+                        peso_bruto = input_validation_TP3.check_int("Ingrese el peso bruto del camion")
+                        print("Peso bruto registrado con exito")
+                        registro.estado = "B"
+                        registro.pesobruto = peso_bruto
+                    else:
+                        print("error")
+                archivo_logico.flush()
+                archivo_logico.close()
+        print("0 - Volver al menu anterior\n1 - Registrar peso bruto")
+        option = input_validation_TP3.check_int()
+    
+
 
 def registro_tara(matriz_camiones: list, pesos: list, estado: list):
     clear_shell()
@@ -215,181 +219,8 @@ def registro_tara(matriz_camiones: list, pesos: list, estado: list):
         print("0 - Volver al menu anterior\n1 - Ingresar la tara de otro camion")
         option = input_validation_TP3.check_int()   
 
-def menu_reportes(matriz_camiones: list, pesos: list, estado: list):
-    clear_shell()
-    print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
-    total_camiones = 0
-    may_men_pat = ["No se ingresaron camiones con este producto"]*2,["No se ingresaron camiones con este producto"]*2,["No se ingresaron camiones con este producto"]*2,["No se ingresaron camiones con este producto"]*2,["No se ingresaron camiones con este producto"]*2
-    may_men = [0]*2,[0]*2,[0]*2,[0]*2,[0]*2
-    total_productos = [0]*3,[0]*3,[0]*3,[0]*3,[0]*3
-    prom_peso_neto = [0]*5
-    aux = [0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3,[0]*3
-    option = input_validation_TP3.check_int()
-    cupos_otorgados = 0
-    
-    while option != 0:
-        if option == 1:
-            for i in range(0,7):
-                if matriz_camiones[i][0] != "":
-                    cupos_otorgados += 1
-                """
-                Dentro de la matriz total producto le asignamos una fila a cada producto donde vamos a cargar sus datos
-                MAIZ = Fila 0
-                TRIGO = Fila 1
-                CEBADA = Fila 2
-                ARROZ = Fila 3
-                SOJA = Fila 4
-                """
-            for i in range(0,7):
-                if estado[i] == 'F':
-                    if matriz_camiones [i][1] == "MAIZ":
-                        total_productos [0][0] += 1
-                        total_camiones += 1
-                        total_productos [0][1] += pesos[i][0]
-                        total_productos [0][2] += pesos[i][0] - pesos[i][1]
-                        if total_productos [0][0] == 1 or total_productos [0][2] > may_men[0][0]:
-                            may_men[0][0] = total_productos [0][2]
-                            may_men_pat[0][0] = matriz_camiones [i][0]
-
-                        if total_productos [0][0] == 1 or total_productos [0][2] < may_men[0][1]:
-                            may_men[0][1] = total_productos [0][2]
-                            may_men_pat[0][1] = matriz_camiones [i][0]
-                            
-                    if matriz_camiones [i][1] == "TRIGO":
-                        total_camiones += 1
-                        total_productos [1][0] += 1
-                        total_productos [1][1] += pesos[i][0]
-                        total_productos [1][2] += pesos[i][0] - pesos[i][1]
-                        if total_productos [1][0] == 1 or total_productos [1][2] > may_men[1][0]:
-                            may_men[1][0] = total_productos [1][2]
-                            may_men_pat[1][0] = matriz_camiones [i][0]
-                        if total_productos [1][0] == 1 or total_productos [1][2] < may_men[1][1]:
-                            may_men[1][1] = total_productos [1][2]
-                            may_men_pat[1][1] = matriz_camiones [i][0]
-                            
-                    if matriz_camiones [i][1] == "CEBADA":
-                        total_camiones += 1
-                        total_productos [2][0] += 1
-                        total_productos [2][1] += pesos[i][0]
-                        total_productos [2][2] += pesos[i][0] - pesos[i][1]
-                        if total_productos [2][0] == 1 or total_productos [2][2] > may_men[2][0]:
-                            may_men[2][0] = total_productos [2][2]
-                            may_men_pat[2][0] = matriz_camiones [i][0]
-                        if total_productos [2][0] == 1 or total_productos [2][2] < may_men[2][1]:
-                            may_men[2][1] = total_productos [2][2]
-                            may_men_pat[2][1] = matriz_camiones [i][0]
-                            
-                    if matriz_camiones [i][1] == "ARROZ":
-                        total_camiones += 1
-                        total_productos [3][0] += 1
-                        total_productos [3][1] += pesos[i][0]
-                        total_productos [3][2] += pesos[i][0] - pesos[i][1]
-                        if total_productos [3][0] == 1 or total_productos [3][2] > may_men[3][0]:
-                            may_men[3][0] = total_productos [3][2]
-                            may_men_pat[3][0] = matriz_camiones [i][0]
-                        if total_productos [3][0] == 1 or total_productos [3][2] < may_men[3][1]:
-                            may_men[3][1] = total_productos [3][2]
-                            may_men_pat[3][1] = matriz_camiones [i][0]
-                            
-                    if matriz_camiones [i][1] == "SOJA":
-                        total_camiones += 1
-                        total_productos [4][0] += 1
-                        total_productos [4][1] += pesos[i][0]
-                        total_productos [4][2] += pesos[i][0] - pesos[i][1]
-                        if total_productos [4][0] == 1 or total_productos [4][2] > may_men[4][0]:
-                            may_men[4][0] = pesos[i][1]
-                            may_men_pat[4][0] = matriz_camiones [i][0]
-                        if total_productos [4][0] == 1 or total_productos [4][2] < may_men[4][1]:
-                            may_men[4][1] = total_productos [4][2]
-                            may_men_pat[4][1] = matriz_camiones [i][0]
-            
-            if total_productos[0][0] != 0:               
-                prom_peso_neto[0] = total_productos[0][2] / total_productos [0][0]
-            else:
-                prom_peso_neto[0] = 0
-            if total_productos[1][0] != 0:
-                prom_peso_neto[1] = total_productos[1][2] / total_productos [1][0]
-            else:
-                prom_peso_neto[1] = 0
-            if total_productos[2][0] != 0:
-                prom_peso_neto[2] = total_productos[2][2] / total_productos [2][0]
-            else:
-                prom_peso_neto[2] = 0
-            if total_productos[3][0] != 0:
-                prom_peso_neto[3] = total_productos[3][2] / total_productos [3][0]
-            else:
-                prom_peso_neto[3] = 0
-            if total_productos[4][0] != 0:
-                prom_peso_neto[4] = total_productos[4][2] / total_productos [4][0]
-            else:
-                prom_peso_neto[4] = 0
-            
-            if cupos_otorgados == 0:
-                print(f"{WARNING}No se han entregado cupos por lo tanto, no hay camiones ingresados{NORMAL}")
-                time.sleep(0.5)
-            else:
-                if total_camiones == 0:
-                    print("--------------------\nLa cantidad de cupos es: ",cupos_otorgados)
-                    print(f"--------------------\n{WARNING}No hay camiones recibidos{NORMAL}\n--------------------")
-                    time.sleep(0.5)
-
-                else:
-                    print("--------------------\nLa cantidad de cupos es: ",cupos_otorgados,"\n--------------------\nLa cantidad de camiones recibidos es: ",total_camiones,"\n--------------------\nLa cantidad de camiones de MAIZ que se ingresaron es: ",total_productos[0][0],"\n--------------------\nLa cantidad de camiones de TRIGO que se ingresaron es: ",total_productos[1][0],"\n--------------------\nLa cantidad de camiones de CEBADA que se ingresaron es: ",total_productos[2][0],"\n--------------------\nLa cantidad de camiones de ARROZ que se ingresaron es: ",total_productos[3][0],"\n--------------------\nLa cantidad de camiones de SOJA que se ingresaron es: ",total_productos[4][0])
-                    input("Presione ENTER para continuar...")
-                    print("--------------------\nEl peso neto total de camiones de MAIZ que se ingresaron es: ",total_productos[0][2],"\n--------------------\nEl peso neto total de camiones de TRIGO que se ingresaron es: ",total_productos[1][2],"\n--------------------\nEl peso neto total de camiones de CEBADA que se ingresaron es: ",total_productos[2][2],"\n--------------------\nEl peso neto total de camiones de ARROZ que se ingresaron es: ",total_productos[3][2],"\n--------------------\nEl peso neto total de camiones de SOJA que se ingresaron es: ",total_productos[4][2])
-                    input("Presione ENTER para continuar...")
-                    print("--------------------\nEl peso neto promedio de los camiones de MAIZ que se ingresaron es: ",prom_peso_neto[0],"\n--------------------\nEl peso neto promedio de los camiones de TRIGO que se ingresaron es: ",prom_peso_neto[1],"\n--------------------\nEl peso neto promedio de los camiones de CEBADA que se ingresaron es: ",prom_peso_neto[2],"\n--------------------\nEl peso neto promedio de los camiones de ARROZ que se ingresaron es: ",prom_peso_neto[3],"\n--------------------\nEl peso neto promedio de los camiones de SOJA que se ingresaron es: ",prom_peso_neto[4])
-                    input("Presione ENTER para continuar...")
-                    print("--------------------\nLa patente del camion de MAIZ que mas producto descargó es: ",may_men_pat[0][0],"\n--------------------\nLa patente del camion de TRIGO que mas producto descargó es ",may_men_pat[1][0],"\n--------------------\nLa patente del camion de CEBADA que mas producto descargó es ",may_men_pat[2][0],"\n--------------------\nLa patente del camion de ARROZ que mas producto descargó es ",may_men_pat[3][0],"\n--------------------\nLa patente del camion de SOJA que mas producto descargó es ",may_men_pat[4][0])
-                    input("Presione ENTER para continuar...")
-                    print("--------------------\nLa patente del camion de MAIZ que menos producto descargó es: ",may_men_pat[0][1],"\n--------------------\nLa patente del camion de TRIGO que menos producto descargó es ",may_men_pat[1][1],"\n--------------------\nLa patente del camion de CEBADA que menos producto descargó es ",may_men_pat[2][1],"\n--------------------\nLa patente del camion de ARROZ que menos producto descargó es ",may_men_pat[3][1],"\n--------------------\nLa patente del camion de SOJA que menos producto descargó es ",may_men_pat[4][1],"\n--------------------")
-                    input("Presione ENTER para continuar...")
-                    i=0
-                    co=1
-                    while i < total_camiones:
-                        aux[i][0] = matriz_camiones[i][0]
-                        aux[i][1] = matriz_camiones[i][1]
-                        aux[i][2] = pesos[i][0]-pesos[i][1]
-                        i+=1
-                    while co < total_camiones:
-                        if aux[co][2] > aux[co - 1][2]:
-                            aux2 = aux[co - 1][2]
-                            aux[co - 1][2] = aux [co][2]
-                            aux[co][2] = aux2
-                            
-                            aux2 = aux[co - 1][0]
-                            aux[co - 1][0] = aux [co][0]
-                            aux[co][0] = aux2
-                            
-                            aux2 = aux[co - 1][1]
-                            aux[co - 1][1] = aux [co][1]
-                            aux[co][1] = aux2
-
-                            if co == 1:
-                                co = co + 1
-                            else:
-                                co = co - 1
-                        else:
-                            co = co + 1
-                        
-                    co=0
-                    print("La lista de camiones ingresados ordenada por peso neto descendente quedaria asi:")
-                    while co <total_camiones:
-                        print(co+1," - El camion de patente ",aux[co][0]," que llevaba",aux[co][2],"kilogramos de ",aux[co][1])
-
-                        co+=1
-                    input("Presione ENTER para continuar...")
-        else:
-            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
-            time.sleep(2.5)
-
-            clear_shell()
-            print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
-            option = input_validation_TP3.check_int()
-        time.sleep(2.5)
-        clear_shell()
-        print("0 - Volver al menu anterior\n1 - Mostrar el reporte actual")
-        option = input_validation_TP3.check_int()
+def menu_reportes():
+    pass
     
 def menu_recepcion():
     clear_shell()
@@ -408,12 +239,12 @@ def menu_recepcion():
 
                 print("Ingresar la patente del camión del cual desea ingresar")
                 patente_ingresada = input_validation_TP3.check_pat()
-                while pickle.tell(archivo_logico) < longitud_archivo:
+                while archivo_logico.tell() < longitud_archivo:
                     registro = pickle.load(archivo_logico)
-                    if patente_ingresada == registro.patente and registro.fecha == datetime.now() and registro.estado == "P":
+                    if patente_ingresada == registro.patente and registro.fecha == datetime.today() and registro.estado == "P":
                         registro.estado = "A"
                         pickle.dump(registro,archivo_logico)
-                        pickle.flush()
+                        archivo_logico.flush()
                         bandera = True
                 if bandera:
                     print(f"{SUCCESS}El camion ha sido ingresado con exito{NORMAL}")
@@ -484,23 +315,17 @@ def menu_principal():
             if option == 1:
                 menu_administraciones()
             elif option == 2:
-                pass
-                #entrega_de_cupos()
+                entrega_de_cupos()
             elif option == 3:
-                pass
-                #menu_recepcion()
+                menu_recepcion()
             elif option == 4:
-                pass
-                #registrar_calidad()
+                registrar_calidad()
             elif option == 5:
-                pass
-                #registro_peso_bruto()
+                registro_peso_bruto()
             elif option == 7:
-                pass
-                #registro_tara()
+                registro_tara()
             elif option == 8:
-                pass
-                #menu_reportes()
+                menu_reportes()
             else:
                 print(f"{WARNING}Esta funcionalidad está en construcción{NORMAL}")
         time.sleep(2.5)

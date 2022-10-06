@@ -40,5 +40,5 @@ class Silos:
         self.codprods = 0
         self.stock = 0
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     user_menu_TP3.menu_principal()

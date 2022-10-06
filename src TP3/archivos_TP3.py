@@ -146,38 +146,68 @@ def alta(menu):
             print(f"{WARNING}Para ingresar un rubro x producto debe haber al menos 1 producto y un rubro ingresados{NORMAL}")
 
     elif menu == "silos":
+        registro = main_TP3.Silos() # inicio los objetos de silos 
+        registro_producto = main_TP3.Productos() # inicio los objetos de productos
+        if input_validation_TP3.check_producto():# me fijo si hay productos ingresados o activos
+            archivo_logico_productos= open("PRODUCTOS.dat", "r+b")
+            longitud_archivo_productos = os.path.getsize("PRODUCTOS.dat")
+            
+            archivo_logico_productos.seek(longitud_archivo_productos - 100) # para posicionarme al incio del último registro
+            registro_producto = pickle.load(archivo_logico_productos)
+            ultimo_codigo_producto = registro_producto.codprod
+            
+            if os.path.exists("SILOS.dat"):
+                archivo_logico= open("SILOS.dat", "r+b")
+                longitud_archivo = os.path.getsize("SILOS.dat")
+                
+                registro.codsil = 1 # ingreso el codigo del primer silo
+                nomsil_ingresado = input("Ingrese el nombre del silo: ").capitalize().ljust(20)# guardo el nombre del silo
+                
+                archivo_logico.seek(io.SEEK_SET) # me muevo al inicio del archivo
+                while archivo_logico.tell() < longitud_archivo: # verifico si el nombre del silo ya existe
+                    registro = pickle.load(archivo_logico)
 
-        registro = main_TP3.Silos()
-        registro_p = main_TP3.Productos()
-        if os.path.exist("PRODUCTOS.dat"):
-            if os.path.exist("SILOS.dat"):
-                archivo_logico = open("SILOS.dat", "a+b")
-                archivo_logico_p= open("PRODUCTOS.dat", "a+b")
-
-
+                    if registro.nomsil == nomsil_ingresado:
+                        print(f"{WARNING}Ya existe ese nombre de silo{NORMAL}")
+                        nomsil_ingresado = input(f"Ingrese otro nombre de silo: ").capitalize().ljust(20)
+                        archivo_logico.seek(io.SEEK_SET)    
+                
+                registro.nomsil = nomsil_ingresado # paso el checkeo entonces lo guardo 
+                consulta()# imprimo la lista de los productos
+                registro.codprod = int(input("Ingrese el codigo del producto: "))# le pido el código de un producto que exista
+                
+                while registro.codprod not in [x for x in range(1, ultimo_codigo_producto+1)]:# verifico si el código de producto es de un producto que exista
+                    registro.codprod = int(input(f"{WARNING}El codigo del producto no se encuentra ingresado.{NORMAL}\nIngrese un codigo entre 1 y {ultimo_codigo_producto} :"))
+                
+                registro.stock = int(input("Ingrese el stock: "))
+                while registro.stock < 0:# verifico que el stock no sea menor a cero
+                    registro.stock = int(input(f"{WARNING}El stock no puede ser negativo{NORMAL}\nIngrese el stock:"))
             else:
                 archivo_logico = open("SILOS.dat", "w+b")
-                archivo_logico_p= open("PRODUCTOS.dat", "r+b")
-                registro_p = pickle.load(archivo_logico_p)
-                ult = registro_p.codprod
-                registro.codsil = 1
-                registro.nomsil = input("Ingrese el nombre del silo:")
-                registro.codprods = input("Ingrese el codigo del producto:")
-                while registro.codprods < 1 or registro.codprods > ult:
-                    registro.codprods = input(f"{WARNING}El codigo del producto no se encuentra ingresado.{NORMAL}\nIngrese un codigo entre 1 y {ult}:")
-                registro.stock = input("Ingrese el stock:")
-                while registro.stock < 0:
-                    registro.stock = input(f"{WARNING}El stock no puede ser negativo{NORMAL}\nIngrese el stock:")
+                
+                registro.codsil = 1 # ingreso el codigo del primer silo
+                registro.nomsil = input("Ingrese el nombre del silo: ").capitalize().ljust(20)# guardo el nombre del silo
+                consulta()# imprimo la lista de los productos
+                registro.codprod = int(input("Ingrese el codigo del producto: "))# le pido el código de un producto que exista
+                
+                while registro.codprod not in [x for x in range(1, ultimo_codigo_producto+1)]:# verifico si el código de producto es de un producto que exista
+                    registro.codprod = int(input(f"{WARNING}El codigo del producto no se encuentra ingresado.{NORMAL}\nIngrese un codigo entre 1 y {ultimo_codigo_producto} :"))
+                
+                registro.stock = int(input("Ingrese el stock: "))
+                while registro.stock < 0:# verifico que el stock no sea menor a cero
+                    registro.stock = int(input(f"{WARNING}El stock no puede ser negativo{NORMAL}\nIngrese el stock:"))
+                    
+            archivo_logico_productos.flush() # limpio el bus de datos de productos
+            archivo_logico_productos.close() # cierro el archivo de productos
         else:
-            print(f"{WARNING}Para ingresar un silo debe haber al menos 1 producto ingresado{NORMAL}")
+            print(f"{WARNING}Para ingresar un silo debe haber al menos 1 producto ingresado o activo{NORMAL}")
             
     pickle.dump(registro, archivo_logico) # guardo el regristro en el archivo 
     archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
     archivo_logico.close()# cierro el archivo
     print(f"{SUCCESS}El registro ha sido guardado con exito{NORMAL}")
-                    
+              
 def consulta():
-    user_menu_TP3.clear_shell()
     if os.path.exists("PRODUCTOS.dat"):
         if input_validation_TP3.check_producto():
             registro = main_TP3.Productos()
@@ -204,23 +234,63 @@ def consulta():
         
 def baja():
     user_menu_TP3.clear_shell()
+    if os.path.exists("PRODUCTOS.dat"):
+        if input_validation_TP3.check_producto():# verifico si existen productos activados
+            consulta() # imprimo la lista actual de productos
+            option = input_validation_TP3.check_int()
+
+            registro = main_TP3.Productos()# le asigno el objeto al registro
+            archivo_logico = open("PRODUCTOS.dat", "r+b")
+            longitud_archivo = os.path.getsize("PRODUCTOS.dat")
+
+            archivo_logico.seek(longitud_archivo - 100) # para posicionarme al inico del último registro
+            registro = pickle.load(archivo_logico)# traigo el último registro
+            ultimo_registro = registro.codprod# veo cual es su código del último producto
+
+            if option != 0:
+                while option not in [x for x in range(1, ultimo_registro+1)]: # me fijo si el código ingresado del producto a eliminar está entre 1 y el último codigo de producto
+                    print(f"{WARNING}La opción elegida no se encuentra entre las dadas{NORMAL}")
+                    option = input_validation_TP3.check_int()
+
+                archivo_logico.seek(longitud_archivo - (longitud_archivo - (option-1)*100))# me posicion en el registro a modificar, cada registro pesa 100 por ende si tengo un archivo de 300 y quiero el segundo registro me tengo que para en el 100
+                posicion = archivo_logico.tell()# guardo la posición del registro antes de avanzar
+                registro = pickle.load(archivo_logico)# traigo el registro el archivo
+
+                if not registro.activo:
+                    print(f"{WARNING}El registro seleccionado se encuentra desactivado{NORMAL}")
+                else:
+                    registro.activo = False
+                    archivo_logico.seek(posicion) # me muevo a la posición del registro a modificar
+                    pickle.dump(registro, archivo_logico) # lo actualizo
+                    archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
+
+                    print(f"{SUCCESS}El registro ha sido actualizado con exito{NORMAL}")
+
+            archivo_logico.close()# cierro el archivo
+        else:
+            print(f"{WARNING}Todos los registros se encuentran desactivados. Para activarlos dirigase al menu ALTA{NORMAL}")
+    else:
+        print(f"{WARNING}No se ha cargado ningun producto.{NORMAL}")
+    time.sleep(1.5)
+
+def modificacion():
+    user_menu_TP3.clear_shell()
     if input_validation_TP3.check_producto():
-        consulta() # imprimo la lista actual de productos
+        consulta()
         option = input_validation_TP3.check_int()
         
         registro = main_TP3.Productos()
         archivo_logico = open("PRODUCTOS.dat", "r+b")
         longitud_archivo = os.path.getsize("PRODUCTOS.dat")
-        
         archivo_logico.seek(longitud_archivo - 100) # para posicionarme al inico del último registro
-        registro = pickle.load(archivo_logico)
-        ultimo_registro = registro.codprod
+        registro = pickle.load(archivo_logico)# traigo el último registro
+        ultimo_registro = registro.codprod# veo cual es su código del último producto
         
         if option != 0:
             while option not in [x for x in range(1, ultimo_registro+1)]: # me fijo si el código ingresado del producto a eliminar está entre 1 y el último codigo de producto
                 print(f"{WARNING}La opción elegida no se encuentra entre las dadas{NORMAL}")
                 option = input_validation_TP3.check_int()
-
+                
             archivo_logico.seek(longitud_archivo - (longitud_archivo - (option-1)*100))# me posicion en el registro a modificar, cada registro pesa 100 por ende si tengo un archivo de 300 y quiero el segundo registro me tengo que para en el 100
             posicion = archivo_logico.tell()# guardo la posición del registro antes de avanzar
             registro = pickle.load(archivo_logico)# traigo el registro el archivo
@@ -228,50 +298,25 @@ def baja():
             if not registro.activo:
                 print(f"{WARNING}El registro seleccionado se encuentra desactivado{NORMAL}")
             else:
-                registro.activo = False
+                nomprod_ingresado = input(f"Ingrese el nuevo nombre del producto cuyo código es {registro.codprod}: ").capitalize().ljust(20)
+                
+                archivo_logico.seek(io.SEEK_SET)
+                while archivo_logico.tell() < longitud_archivo:
+                    registro = pickle.load(archivo_logico)# traigo el primer registro
+                    
+                    if registro.nomprod == nomprod_ingresado:
+                        print(f"{WARNING}Ya existe este producto. A este producto le corresponde el código: {registro.codprod}{NORMAL}")
+                        nomprod_ingresado = input(f"Ingrese otro nombre de producto: ").capitalize().ljust(20)
+                        archivo_logico.seek(io.SEEK_SET)# me vuelvo a mover al inicio
+                        
+                archivo_logico.seek(posicion) # me muevo a la posición del registro a modificar
+                registro = pickle.load(archivo_logico)
+                registro.nomprod = nomprod_ingresado
                 archivo_logico.seek(posicion) # me muevo a la posición del registro a modificar
                 pickle.dump(registro, archivo_logico) # lo actualizo
                 archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
-
                 print(f"{SUCCESS}El registro ha sido actualizado con exito{NORMAL}")
-                
         archivo_logico.close()# cierro el archivo
     else:
         print(f"{WARNING}Todos los registros se encuentran desactivados. Para activarlos dirigase al menu ALTA{NORMAL}")
-        time.sleep(1.5)
-
-def modificacion():
-    user_menu_TP3.clear_shell()
-    i = 0
-    if abm_list[0] == "":
-        print(f"{WARNING}No hay abm_list ingresados{NORMAL}")
-        time.sleep(1.5)
-    else:# como el array de abm_list no está vacía la función consulta va a mostrar el array completo
-        consulta()
-        option = input_validation_TP3.check_int()
-    
-        while option != 0:
-            if abm_list[option-1] == "":
-                print(f"{WARNING}Ingrese un titular existente{NORMAL}")
-                option = input_validation_TP3.check_int() 
-            else:
-                if abm_list[option - 1] == 0:
-                    print(f"{WARNING}No es posible modificar un elemento que está vacio{NORMAL}")
-                else:
-                    abm_list[option - 1] = input_validation_TP3.check_producto()
-                    if option == 3: 
-                            while abm_list[2] == abm_list[0] or abm_list[2] == abm_list [1]:
-                                print(f"{WARNING}El producto ya ha sido ingresado. Elija otro de la lista {NORMAL}")
-                                abm_list[option-1] = input_validation_TP3.check_producto()
-                    elif option == 2:
-                        while abm_list[1] == abm_list[0] or abm_list[1] == abm_list[2]:
-                            print(f"{WARNING}El producto ya ha sido ingresado. Elija otro de la lista {NORMAL}")
-                            abm_list[option-1] = input_validation_TP3.check_producto()
-                    elif option == 1:
-                        while abm_list[0] == abm_list[1] or abm_list[0] == abm_list[2]:
-                            print(f"{WARNING}El producto ya ha sido ingresado. Elija otro de la lista {NORMAL}")
-                            abm_list[option-1] = input_validation_TP3.check_producto()
-                    print(f"{SUCCESS}El titular {option} ha sido actualizado{NORMAL}")
-                    time.sleep(1.5)
-                    consulta(abm_list)
-                    option = input_validation_TP3.check_int()#muestro la lista actualizada de abm_list
+    time.sleep(1.5)
