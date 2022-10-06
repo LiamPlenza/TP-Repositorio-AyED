@@ -11,7 +11,15 @@ def clear_shell():
         return os.system("cls")
     else:
         return os.system("clear")
-    
+def hoy():
+    dia = datetime.today().day
+    mes = datetime.today().month
+    año = datetime.today().year
+    dia = str(dia)
+    mes = str(mes)
+    año = str(año)
+    fecha = dia+"/"+mes+"/"+año
+    return fecha
 
 def entrega_de_cupos():
     clear_shell()
@@ -45,6 +53,10 @@ def entrega_de_cupos():
                         registro.pesobruto = 0
                         registro.tara = 0
                         print(f"{SUCCESS}El cupo ha sido otorgado con éxito.{NORMAL}")
+                        pickle.dump(registro,archivo_logico)
+                        archivo_logico.flush()
+                        archivo_logico.close()
+                    
 
                 else:
                     archivo_logico = open("OPERACIONES.dat", "w+b")
@@ -54,9 +66,12 @@ def entrega_de_cupos():
                     registro.estado = "P"
                     registro.pesobruto = 0
                     registro.tara = 0
-                    pickle.dump(registro,"OPERACIONES.dat")
-                archivo_logico.flush()
-                archivo_logico.close()
+                    pickle.dump(registro,archivo_logico)
+                    print(f"{SUCCESS}El cupo ha sido otorgado con éxito.{NORMAL}")
+
+                    archivo_logico.flush()
+                    archivo_logico.close()
+                    
 
         else:
             print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
@@ -176,8 +191,6 @@ def registro_peso_bruto():
         print("0 - Volver al menu anterior\n1 - Registrar peso bruto")
         option = input_validation_TP3.check_int()
     
-
-
 def registro_tara(matriz_camiones: list, pesos: list, estado: list):
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Registrar tara")
@@ -233,23 +246,35 @@ def menu_recepcion():
             if not os.path.exists("OPERACIONES.dat"):
                 print(f"{WARNING}Aún no hay operaciones registradas.{NORMAL}")
             else:
-                archivo_logico = open ("OPERACIONES.dat")
+                archivo_logico = open ("OPERACIONES.dat", "r+b")
                 registro = main_TP3.Operaciones()
                 longitud_archivo = os.path.getsize("OPERACIONES.dat")
 
                 print("Ingresar la patente del camión del cual desea ingresar")
                 patente_ingresada = input_validation_TP3.check_pat()
+                archivo_logico.seek(io.SEEK_SET)
                 while archivo_logico.tell() < longitud_archivo:
+                    print(archivo_logico.tell())
+                    print(longitud_archivo)
                     registro = pickle.load(archivo_logico)
-                    if patente_ingresada == registro.patente and registro.fecha == datetime.today() and registro.estado == "P":
-                        registro.estado = "A"
-                        pickle.dump(registro,archivo_logico)
-                        archivo_logico.flush()
+                    fecha = hoy()
+                    if patente_ingresada == registro.patente and registro.fecha == fecha and registro.estado == "P":
+                        pos = archivo_logico.tell()
                         bandera = True
+
                 if bandera:
+                    archivo_logico.seek(pos)
+                    registro.estado = "A"
+                    print(registro.estado)
+                    pickle.dump(registro,archivo_logico)
+                    archivo_logico.flush()
+                    archivo_logico.close()
                     print(f"{SUCCESS}El camion ha sido ingresado con exito{NORMAL}")
+                    bandera = False
                 else:
                     print(f"{WARNING}El camión no ha podido ser recibido. Chequee los datos del mismo{NORMAL}")
+                    archivo_logico.flush()
+                    archivo_logico.close()
         else:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         time.sleep(2.5)

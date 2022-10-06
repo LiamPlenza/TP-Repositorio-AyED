@@ -78,7 +78,7 @@ def check_fecha () -> str:
     dia = str(dia)
     mes= str(mes)
     año = str(año)
-    fecha = dia + "/" + mes + "/" + año
+    fecha = dia+"/"+mes+"/"+año
     return fecha
 
 
@@ -121,10 +121,11 @@ def check_producto () -> bool:
             registro = pickle.load(archivo_logico)
             if registro.activo:
                 registros_activados = True
+        archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
+        archivo_logico.close()# cierro el archivo
     else:
         registros_activados = False
-    archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
-    archivo_logico.close()# cierro el archivo
+    
     return registros_activados
 
 def check_producto_valido () -> int:
@@ -135,8 +136,11 @@ def check_producto_valido () -> int:
     producto_ingresado = input("Ingrese el producto que contiene el camion:").capitalize().ljust(20)
     while archivo_logico.tell() < longitud_archivo:
         registro = pickle.load(archivo_logico)
-        if producto_ingresado == registro.nomprod:
-            return registro.codprod
+        if producto_ingresado == registro.nomprod and registro.activo:
+            aux = registro.codprod
+            archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
+            archivo_logico.close()
+            return aux
     print(f"{WARNING}El producto ingresado no se encuentra entre los activos. Pruebe de nuevo{NORMAL}")
     archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
     archivo_logico.close()# cierro el archivo
