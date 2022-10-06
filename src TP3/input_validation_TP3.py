@@ -1,7 +1,5 @@
-import re
-import os, time, pickle, io, os.path
 from datetime import datetime
-import input_validation_TP3, user_menu_TP3, main_TP3
+import main_TP3, calendar, os, time, pickle, io, os.path, re
 
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
@@ -26,61 +24,31 @@ def check_pat() -> str:
 
 #valido el formato de la fecha
 def check_fecha () -> str:
-    año = check_int("Ingrese el año:")
-    while año < datetime.today().year:
-        año = check_int(f"Ingrese un año valido (mayor o igual a {datetime.today().year}: ")
-    if año == datetime.today().year:  
-        mes = check_int("Ingrese el mes (formato númerico): ")
-        while 12 < mes or mes < datetime.today().month:
+    año = check_int("Ingrese el año (yyyy): ")
+    while año < datetime.today().year or len(str(año)) != 4:# verifico si el año es a futuro, si es menor al año actual pido otra vez el año
+        año = check_int(f"Ingrese un año valido (mayor o igual a {datetime.today().year} con el formato yyyy): ")
+    
+    mes = check_int("Ingrese el mes (formato númerico): ")# pido el mes
+    
+    if año == datetime.today().year:# si el año es el actual verifico que el mes sea entre el actual y el último  
+        while not datetime.today().month <= mes < 13:
             mes = check_int(f"Ingrese un mes válido (entre {datetime.today().month} y 12): ")
-        if mes == datetime.today().month:
-            if mes in [4, 6, 9, 11] :
-                dia = check_int("Ingrese el dia:")
-                while dia < datetime.today().day or dia > 30:
-                    dia = check_int(f"Ingrese un dia válido (entre {datetime.today().day} y 30): ")
-            elif mes == 2:
-                dia = check_int("Ingrese el dia:")
-                while dia > 28 or dia < datetime.today().day:
-                    dia = check_int(f"Ingrese un dia válido (entre {datetime.today().day} y 28): ")
-            else:
-                dia = check_int("Ingrese el dia:")
-                while dia > 31 or dia < datetime.today().day:
-                    dia = check_int(f"Ingrese un dia válido (entre {datetime.today().day} y 31): ")
-        else:
-            if mes == 4 or mes == 6 or mes == 9 or mes == 11 :
-                dia = check_int("Ingrese el dia:")
-                while dia < 0 or dia > 31:
-                    dia = check_int(F"Ingrese un dia válido (entre 1 y 30): ")
-            elif mes == 2:
-                dia = check_int("Ingrese el dia:")
-                while dia < 0 or dia > 28:
-                    dia = check_int(F"Ingrese un dia válido (entre 1 y  28): ")
-            else:
-                dia = check_int("Ingrese el dia:")
-                while dia < 0 or dia > 31:
-                    dia = check_int("Ingrese un dia válido (entre 1 y 31): ")
+            
+        dia = check_int("Ingrese el número del día: ")    
+        dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
+        while not int(datetime.today().day) <= dia <= dias_del_mes:# verifico que el día 
+            dia = check_int(f"Ingrese un día valido (entre {datetime.today().day} y {dias_del_mes}): ")
     else:
-        mes = check_int("Ingrese el mes (formato númerico): ")
-        while 0 > mes or mes > 12:
-            mes = check_int(F"Ingrese un mes válido (entre 1 y 12): ")
-        if mes == 4 or mes == 6 or mes == 9 or mes == 11 :
-            dia = check_int("Ingrese el dia:")
-            while dia < 0 or dia > 31:
-                dia = check_int(F"Ingrese un dia válido (entre 1 y 30): ")
-        elif mes == 2:                    
-            dia = check_int("Ingrese el dia:")
-            while dia < 0 or dia > 28:
-                dia = check_int(F"Ingrese un dia válido (entre 1 y  28): ")
-        else:
-            dia = check_int("Ingrese el dia:")
-            while dia < 0 or dia > 31:
-                dia = check_int("Ingrese un dia válido (entre 1 y 31): ")
-    dia = str(dia)
-    mes= str(mes)
-    año = str(año)
-    fecha = dia+"/"+mes+"/"+año
-    return fecha
-
+        while not 0 < mes < 13:# si no es el año actual la única restricción es que sea entre 1 y 12   
+            mes = check_int(f"Ingrese un mes válido (entre {datetime.today().month} y 12): ")
+        
+        dia = check_int("Ingrese el número del día: ")
+        dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
+        while not 0 < dia < dias_del_mes: 
+            dia = check_int(f"Ingrese un día valido (entre 1 y {dias_del_mes}): ")
+            
+    return str(dia)+"/"+str(mes)+"/"+str(año)
+            
 # valido que el ingreso de los datos del camion, peso y tara sean núnmero flotante
 def check_float(mensaje: str)-> float:
     while True:

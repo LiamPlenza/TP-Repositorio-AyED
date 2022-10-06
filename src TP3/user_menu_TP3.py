@@ -11,6 +11,7 @@ def clear_shell():
         return os.system("cls")
     else:
         return os.system("clear")
+
 def hoy():
     dia = datetime.today().day
     mes = datetime.today().month

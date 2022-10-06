@@ -90,17 +90,17 @@ def alta(menu):
                 longitud_archivo_rxp = os.path.getsize("RUBROS-X-PRODUCTO.dat")
                 
                 codrub_ingresado = input_validation_TP3.check_int("Ingrese el código del rubro: ")
-                archivo_logico_r.seek(io.SEEK_END - 100)
-                #while archivo_logico_r.tell() < longitud_archivo_r:
-                #    registro_r = pickle.load(archivo_logico_r)
+                #archivo_logico_r.seek(io.SEEK_END - 100)
+                while archivo_logico_r.tell() < longitud_archivo_r:
+                    registro_r = pickle.load(archivo_logico_r)
                 while codrub_ingresado > registro_r.codrub or codrub_ingresado < 1:
-                    codrub_ingresado = input_validation_TP3.check_int("Ingrese el código del rubro (tiene que ser mayor a 0 y menor a ",registro_r.codrub,"): ")
+                    codrub_ingresado = input_validation_TP3.check_int(f"Ingrese el código del rubro (tiene que ser mayor a 0 y menor a {registro_r.codrub}): ")
 
                 codprod_ingresado = input_validation_TP3.check_int("Ingrese el código del producto: ")
                 while archivo_logico_p.tell() < longitud_archivo_p:
                     registro_p = pickle.load(archivo_logico_p)
                 while codprod_ingresado > registro_p.codprod or codprod_ingresado < 1:
-                    codprod_ingresado = input_validation_TP3.check_int("Ingrese el código del producto (tiene que ser mayor a 0 y menor a ",registro_p.codprod,"): ")
+                    codprod_ingresado = input_validation_TP3.check_int(f"Ingrese el código del producto (tiene que ser mayor a 0 y menor a {registro_p.codprod}): ")
                 
                 while archivo_logico.tell() < longitud_archivo_rxp:
                     registro = pickle.load(archivo_logico)
@@ -110,10 +110,11 @@ def alta(menu):
                             print(f"{WARNING}Ya existe esa combinacion de rubro y producto{NORMAL}")
                             codrub_ingresado = input_validation_TP3.check_int("Ingrese el código del rubro: ")
                             while codrub_ingresado > registro_r.codrub or codrub_ingresado < 1:
-                                codrub_ingresado = input_validation_TP3.check_int("Ingrese el código del rubro (tiene que ser mayor a 0 y menor o igual a ",registro_r.codrub,"): ")
+
+                                codrub_ingresado = input_validation_TP3.check_int(f"Ingrese el código del rubro (tiene que ser mayor a 0 y menor o igual a {registro_r.codrub}): ")
                             codprod_ingresado = input_validation_TP3.check_int("Ingrese el código del producto: ")
                             while codprod_ingresado > registro_p.codprod or codprod_ingresado < 1:
-                                codprod_ingresado = input_validation_TP3.check_int("Ingrese el código del producto (tiene que ser mayor a 0 y menor o igual a ",registro_p.codprod,"): ")
+                                codprod_ingresado = input_validation_TP3.check_int(f"Ingrese el código del producto (tiene que ser mayor a 0 y menor o igual a {registro_p.codprod}): ")
                             archivo_logico.seek(io.SEEK_SET)
 
                 registro.codprod = codprod_ingresado
@@ -125,13 +126,13 @@ def alta(menu):
                 while archivo_logico_r.tell() < longitud_archivo_r:
                     registro_r = pickle.load(archivo_logico_r)
                 while codrub_ingresado > registro_r.codrub or codrub_ingresado < 1:
-                    codrub_ingresado = input_validation_TP3.check_int("Ingrese el código del rubro (tiene que ser mayor a 0 y menor o igual a ",registro_r.codrub,"): ")
+                    codrub_ingresado = input_validation_TP3.check_int(f"Ingrese el código del rubro (tiene que ser mayor a 0 y menor o igual a {registro_r.codrub}): ")
 
                 codprod_ingresado = input_validation_TP3.check_int("Ingrese el código del producto: ")
                 while archivo_logico_p.tell() < longitud_archivo_p:
                     registro_p = pickle.load(archivo_logico_p)
                 while codprod_ingresado > registro_p.codprod or codprod_ingresado < 1:
-                    codprod_ingresado = input_validation_TP3.check_int("Ingrese el código del producto (tiene que ser mayor a 0 y menor o igual a ",registro_p.codprod,"): ")
+                    codprod_ingresado = input_validation_TP3.check_int(f"Ingrese el código del producto (tiene que ser mayor a 0 y menor o igual a {registro_p.codprod}): ")
                 
                 registro.codrub = codrub_ingresado
                 registro.codprod = codprod_ingresado
