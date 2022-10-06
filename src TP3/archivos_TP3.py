@@ -55,8 +55,9 @@ def alta(menu):
             archivo_logico = open("RUBROS.dat", "r+b")
             longitud_archivo = os.path.getsize("RUBROS.dat")
             
-            archivo_logico.seek(longitud_archivo - 85) # para posicionarme al incio del último registro
-            registro = pickle.load(archivo_logico)
+            while archivo_logico.tell() < longitud_archivo:
+                registro = pickle.load(archivo_logico)
+
             codactual = registro.codrub + 1
             
             nomrub_ingresado = input(f"Ingrese el nombre del rubro cuyo código es {codactual}: ").capitalize().ljust(20)
@@ -82,26 +83,29 @@ def alta(menu):
         registro = main_TP3.RubrosxProducto()
         registro_r = main_TP3.Rubros()
         registro_p = main_TP3.Productos()
-        if os.path.exist("PRODUCTOS.dat") and os.path.exists("RUBROS.dat"):
+        if os.path.exists("PRODUCTOS.dat") and os.path.exists("RUBROS.dat"):
 
-            if os.path.exist("RUBROS-X-PRODUCTO.dat"):
+            if os.path.exists("RUBROS-X-PRODUCTO.dat"):
                 archivo_logico = open("RUBROS-X-PRODUCTO.dat", "r+b")
-                archivo_logico_r = open("RUBROS.dat", "r+b")
-                archivo_logico_p= open("PRODUCTOS.dat", "r+b")
                 longitud_archivo_rxp = os.path.getsize("RUBROS-X-PRODUCTO.dat")
+                archivo_logico_r = open("RUBROS.dat", "r+b")
+                longitud_archivo_r = os.path.getsize("RUBROS.dat")
+                archivo_logico_p= open("PRODUCTOS.dat", "r+b")
+                longitud_archivo_p = os.path.getsize("PRODUCTOS.dat")
 
                 
                 
-                codrub_ingresado = input_validation_TP3.check_int(input("Ingrese el código del rubro: "))
-                registro_r = pickle.load(archivo_logico_r)
+                codrub_ingresado = input_validation_TP3.check_num(print("Ingrese el código del rubro: "))
+                while archivo_logico_r.tell() < longitud_archivo_r:
+                    registro_r = pickle.load(archivo_logico_r)
                 while codrub_ingresado > registro_r.codrub or codrub_ingresado < 1:
-                    codrub_ingresado = input_validation_TP3.check_int(input("Ingrese el código del rubro (tiene que ser mayor a 0 y menor a ",registro_r.codrub,"): "))
+                    codrub_ingresado = input_validation_TP3.check_num(print("Ingrese el código del rubro (tiene que ser mayor a 0 y menor a ",registro_r.codrub,"): "))
 
-                codprod_ingresado = input_validation_TP3.check_int(input("Ingrese el código del producto: "))
-                
-                registro_p = pickle.load(archivo_logico_p)
-                while codrub_ingresado > registro_p.codprod or codprod_ingresado < 1:
-                    codprod_ingresado = input_validation_TP3.check_int(input("Ingrese el código del producto (tiene que ser mayor a 0 y menor a ",registro_p.codprod,"): "))
+                codprod_ingresado = input_validation_TP3.check_num(print("Ingrese el código del producto: "))
+                while archivo_logico_p.tell() < longitud_archivo_p:
+                    registro_p = pickle.load(archivo_logico_p)
+                while codprod_ingresado > registro_p.codprod or codprod_ingresado < 1:
+                    codprod_ingresado = input_validation_TP3.check_num(print("Ingrese el código del producto (tiene que ser mayor a 0 y menor a ",registro_p.codprod,"): "))
 
                 
                 while archivo_logico.tell() < longitud_archivo_rxp:
@@ -111,37 +115,53 @@ def alta(menu):
                         
                         if registro.codprod == codprod_ingresado:
                             print(f"{WARNING}Ya existe esa combinacion de rubro y producto{NORMAL}")
-                            codrub_ingresado = input_validation_TP3.check_int(input("Ingrese el código del rubro: "))
-                            registro_r = pickle.load(archivo_logico_r)
+                            codrub_ingresado = input_validation_TP3.check_num(print("Ingrese el código del rubro: "))
                             while codrub_ingresado > registro_r.codrub or codrub_ingresado < 1:
-                                codrub_ingresado = input_validation_TP3.check_int(input("Ingrese el código del rubro (tiene que ser mayor a 0 y menor a ",registro_r.codrub,"): "))
-                            codprod_ingresado = input_validation_TP3.check_int(input("Ingrese el código del producto: "))
-                            registro_p = pickle.load(archivo_logico_p)
-                            while codrub_ingresado > registro_p.codprod or codprod_ingresado < 1:
-                                codprod_ingresado = input_validation_TP3.check_int(input("Ingrese el código del producto (tiene que ser mayor a 0 y menor a ",registro_p.codprod,"): "))
-                        archivo_logico.seek(io.SEEK_SET)
+                                codrub_ingresado = input_validation_TP3.check_num(print("Ingrese el código del rubro (tiene que ser mayor a 0 y menor o igual a ",registro_r.codrub,"): "))
+                            codprod_ingresado = input_validation_TP3.check_num(print("Ingrese el código del producto: "))
+                            while codprod_ingresado > registro_p.codprod or codprod_ingresado < 1:
+                                codprod_ingresado = input_validation_TP3.check_num(print("Ingrese el código del producto (tiene que ser mayor a 0 y menor o igual a ",registro_p.codprod,"): "))
+                            archivo_logico.seek(io.SEEK_SET)
 
                 registro.codprod = codprod_ingresado
                 registro.codrub = codrub_ingresado
             else:
                 archivo_logico = open("RUBROS-X-PRODUCTO.dat", "w+b")
+                archivo_logico_r = open("RUBROS.dat", "r+b")
+                longitud_archivo_r = os.path.getsize("RUBROS.dat")
+                archivo_logico_p= open("PRODUCTOS.dat", "r+b")
+                longitud_archivo_p = os.path.getsize("PRODUCTOS.dat")
+
+
+                codrub_ingresado = input_validation_TP3.check_num(print("Ingrese el código del rubro: "))
+                while archivo_logico_r.tell() < longitud_archivo_r:
+                    registro_r = pickle.load(archivo_logico_r)
+                while codrub_ingresado > registro_r.codrub or codrub_ingresado < 1:
+                    codrub_ingresado = input_validation_TP3.check_num(print("Ingrese el código del rubro (tiene que ser mayor a 0 y menor o igual a ",registro_r.codrub,"): "))
+
+                codprod_ingresado = input_validation_TP3.check_num(print("Ingrese el código del producto: "))
+                while archivo_logico_p.tell() < longitud_archivo_p:
+                    registro_p = pickle.load(archivo_logico_p)
+                while codprod_ingresado > registro_p.codprod or codprod_ingresado < 1:
+                    codprod_ingresado = input_validation_TP3.check_num(print("Ingrese el código del producto (tiene que ser mayor a 0 y menor o igual a ",registro_p.codprod,"): "))
                 
-                registro.codrub = input_validation_TP3.check_int(("Ingrese el codigo del rubro: "))
-                registro.codprod = input_validation_TP3.checkint(input("Ingrese el codigo del producto: "))
+                registro.codrub = codrub_ingresado
+                registro.codprod = codprod_ingresado
             
-            valor_maximo_ingresado = float(input(f"Ingrese el valor mámixo correspondiente al rubro ({registro.codrub}, {registro.codprod})\nRecuerde que debe ser un valor menor a 100"))
-            while valor_maximo_ingresado > 100:
-                valor_maximo_ingresado = float(input(f"{WARNING}El valor máximo no puede ser mayor a 100.{NORMAL}\nIngrese el valor mámixo correspondiente al rubro ({registro.codrub}, {registro.codprod})"))
+            valor_maximo_ingresado = float(input(f"Ingrese el valor mámixo correspondiente al rubro ({registro.codrub}, {registro.codprod})\nRecuerde que debe ser un valor menor a 100 y mayor a 0:"))
+            while valor_maximo_ingresado > 100 or valor_maximo_ingresado < 1:
+                valor_maximo_ingresado = float(input(f"{WARNING}El valor máximo no puede ser mayor a 100 ni menor a 0.{NORMAL}\nIngrese el valor mámixo correspondiente al rubro ({registro.codrub}, {registro.codprod})"))
             
-            valor_minimo_ingresado = float(input(f"Ingrese el valor mínimo correspondiente al rubro ({registro.codrub}, {registro.codprod})\nRecuerde que debe ser un valor mayor a 0"))
-            while valor_minimo_ingresado < 0:
-                valor_maximo_ingresado = float(input(f"{WARNING}El valor mínimo no puede ser menor a 0.{NORMAL}\nIngrese el valor mínimo correspondiente al rubro ({registro.codrub}, {registro.codprod})"))
+            valor_minimo_ingresado = float(input(f"Ingrese el valor mínimo correspondiente al rubro ({registro.codrub}, {registro.codprod})\nRecuerde que debe ser un valor mayor a 0 y menor a {valor_maximo_ingresado}"))
+            while valor_minimo_ingresado < 0 or valor_maximo_ingresado < valor_minimo_ingresado:
+                valor_minimo_ingresado = float(input(f"{WARNING}El valor mínimo no puede ser menor a 0 ni mayor a {valor_maximo_ingresado}.{NORMAL}\nIngrese el valor mínimo correspondiente al rubro ({registro.codrub}, {registro.codprod})"))
                 
             registro.vmin = valor_minimo_ingresado
             registro.vmax = valor_maximo_ingresado        
-            pickle.dump(registro, archivo_logico) # guardo un regristro 
-            archivo_logico.flush() # aeguro que no quede pendiente ningún registro en el bus
-            archivo_logico.close()# cierro el archivo
+            archivo_logico_p.flush()
+            archivo_logico_p.close()
+            archivo_logico_r.flush()
+            archivo_logico_r.close()
         else:
             print(f"{WARNING}Para ingresar un rubro x producto debe haber al menos 1 producto y un rubro ingresados{NORMAL}")
 

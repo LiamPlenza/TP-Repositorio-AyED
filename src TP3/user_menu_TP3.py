@@ -88,8 +88,8 @@ def registrar_calidad():
     
     while option != 0:
         if option == 1:
-            if not os.path.exists("OPERACIONES.dat"):
-                print(f"{WARNING}Aún no hay operaciones registradas.{NORMAL}")
+            if not(os.path.exists("OPERACIONES.dat") and os.path.exists("RUBROS.dat") and os.path.exists("PRODUCTOS.dat") and os.path.exists("RUBROS-X-PRODUCTO.dat")):
+                print(f"{WARNING}No se cumplen todos los requerimientos para llevar a cabo este registro.{NORMAL}")
             else:
                 archivo_logico = open ("OPERACIONES.dat", "r+b")
                 archivo_logico_r = open("RUBROS.dat", "r+b")

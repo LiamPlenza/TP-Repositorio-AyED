@@ -26,67 +26,74 @@ def check_pat() -> str:
 
 #valido el formato de la fecha
 def check_fecha () -> str:
-    año = int(input("Ingrese el año:"))
+    año = check_num(print("Ingrese el año:"))
     while año < datetime.today().year:
-        año = int(input(f"Ingrese un año valido (mayor o igual a {datetime.today().year}: "))
+        año = check_num(print(f"Ingrese un año valido (mayor o igual a {datetime.today().year}: "))
     if año == datetime.today().year:  
-        mes = int(input("Ingrese el mes (formato númerico): "))
+        mes = check_num(print("Ingrese el mes (formato númerico): "))
         while 12 < mes or mes < datetime.today().month:
-            mes = int(input(f"Ingrese un mes válido (entre {datetime.today().month} y 12): "))
+            mes = check_num(print(f"Ingrese un mes válido (entre {datetime.today().month} y 12): "))
         if mes == datetime.today().month:
             if mes == 4 or mes == 6 or mes == 9 or mes == 11 :
-                dia = int(input("Ingrese el dia:"))
+                dia = check_num(print("Ingrese el dia:"))
                 while dia < datetime.today().day or dia > 30:
-                    dia = int(input(F"Ingrese un dia válido (entre {datetime.today().day} y 30): "))
+                    dia = check_num(print(F"Ingrese un dia válido (entre {datetime.today().day} y 30): "))
             elif mes == 2:
-                dia = int(input("Ingrese el dia:"))
+                dia = check_num(print("Ingrese el dia:"))
                 while dia > 28 or dia < datetime.today().day:
-                    dia = int(input(F"Ingrese un dia válido (entre {datetime.today().day} y 28): "))
+                    dia = check_num(print(F"Ingrese un dia válido (entre {datetime.today().day} y 28): "))
             else:
-                dia = int(input("Ingrese el dia:"))
+                dia = check_num(print("Ingrese el dia:"))
                 while dia > 31 or dia < datetime.today().day:
-                    dia = int(input(f"Ingrese un dia válido (entre {datetime.today().day} y 31): "))
+                    dia = check_num(print(f"Ingrese un dia válido (entre {datetime.today().day} y 31): "))
         else:
             if mes == 4 or mes == 6 or mes == 9 or mes == 11 :
-                dia = int(input("Ingrese el dia:"))
+                dia = check_num(print("Ingrese el dia:"))
                 while dia < 0 or dia > 31:
-                    dia = int(input(F"Ingrese un dia válido (entre 1 y 30): "))
+                    dia = check_num(print(F"Ingrese un dia válido (entre 1 y 30): "))
             elif mes == 2:
-                dia = int(input("Ingrese el dia:"))
+                dia = check_num(print("Ingrese el dia:"))
                 while dia < 0 or dia > 28:
-                    dia = int(input(F"Ingrese un dia válido (entre 1 y  28): "))
+                    dia = check_num(print(F"Ingrese un dia válido (entre 1 y  28): "))
             else:
-                dia = int(input("Ingrese el dia:"))
+                dia = check_num(print("Ingrese el dia:"))
                 while dia < 0 or dia > 31:
-                    dia = int(input("Ingrese un dia válido (entre 1 y 31): "))
+                    dia = check_num(print("Ingrese un dia válido (entre 1 y 31): "))
     else:
-        mes = int(input("Ingrese el mes (formato númerico): "))
+        mes = check_num(print("Ingrese el mes (formato númerico): "))
         while 0 > mes or mes > 12:
-            mes = int(input(F"Ingrese un mes válido (entre 1 y 12): "))
+            mes = check_num(print(F"Ingrese un mes válido (entre 1 y 12): "))
         if mes == 4 or mes == 6 or mes == 9 or mes == 11 :
-            dia = int(input("Ingrese el dia:"))
+            dia = check_num(print("Ingrese el dia:"))
             while dia < 0 or dia > 31:
-                dia = int(input(F"Ingrese un dia válido (entre 1 y 30): "))
+                dia = check_num(print(F"Ingrese un dia válido (entre 1 y 30): "))
         elif mes == 2:                    
-            dia = int(input("Ingrese el dia:"))
+            dia = check_num(print("Ingrese el dia:"))
             while dia < 0 or dia > 28:
-                dia = int(input(F"Ingrese un dia válido (entre 1 y  28): "))
+                dia = check_num(print(F"Ingrese un dia válido (entre 1 y  28): "))
         else:
-            dia = int(input("Ingrese el dia:"))
+            dia = check_num(print("Ingrese el dia:"))
             while dia < 0 or dia > 31:
-                dia = int(input("Ingrese un dia válido (entre 1 y 31): "))
+                dia = check_num(print("Ingrese un dia válido (entre 1 y 31): "))
     dia = str(dia)
     mes= str(mes)
     año = str(año)
     fecha = dia+"/"+mes+"/"+año
     return fecha
 
-
 # valido que el ingreso de los datos del camion, peso y tara sean núnmero flotante
 def check_float(mensaje: str)-> float:
     while True:
         try:
             option = float((input(mensaje)))
+            return option
+        except ValueError:
+            print(f"{WARNING}Ingrese un valor numérico valido{NORMAL}")
+#valido q el ingreso de opciones de la fecha sean numericos
+def check_num(mensaje:str)->int:
+    while True:
+        try:
+            option = int((input()))
             return option
         except ValueError:
             print(f"{WARNING}Ingrese un valor numérico valido{NORMAL}")

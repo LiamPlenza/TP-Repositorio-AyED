@@ -30,8 +30,8 @@ class RubrosxProducto:
     def _init_(self):
         self.codrubx = 0
         self.codprodx = ""
-        self.vmin = 0.0
-        self.vmax = 0.0
+        self.vmin = 0
+        self.vmax = 0
 
 class Silos:
     def _init_(self):
