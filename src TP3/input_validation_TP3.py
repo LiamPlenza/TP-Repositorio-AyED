@@ -34,14 +34,14 @@ def check_fecha () -> str:
         while 12 < mes or mes < datetime.today().month:
             mes = check_int(f"Ingrese un mes válido (entre {datetime.today().month} y 12): ")
         if mes == datetime.today().month:
-            if mes == 4 or mes == 6 or mes == 9 or mes == 11 :
+            if mes in [4, 6, 9, 11] :
                 dia = check_int("Ingrese el dia:")
                 while dia < datetime.today().day or dia > 30:
                     dia = check_int(f"Ingrese un dia válido (entre {datetime.today().day} y 30): ")
             elif mes == 2:
                 dia = check_int("Ingrese el dia:")
                 while dia > 28 or dia < datetime.today().day:
-                    dia = check_int(F"Ingrese un dia válido (entre {datetime.today().day} y 28): ")
+                    dia = check_int(f"Ingrese un dia válido (entre {datetime.today().day} y 28): ")
             else:
                 dia = check_int("Ingrese el dia:")
                 while dia > 31 or dia < datetime.today().day:
