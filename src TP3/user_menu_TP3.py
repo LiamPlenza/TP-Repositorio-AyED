@@ -1,5 +1,8 @@
+from operator import truediv
 import os, time, pickle, io, os.path
 from datetime import datetime
+from input_validation_TP3 import check_int
+
 import input_validation_TP3, archivos_TP3, main_TP3
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
@@ -121,21 +124,26 @@ def registrar_calidad():
                         if len(rubros) > 0: 
                             while archivo_logico_p.tell() < longitud_archivo_p:
                                 registro_p = pickle.load(archivo_logico_p)
-                                if registro_p.codprod == registro_rxp.codprod:
-                                    print(f"El camion contiene {registro_p.nomprod.strip()} \nIngrese la calidad correspondiente a los siguientes rubros:")
+                                print(f"El camion contiene {registro_p.nomprod.strip()} \nIngrese la calidad correspondiente a los siguientes rubros:")
                                 r=0
                                 g=0
                                 while g < len(rubros):
+                                    x = True
                                     while archivo_logico_r.tell() < longitud_archivo_r:
                                         registro_r = pickle.load(archivo_logico_r)
                                         if registro_r.codrub == rubros[g]:
-                                            valor = int(input(f"Ingrese el valor para el rubro {registro_r.nomrub.strip()}:"))
-                                            archivo_logico_rxp.seek(io.SEEK_SET) # me muevo al inicio del archivo
-                                            while archivo_logico_rxp.tell() < longitud_archivo_rxp:
-                                                registro_rxp = pickle.load(archivo_logico_rxp)
-                                                if registro_rxp == rubros[g] and registro_p.codprod == registro_rxp.codprod:
-                                                    if valor < registro_rxp.vmin or valor > registro_rxp.vmax:
-                                                        r +=1
+                                            while x == True:
+                                                valor = check_int(f"{registro_r.nomrub.strip()}:") 
+                                                if valor <= 100 and valor >= 0 :
+                                                    archivo_logico_rxp.seek(io.SEEK_SET) # me muevo al inicio del archivo
+                                                    while archivo_logico_rxp.tell() < longitud_archivo_rxp:
+                                                        registro_rxp = pickle.load(archivo_logico_rxp)
+                                                        if registro_rxp == rubros[g] and registro_p.codprod == registro_rxp.codprod:
+                                                            if valor < registro_rxp.vmin or valor > registro_rxp.vmax:
+                                                                r +=1
+                                                    x = False
+                                                else:
+                                                    print("El valor ingresado debe estar entre 0 y 100, ingrese nuevamente.")
                                     if r == 2:
                                         registro.estado = "R"
                                     g += 1                            
