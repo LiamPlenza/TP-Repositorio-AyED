@@ -122,14 +122,14 @@ def registrar_calidad():
                             while archivo_logico_p.tell() < longitud_archivo_p:
                                 registro_p = pickle.load(archivo_logico_p)
                                 if registro_p.codprod == registro_rxp.codprod:
-                                    print(f"El camion contiene {registro_p.nomprod} ingrese la calidad correspondiente a los siguientes rubros:")
+                                    print(f"El camion contiene {registro_p.nomprod.strip()} \nIngrese la calidad correspondiente a los siguientes rubros:")
                                 r=0
                                 g=0
                                 while g < len(rubros):
                                     while archivo_logico_r.tell() < longitud_archivo_r:
                                         registro_r = pickle.load(archivo_logico_r)
                                         if registro_r.codrub == rubros[g]:
-                                            valor = int(input(f"Ingrese el valor para el rubro {registro_r.nomrub}:"))
+                                            valor = int(input(f"Ingrese el valor para el rubro {registro_r.nomrub.strip()}:"))
                                             archivo_logico_rxp.seek(io.SEEK_SET) # me muevo al inicio del archivo
                                             while archivo_logico_rxp.tell() < longitud_archivo_rxp:
                                                 registro_rxp = pickle.load(archivo_logico_rxp)
@@ -185,8 +185,7 @@ def registro_peso_bruto():
                         if registro.estado == "A":
                             razon = 2
                             bandera = True
-                            print("Ingrese el peso bruto del camion")
-                            peso_bruto = input_validation_TP3.check_int()
+                            peso_bruto = input_validation_TP3.check_int("Ingrese el peso bruto del camion: ")
                             print(f"{SUCCESS}Peso bruto registrado con exito{NORMAL}")
                             registro.estado = "B"
                             registro.pesobruto = peso_bruto
@@ -196,8 +195,8 @@ def registro_peso_bruto():
                 if bandera == False:
                     if razon == 0:
                         print(f"{WARNING}La patente ingresada no coincide con una registrada{NORMAL}")
-                        if razon == 1: 
-                            print(f"{WARNING}El estado de del camion debe ser Con Calidad{NORMAL}")
+                    if razon == 1: 
+                        print(f"{WARNING}El estado de del camion debe ser Con Calidad{NORMAL}")
                     time.sleep(2.5)
                 archivo_logico.flush()
                 archivo_logico.close()
