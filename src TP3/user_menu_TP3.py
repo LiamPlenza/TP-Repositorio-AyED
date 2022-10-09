@@ -350,7 +350,10 @@ def menu_administraciones():
     option = input_validation_TP3.check_int()
     while option != 0:
         if option == 2:
-            menu_opciones("productos")
+            if os.path.exists("OPERACIONES.dat"):
+                print(f"{WARNING}Ya se han registrado camiones. Ya no es posible modificar los productos{NORMAL}")
+            else:
+                menu_opciones("productos")
         elif option == 3:
             menu_opciones("rubros")
         elif option == 4:
