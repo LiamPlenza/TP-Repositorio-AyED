@@ -223,16 +223,15 @@ def consulta():
             longitud_archivo = os.path.getsize("PRODUCTOS.dat")
 
             print("La actual lista de Productos es:")
-            print("----------------------------------------\n| {} | {:20} | {} |\n*----------------------------------------*".format("Código", "Nombre", "Estado"))
+            print("*----------------------------------------*\n| {} | {:20} | {} |\n*----------------------------------------*".format("Código", "Nombre", "Estado"))
             while archivo_logico.tell() < longitud_archivo:# recorro todo el archivo
                 registro = pickle.load(archivo_logico)# traigo el primer registro
                 print("   {:^3}   | {:20} | {}".format(registro.codprod, registro.nomprod, registro.activo))
-                print("----------------------------------------")
+                print("*----------------------------------------*")
 
             archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
             archivo_logico.close()# cierro el archivo       
             print("|   0    | Volver al menu anterior       |\n*----------------------------------------*")
-            input("Precione enter para continuar... ")
         else:
             print(f"{WARNING}Todos los registros se encuentran desactivados. Para activarlos dirigase al menu ALTA{NORMAL}")
             time.sleep(1.5)

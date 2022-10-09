@@ -1,5 +1,5 @@
 from datetime import datetime
-import main_TP3, calendar, os, time, pickle, io, os.path, re
+import main_TP3, calendar, os, pickle, io, os.path, re, archivos_TP3, time
 
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
@@ -26,26 +26,26 @@ def check_pat() -> str:
 def check_fecha () -> str:
     año = check_int("Ingrese el año (yyyy): ")
     while año < datetime.today().year or len(str(año)) != 4:# verifico si el año es a futuro, si es menor al año actual pido otra vez el año
-        año = check_int(f"Ingrese un año valido (mayor o igual a {datetime.today().year} con el formato yyyy): ")
+        año = check_int(f"{WARNING}Ingrese un año valido (mayor o igual a {datetime.today().year} con el formato yyyy):{NORMAL}")
     
     mes = check_int("Ingrese el mes (formato númerico): ")# pido el mes
     
     if año == datetime.today().year:# si el año es el actual verifico que el mes sea entre el actual y el último  
         while not datetime.today().month <= mes < 13:
-            mes = check_int(f"Ingrese un mes válido (entre {datetime.today().month} y 12): ")
+            mes = check_int(f"{WARNING}Ingrese un mes válido (entre {datetime.today().month} y 12): {NORMAL}")
             
         dia = check_int("Ingrese el número del día: ")    
         dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
         while not int(datetime.today().day) <= dia <= dias_del_mes:# verifico que el día 
-            dia = check_int(f"Ingrese un día valido (entre {datetime.today().day} y {dias_del_mes}): ")
+            dia = check_int(f"{WARNING}Ingrese un día valido (entre {datetime.today().day} y {dias_del_mes}): {NORMAL}")
     else:
         while not 0 < mes < 13:# si no es el año actual la única restricción es que sea entre 1 y 12   
-            mes = check_int(f"Ingrese un mes válido (entre {datetime.today().month} y 12): ")
+            mes = check_int(f"{WARNING}Ingrese un mes válido (entre {datetime.today().month} y 12): {NORMAL}")
         
         dia = check_int("Ingrese el número del día: ")
         dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
         while not 0 < dia < dias_del_mes: 
-            dia = check_int(f"Ingrese un día valido (entre 1 y {dias_del_mes}): ")
+            dia = check_int(f"{WARNING}Ingrese un día valido (entre 1 y {dias_del_mes}): {NORMAL}")
             
     return str(dia)+"/"+str(mes)+"/"+str(año)
             
@@ -67,48 +67,50 @@ def check_int(mensaje = "Seleccione una opción del menu: ")-> int:
         except ValueError:
             print(f"{WARNING}Ingrese un valor numérico valido{NORMAL}")          
 
-#valido si la patente se encuentra dentro del array cupos, es decir, que haya pedido un cupo previamente
-def check_cupo_valido(matriz_camiones: list, patente: str) -> tuple:
-    indice = 0
-    while indice < len(matriz_camiones):
-        if matriz_camiones[indice][0] == patente:
-            return True, indice
-        else:
-            indice += 1
-    return False, 0
-
 #valido que haya productos ingresados
 def check_producto () -> bool:
+    registros_activados = False    
     if os.path.exists("PRODUCTOS.dat"):
         archivo_logico = open("PRODUCTOS.dat", "r+b")
         longitud_archivo = os.path.getsize("PRODUCTOS.dat")
-        registros_activados = False    
-        archivo_logico.seek(io.SEEK_SET)
+        #archivo_logico.seek(io.SEEK_SET) # linea no necesaria (probar)
         while archivo_logico.tell() < longitud_archivo:
             registro = pickle.load(archivo_logico)
             if registro.activo:
                 registros_activados = True
         archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
         archivo_logico.close()# cierro el archivo
-    else:
-        registros_activados = False
-    
     return registros_activados
 
 def check_producto_valido () -> int:
-    archivo_logico = open("PRODUCTOS.dat", "r+b")
-    longitud_archivo = os.path.getsize("PRODUCTOS.dat")
-    registro = main_TP3.Productos()   
-    archivo_logico.seek(io.SEEK_SET)
-    producto_ingresado = input("Ingrese el producto que contiene el camion:").capitalize().ljust(20)
-    while archivo_logico.tell() < longitud_archivo:
-        registro = pickle.load(archivo_logico)
-        if producto_ingresado == registro.nomprod and registro.activo:
-            aux = registro.codprod
-            archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
-            archivo_logico.close()
-            return aux
-    print(f"{WARNING}El producto ingresado no se encuentra entre los activos. Pruebe de nuevo{NORMAL}")
-    archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
-    archivo_logico.close()# cierro el archivo
-    check_producto_valido()
+    # solo la llamo si es que existe el archivo asi que no hace falta comprobar aca
+    archivo_logico_productos = open("PRODUCTOS.dat", "r+b")
+    longitud_archivo_productos = os.path.getsize("PRODUCTOS.dat")
+    registro_productos = main_TP3.Productos()
+    
+    archivo_logico_silos = open("SILOS.dat", "r+b")
+    longitud_archivo_silos = os.path.getsize("SILOS.dat")
+    registro_silos = main_TP3.Silos()
+    
+    while True:   
+        archivo_logico_productos.seek(io.SEEK_SET) # me muevo al incio
+        archivo_logico_silos.seek(io.SEEK_SET)
+        
+        archivos_TP3.consulta()# muestro los productos que hay
+        producto_ingresado = input("Ingrese el producto que contiene el camion: ").capitalize().ljust(20)
+        while archivo_logico_productos.tell() < longitud_archivo_productos:
+            registro_productos = pickle.load(archivo_logico_productos)
+            if producto_ingresado == registro_productos.nomprod and registro_productos.activo:
+                while archivo_logico_silos.tell() < longitud_archivo_silos:
+                    registro_silos = pickle.load(archivo_logico_silos)
+                    if registro_productos.codprod == registro_silos.codprod:
+                        codigo_producto = registro_productos.codprod
+                        
+                        archivo_logico_silos.flush()
+                        archivo_logico_productos.flush() # me aseguro que no quede pendiente ningún registro en el bus
+                        
+                        archivo_logico_silos.close()
+                        archivo_logico_productos.close()
+                        return codigo_producto
+        print(f"{WARNING}El producto ingresado no se encuentra entre los activos o no posee un silo asignado. Pruebe de nuevo{NORMAL}")
+        time.sleep(2.5)

@@ -30,14 +30,14 @@ class RubrosxProducto:
     def _init_(self):
         self.codrubx = 0
         self.codprodx = ""
-        self.vmin = 0
+        self.vmin    = 0
         self.vmax = 0
 
 class Silos:
     def _init_(self):
         self.codsil = 0
         self.nomsil = ""
-        self.codprods = 0
+        self.codprod = 0
         self.stock = 0
 
 if __name__ == "__main__":
