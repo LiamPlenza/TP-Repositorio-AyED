@@ -240,44 +240,47 @@ def consulta():
         time.sleep(1.5)
         
 def baja():
-    user_menu_TP3.clear_shell()
-    if os.path.exists("PRODUCTOS.dat"):
-        if input_validation_TP3.check_producto():# verifico si existen productos activados
-            consulta() # imprimo la lista actual de productos
-            option = input_validation_TP3.check_int()
-
-            registro = main_TP3.Productos()# le asigno el objeto al registro
-            archivo_logico = open("PRODUCTOS.dat", "r+b")
-            longitud_archivo = os.path.getsize("PRODUCTOS.dat")
-
-            archivo_logico.seek(longitud_archivo - 100) # para posicionarme al inico del último registro
-            registro = pickle.load(archivo_logico)# traigo el último registro
-            ultimo_registro = registro.codprod# veo cual es su código del último producto
-
-            if option != 0:
-                while option not in [x for x in range(1, ultimo_registro+1)]: # me fijo si el código ingresado del producto a eliminar está entre 1 y el último codigo de producto
-                    print(f"{WARNING}La opción elegida no se encuentra entre las dadas{NORMAL}")
-                    option = input_validation_TP3.check_int()
-
-                archivo_logico.seek(longitud_archivo - (longitud_archivo - (option-1)*100))# me posicion en el registro a modificar, cada registro pesa 100 por ende si tengo un archivo de 300 y quiero el segundo registro me tengo que para en el 100
-                posicion = archivo_logico.tell()# guardo la posición del registro antes de avanzar
-                registro = pickle.load(archivo_logico)# traigo el registro el archivo
-
-                if not registro.activo:
-                    print(f"{WARNING}El registro seleccionado se encuentra desactivado{NORMAL}")
-                else:
-                    registro.activo = False
-                    archivo_logico.seek(posicion) # me muevo a la posición del registro a modificar
-                    pickle.dump(registro, archivo_logico) # lo actualizo
-                    archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
-
-                    print(f"{SUCCESS}El registro ha sido actualizado con exito{NORMAL}")
-
-            archivo_logico.close()# cierro el archivo
-        else:
-            print(f"{WARNING}Todos los registros se encuentran desactivados. Para activarlos dirigase al menu ALTA{NORMAL}")
+    if not (os.path.exists("SILOS.dat") or os.path.exists("RUBROS-X-PRODUCTO.dat")):
+        print(f"{WARNING}No puedes dar de baja productos una vez dado de alta silos o rubros por producto{NORMAL}")
     else:
-        print(f"{WARNING}No se ha cargado ningun producto.{NORMAL}")
+        user_menu_TP3.clear_shell()
+        if os.path.exists("PRODUCTOS.dat"):
+            if input_validation_TP3.check_producto():# verifico si existen productos activados
+                consulta() # imprimo la lista actual de productos
+                option = input_validation_TP3.check_int()
+
+                registro = main_TP3.Productos()# le asigno el objeto al registro
+                archivo_logico = open("PRODUCTOS.dat", "r+b")
+                longitud_archivo = os.path.getsize("PRODUCTOS.dat")
+
+                archivo_logico.seek(longitud_archivo - 100) # para posicionarme al inico del último registro
+                registro = pickle.load(archivo_logico)# traigo el último registro
+                ultimo_registro = registro.codprod# veo cual es su código del último producto
+
+                if option != 0:
+                    while option not in [x for x in range(1, ultimo_registro+1)]: # me fijo si el código ingresado del producto a eliminar está entre 1 y el último codigo de producto
+                        print(f"{WARNING}La opción elegida no se encuentra entre las dadas{NORMAL}")
+                        option = input_validation_TP3.check_int()
+
+                    archivo_logico.seek(longitud_archivo - (longitud_archivo - (option-1)*100))# me posicion en el registro a modificar, cada registro pesa 100 por ende si tengo un archivo de 300 y quiero el segundo registro me tengo que para en el 100
+                    posicion = archivo_logico.tell()# guardo la posición del registro antes de avanzar
+                    registro = pickle.load(archivo_logico)# traigo el registro el archivo
+
+                    if not registro.activo:
+                        print(f"{WARNING}El registro seleccionado se encuentra desactivado{NORMAL}")
+                    else:
+                        registro.activo = False
+                        archivo_logico.seek(posicion) # me muevo a la posición del registro a modificar
+                        pickle.dump(registro, archivo_logico) # lo actualizo
+                        archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
+
+                        print(f"{SUCCESS}El registro ha sido actualizado con exito{NORMAL}")
+
+                archivo_logico.close()# cierro el archivo
+            else:
+                print(f"{WARNING}Todos los registros se encuentran desactivados. Para activarlos dirigase al menu ALTA{NORMAL}")
+        else:
+            print(f"{WARNING}No se ha cargado ningun producto.{NORMAL}")
     time.sleep(1.5)
 
 def modificacion():

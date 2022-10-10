@@ -24,7 +24,7 @@ def entrega_de_cupos():
     while option != 0:
         cupo_ya_otorgado = False
         if option == 1:
-            if not input_validation_TP3.check_producto() and os.path.exists("SILOS.dat"):
+            if not (input_validation_TP3.check_producto() and os.path.exists("SILOS.dat")):
                 print(f"{WARNING}No hay productos activos o el registro de silos se encuentra vacio.{NORMAL}")
             else:
                 registro = main_TP3.Operaciones()
@@ -72,6 +72,61 @@ def entrega_de_cupos():
         clear_shell()
         print("0 - Volver al menu anterior\n1 - Solicitar cupo")
         option = input_validation_TP3.check_int()  
+
+# TERMINADO
+def menu_recepcion():
+    clear_shell()
+    print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
+    
+    option = input_validation_TP3.check_int()
+    while option != 0:
+        razon = 0 # para dar un mensaje mas descriptivo del error
+        if option == 1:
+            if not os.path.exists("OPERACIONES.dat"):
+                print(f"{WARNING}Aún no hay operaciones registradas.{NORMAL}")
+            else:   
+                registro = main_TP3.Operaciones()
+                archivo_logico = open("OPERACIONES.dat", "r+b")
+                longitud_archivo = os.path.getsize("OPERACIONES.dat")
+
+                print("Ingresar la patente del camión del cual desea ingresar")
+                patente_ingresada = input_validation_TP3.check_pat().ljust(7)
+                
+                while archivo_logico.tell() < longitud_archivo:
+                    posicion = archivo_logico.tell()
+                    registro = pickle.load(archivo_logico)
+                    if patente_ingresada == registro.patente:
+                        razon = 1 
+                        fecha_de_entrega = registro.fecha
+                        if registro.fecha == hoy(): # probar == hoy()
+                            razon = 2
+                            if registro.estado == "P":
+                                razon = 3
+                                posicion_final = posicion
+
+                if razon == 3:
+                    archivo_logico.seek(posicion_final) # me muevo al registro que tengo que tengo que actualizar, cada registro pesa 134 el tema que cuando hago el load ya avanza el registro
+                    registro = pickle.load(archivo_logico)
+                    registro.estado = "A" # no hace falta hacer el load primero y después nuevamente el seek para hacer el dump en el lugar correspondiente?
+                    archivo_logico.seek(posicion_final) # me muevo otra vez porque el load avanza solo
+                    pickle.dump(registro,archivo_logico)
+                    print(f"{SUCCESS}El camion ha sido ingresado con exito{NORMAL}")
+                elif razon == 0:
+                    print(f"{WARNING}La patente ingresada no coincide con un camion registrado{NORMAL}")
+                elif razon == 1:
+                    print(f"{WARNING}El camion tiene un cupo asignado para un dia que no es hoy. Fecha de entrega: {fecha_de_entrega}{NORMAL}")
+                else:
+                    print(f"{WARNING}Para poder recepcionar un camion, el mismo debe tener estado Pendiente{NORMAL}") 
+                           
+                archivo_logico.flush()
+                archivo_logico.close()
+        else:
+            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
+            
+        time.sleep(2.5)
+        clear_shell()
+        print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
+        option = input_validation_TP3.check_int() 
 
 def registrar_calidad():
     clear_shell()
@@ -131,7 +186,7 @@ def registrar_calidad():
                                         registro_rubros = pickle.load(archivo_logico_rubros)
                                         if registro_rubros.codrub == rubros[g]:
                                             while x == True:
-                                                valor = check_int(f"{registro_rubros.nomrub.strip()}:") 
+                                                valor = input_validation_TP3.check_int(f"{registro_rubros.nomrub.strip()}:") 
                                                 if valor <= 100 and valor >= 0 :
                                                     archivo_logico_rxp.seek(io.SEEK_SET) # me muevo al inicio del archivo
                                                     while archivo_logico_rxp.tell() < longitud_archivo_rxp:
@@ -186,6 +241,7 @@ def registro_peso_bruto():
                 patente_ingresada = input_validation_TP3.check_pat()
                 
                 while archivo_logico.tell() < longitud_archivo:
+                    posicion = archivo_logico.tell()
                     registro = pickle.load(archivo_logico)
                     if patente_ingresada == registro.patente: # verifico que la pantente haya sido ingresada
                         razon = 1
@@ -193,7 +249,9 @@ def registro_peso_bruto():
                             razon = 2
                             #bandera = True
                             peso_bruto_ingresado = input_validation_TP3.check_int("Ingrese el peso bruto del camion: ")
-                            posicion = archivo_logico.tell() # guardo la posicion del registro a modificar
+                            while peso_bruto_ingresado < 0 or peso_bruto_ingresado > 52500:
+                                peso_bruto_ingresado = input_validation_TP3.check_int("Ingrese el peso bruto del camion (tiene que ser un numero entre 0 y 52500): ")
+                            posicion_final = posicion # guardo la posicion del registro a modificar
                             
                     #else:
                             #bandera = False
@@ -203,11 +261,11 @@ def registro_peso_bruto():
                 elif razon == 1: 
                     print(f"{WARNING}El estado de del camion debe ser Con Calidad. Pase por recepcion previamente{NORMAL}")
                 else: # 134 es el peso de un unico registro
-                    archivo_logico.seek(posicion - 135) # me paro en el inicio del registro a modificar (no te enojes liam por el -134 es que sino no anda)
+                    archivo_logico.seek(posicion_final) # me paro en el inicio del registro a modificar (no te enojes liam por el -134 es que sino no anda)
                     registro = pickle.load(archivo_logico)
                     registro.estado = "B"
                     registro.pesobruto = peso_bruto_ingresado
-                    archivo_logico.seek(posicion - 135) # me muevo otra vez al inicio del registro porque el load se mueve solo
+                    archivo_logico.seek(posicion_final) # me muevo otra vez al inicio del registro porque el load se mueve solo
                     pickle.dump(registro,archivo_logico)
                     print(f"{SUCCESS}Peso bruto registrado con exito{NORMAL}")
 
@@ -220,103 +278,85 @@ def registro_peso_bruto():
         print("0 - Volver al menu anterior\n1 - Registrar peso bruto")
         option = input_validation_TP3.check_int()
     
-def registro_tara(matriz_camiones: list, pesos: list, estado: list):
+def registro_tara():
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Registrar tara")
     option = input_validation_TP3.check_int()
     
     while option != 0:
+        razon = 0
         if option == 1:
-            print("Ingresar la patente del camión del cual desea registrar la tara")
-            patente = input_validation_TP3.check_pat()
-            
-            cupos_es_valido, indice = input_validation_TP3.check_cupo_valido(matriz_camiones ,patente)# verifico que la patente ingresada ya haya sacado su cupo   
-            if cupos_es_valido:
-                if estado[indice] == 'E':#si posee su cupo verifico su estado
-                    if pesos[indice][0] != 0:# verifico que haya ingresado el peso bruto anteriormente
-                        if pesos[indice][1] == 0:
-                            tara_ingresada = input_validation_TP3.check_float("Ahora ingrese la tara del camión: ")
-                            
-                            while 0 >= tara_ingresada or tara_ingresada >= pesos[indice][0]:
-                                print(f"{WARNING}Tara fuera de los límites, ingrese un número entre 0 y el peso bruto del camión {NORMAL}(",pesos[indice][0],")")
-                                tara_ingresada = input_validation_TP3.check_float("Ahora ingrese la tara del camión: ")
-                            
-                            pesos[indice][1] = tara_ingresada   
-                            estado[indice] = 'F'
-                            print(f"{SUCCESS}Tara registrado con éxito{NORMAL}")
-                        else:
-                            print(f"{WARNING}El camión ya tiene una tara asignada{NORMAL}")
-                    else:
-                        print(f"{WARNING}Debe registrar el peso bruto del camión antes de poder registrar su tara{NORMAL}")
-                else:
-                    print(f"{WARNING}El estado del camión debe ser 'En proceso' para poder registrar su tara.\nDirijase a recepción antes de ingresar la tara correspondiente{NORMAL}")
+            if not os.path.exists("OPERACIONES.dat"):
+                print(f"{WARNING}Aún no hay operaciones registradas.{NORMAL}")
+            elif not os.path.exists("SILOS.dat"):
+                print(f"{WARNING}Aún no hay silos registradas.{NORMAL}")
             else:
-                print(f"{WARNING}El camión no tiene asignado un cupo válido{NORMAL}")
+                registro = main_TP3.Operaciones()
+                archivo_logico = open("OPERACIONES.dat", "r+b")
+                longitud_archivo = os.path.getsize("OPERACIONES.dat")
+                
+                patente_ingresada = input_validation_TP3.check_pat()
+                
+                while archivo_logico.tell() < longitud_archivo:
+                    posicion = archivo_logico.tell()
+                    registro = pickle.load(archivo_logico)
+                    if patente_ingresada == registro.patente:
+                        razon == 1
+                        if registro.estado == "B":
+                            razon = 2
+                            tara_ingresada = input_validation_TP3.check_int(f"Ingrese la tara del camion. Esta debe ser menor a {registro.pesobruto}: ")
+                            while tara_ingresada > registro.pesobruto:
+                                tara_ingresada = input_validation_TP3.check_int(f"La tara debe ser menor a {registro.pesobruto}. Pruebe nuevamente: ")
+                            posicion_final = posicion
+                
+                if razon == 0:
+                    print(f"{WARNING}La patente ingresada no coincide con una registrada{NORMAL}")
+                elif razon == 1:
+                    print(f"{WARNING}El estado de del camion debe ser 'Bruto'. Pase por 'Registrar Peso Bruto' previamente{NORMAL}")
+                else:     
+                    archivo_logico.seek(posicion_final) # me paro en el inicio del registro a modificar (no te enojes liam por el -134 es que sino no anda)
+                    registro = pickle.load(archivo_logico)
+                    registro.estado = "F"
+                    registro.tara = tara_ingresada
+                    
+                    # guardo el stock en el silo
+                    registro_silo = main_TP3.Silos()
+                    archivo_logico_silos = open("SILOS.dat", "r+b")
+                    longitud_archivo_silos = os.path.getsize("SILOS.dat")
+                    while archivo_logico_silos.tell() < longitud_archivo_silos:
+                        posicion_silo = archivo_logico_silos.tell()
+                        registro_silo = pickle.load(archivo_logico_silos)
+                        if registro_silo.codprod == registro.codprod:
+                            posicion_silo_final = posicion_silo
+                            
+                    archivo_logico_silos.seek(posicion_silo_final)
+                    registro_silo =  pickle.load(archivo_logico_silos)
+                    registro_silo.stock = registro.pesobruto - registro.tara
+                    
+                    archivo_logico_silos.seek(posicion_silo_final)
+                    archivo_logico.seek(posicion_final) # me muevo otra vez al inicio del registro porque el load se mueve solo
+                    pickle.dump(registro,archivo_logico)
+                    pickle.dump(registro_silo, archivo_logico_silos)
+                    
+                    archivo_logico_silos.flush()
+                    archivo_logico_silos.close()
+                    
+                    print(f"{SUCCESS}Tara registrada con exito{NORMAL}")
+                
+                archivo_logico.flush()
+                archivo_logico.close()
         else:
             print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
-
+        
         time.sleep(2.5)
         clear_shell()
         print("0 - Volver al menu anterior\n1 - Ingresar la tara de otro camion")
         option = input_validation_TP3.check_int()   
+ 
 
 def menu_reportes():
     pass
-    
-# TERMINADO
-def menu_recepcion():
-    clear_shell()
-    print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
-    
-    option = input_validation_TP3.check_int()
-    while option != 0:
-        razon = 0 # para dar un mensaje mas descriptivo del error
-        if option == 1:
-            if not os.path.exists("OPERACIONES.dat"):
-                print(f"{WARNING}Aún no hay operaciones registradas.{NORMAL}")
-            else:   
-                registro = main_TP3.Operaciones()
-                archivo_logico = open("OPERACIONES.dat", "r+b")
-                longitud_archivo = os.path.getsize("OPERACIONES.dat")
-
-                print("Ingresar la patente del camión del cual desea ingresar")
-                patente_ingresada = input_validation_TP3.check_pat().ljust(7)
-                
-                while archivo_logico.tell() < longitud_archivo:
-                    registro = pickle.load(archivo_logico)
-                    if patente_ingresada == registro.patente:
-                        razon = 1 
-                        fecha_de_entrega = registro.fecha
-                        if registro.fecha == hoy(): # probar == hoy()
-                            razon = 2
-                            if registro.estado == "P":
-                                razon = 3
-                                posicion = archivo_logico.tell()
-
-                if razon == 3:
-                    archivo_logico.seek(posicion - 135) # me muevo al registro que tengo que tengo que actualizar, cada registro pesa 134 el tema que cuando hago el load ya avanza el registro
-                    registro = pickle.load(archivo_logico)
-                    registro.estado = "A" # no hace falta hacer el load primero y después nuevamente el seek para hacer el dump en el lugar correspondiente?
-                    archivo_logico.seek(posicion - 135) # me muevo otra vez porque el load avanza solo
-                    pickle.dump(registro,archivo_logico)
-                    print(f"{SUCCESS}El camion ha sido ingresado con exito{NORMAL}")
-                elif razon == 0:
-                    print(f"{WARNING}La patente ingresada no coincide con un camion registrado{NORMAL}")
-                elif razon == 1:
-                    print(f"{WARNING}El camion tiene un cupo asignado para un dia que no es hoy. Fecha de entrega: {fecha_de_entrega}{NORMAL}")
-                else:
-                    print(f"{WARNING}Para poder recepcionar un camion, el mismo debe tener estado Pendiente{NORMAL}") 
-                           
-                archivo_logico.flush()
-                archivo_logico.close()
-        else:
-            print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
-            
-        time.sleep(2.5)
-        clear_shell()
-        print("0 - Volver al menu anterior\n1 - Ingresar un nuevo camion")
-        option = input_validation_TP3.check_int() 
-        
+          
 # TERMINADO
 def menu_opciones(menu: str):
     clear_shell()

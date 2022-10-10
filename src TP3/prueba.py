@@ -203,6 +203,7 @@ def registro_tara():
                 patente_ingresada = input_validation_TP3.check_pat()
                 
                 while archivo_logico.tell() < longitud_archivo:
+                    posicion = archivo_logico.tell()
                     registro = pickle.load(archivo_logico)
                     if patente_ingresada == registro.patente:
                         razon == 1
@@ -211,14 +212,14 @@ def registro_tara():
                             tara_ingresada = input_validation_TP3.check_int(f"Ingrese la tara del camion. Esta debe ser menor a {registro.pesobruto}: ")
                             while tara_ingresada > registro.pesobruto:
                                 tara_ingresada = input_validation_TP3.check_int(f"La tara debe ser menor a {registro.pesobruto}. Pruebe nuevamente: ")
-                            posicion = archivo_logico.tell()
+                            posicion_final = posicion
                 
                 if razon == 0:
                     print(f"{WARNING}La patente ingresada no coincide con una registrada{NORMAL}")
                 elif razon == 1:
                     print(f"{WARNING}El estado de del camion debe ser 'Bruto'. Pase por 'Registrar Peso Bruto' previamente{NORMAL}")
                 else:     
-                    archivo_logico.seek(posicion - 135) # me paro en el inicio del registro a modificar (no te enojes liam por el -134 es que sino no anda)
+                    archivo_logico.seek(posicion_final) # me paro en el inicio del registro a modificar (no te enojes liam por el -134 es que sino no anda)
                     registro = pickle.load(archivo_logico)
                     registro.estado = "F"
                     registro.tara = tara_ingresada
@@ -228,16 +229,17 @@ def registro_tara():
                     archivo_logico_silos = open("SILOS.dat", "r+b")
                     longitud_archivo_silos = os.path.getsize("SILOS.dat")
                     while archivo_logico_silos.tell() < longitud_archivo_silos:
+                        posicion_silo = archivo_logico_silos.tell()
                         registro_silo = pickle.load(archivo_logico_silos)
                         if registro_silo.codprod == registro.codprod:
-                            posicion_silo = archivo_logico_silos.tell()
+                            posicion_silo_final = posicion_silo
                             
-                    archivo_logico_silos.seek(posicion_silo - 106)
+                    archivo_logico_silos.seek(posicion_silo_final)
                     registro_silo =  pickle.load(archivo_logico_silos)
                     registro_silo.stock = registro.pesobruto - registro.tara
                     
-                    archivo_logico_silos.seek(posicion_silo - 106)
-                    archivo_logico.seek(posicion - 135) # me muevo otra vez al inicio del registro porque el load se mueve solo
+                    archivo_logico_silos.seek(posicion_silo_final)
+                    archivo_logico.seek(posicion_final) # me muevo otra vez al inicio del registro porque el load se mueve solo
                     pickle.dump(registro,archivo_logico)
                     pickle.dump(registro_silo, archivo_logico_silos)
                     

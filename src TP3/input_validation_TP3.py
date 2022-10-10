@@ -33,11 +33,15 @@ def check_fecha () -> str:
     if año == datetime.today().year:# si el año es el actual verifico que el mes sea entre el actual y el último  
         while not datetime.today().month <= mes < 13:
             mes = check_int(f"{WARNING}Ingrese un mes válido (entre {datetime.today().month} y 12): {NORMAL}")
-            
-        dia = check_int("Ingrese el número del día: ")    
-        dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
-        while not int(datetime.today().day) <= dia <= dias_del_mes:# verifico que el día 
-            dia = check_int(f"{WARNING}Ingrese un día valido (entre {datetime.today().day} y {dias_del_mes}): {NORMAL}")
+            if mes == datetime.today().month:
+                dia = check_int("Ingrese el número del día: ")    
+                dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
+                while not int(datetime.today().day) <= dia <= dias_del_mes:# verifico que el día 
+                    dia = check_int(f"{WARNING}Ingrese un día valido (entre {datetime.today().day} y {dias_del_mes}): {NORMAL}")
+            else:
+                dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
+                while not 1 <=dia <= dias_del_mes:# verifico que el día 
+                    dia = check_int(f"{WARNING}Ingrese un día valido (entre 1 y {dias_del_mes}): {NORMAL}")
     else:
         while not 0 < mes < 13:# si no es el año actual la única restricción es que sea entre 1 y 12   
             mes = check_int(f"{WARNING}Ingrese un mes válido (entre {datetime.today().month} y 12): {NORMAL}")
