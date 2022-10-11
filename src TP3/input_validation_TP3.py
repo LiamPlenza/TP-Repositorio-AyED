@@ -25,15 +25,15 @@ def check_pat() -> str:
 #valido el formato de la fecha
 def check_fecha () -> str:
     año = check_int("Ingrese el año (yyyy): ")
-    while año < datetime.today().year or len(str(año)) != 4:# verifico si el año es a futuro, si es menor al año actual pido otra vez el año
+    while año < int(datetime.today().year) or len(str(año)) != 4:# verifico si el año es a futuro, si es menor al año actual pido otra vez el año
         año = check_int(f"{WARNING}Ingrese un año valido (mayor o igual a {datetime.today().year} con el formato yyyy):{NORMAL}")
     
     mes = check_int("Ingrese el mes (formato númerico): ")# pido el mes
     
-    if año == datetime.today().year:# si el año es el actual verifico que el mes sea entre el actual y el último  
-        while not datetime.today().month <= mes < 13:
+    if año == int(datetime.today().year):# si el año es el actual verifico que el mes sea entre el actual y el último  
+        while not int(datetime.today().month) <= mes < 13:
             mes = check_int(f"{WARNING}Ingrese un mes válido (entre {datetime.today().month} y 12): {NORMAL}")
-            if mes == datetime.today().month:
+            if mes == int(datetime.today().month):
                 dia = check_int("Ingrese el número del día: ")    
                 dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
                 while not int(datetime.today().day) <= dia <= dias_del_mes:# verifico que el día 
@@ -52,15 +52,6 @@ def check_fecha () -> str:
             dia = check_int(f"{WARNING}Ingrese un día valido (entre 1 y {dias_del_mes}): {NORMAL}")
             
     return str(dia)+"/"+str(mes)+"/"+str(año)
-            
-# valido que el ingreso de los datos del camion, peso y tara sean núnmero flotante
-def check_float(mensaje: str)-> float:
-    while True:
-        try:
-            option = float((input(mensaje)))
-            return option
-        except ValueError:
-            print(f"{WARNING}Ingrese un valor numérico valido{NORMAL}")
 
 # valido que el ingreso de las opciones del menu sean numericos
 def check_int(mensaje = "Seleccione una opción del menu: ")-> int:
@@ -101,7 +92,7 @@ def check_producto_valido () -> int:
         archivo_logico_silos.seek(io.SEEK_SET)
         
         archivos_TP3.consulta()# muestro los productos que hay
-        producto_ingresado = input("Ingrese el producto que contiene el camion: ").capitalize().ljust(20)
+        producto_ingresado = input("Ingrese el nombre del producto que contiene el camion: ").capitalize().ljust(20)
         while archivo_logico_productos.tell() < longitud_archivo_productos:
             registro_productos = pickle.load(archivo_logico_productos)
             if producto_ingresado == registro_productos.nomprod and registro_productos.activo:
