@@ -1,6 +1,8 @@
 import os, time, pickle, io, os.path
 from datetime import datetime
 
+from click import option
+
 import input_validation_TP3, archivos_TP3, main_TP3
 WARNING = '\033[1;31m'
 NORMAL = '\033[0m'
@@ -353,10 +355,43 @@ def registro_tara():
         print("0 - Volver al menu anterior\n1 - Ingresar la tara de otro camion")
         option = input_validation_TP3.check_int()   
  
-
 def menu_reportes():
-    pass
-          
+    clear_shell()
+    print("0 - Volver al menu anterior \nEl reporte actual es: ")
+    
+    codprod = []
+    cant_cupos_otorgados = 0
+    cant_camiones_recibidos = 0
+    registro_silos = main_TP3.Silos()
+    registro_operaciones = main_TP3.Operaciones()
+    
+    if os.path.exists("OPERACIONES.dat"):
+        archivo_logico_silos = open("SILOS.dat", "rb")
+        archivo_logico_operaciones = open("OPERACIONES.dat", "rb")
+        longitud_silos = os.path.getsize("SILOS.dat")
+        longitud_operaciones = os.path.getsize("OPERACIONES.dat")
+        
+        while archivo_logico_silos.tell() < longitud_silos:
+            registro_silos = pickle.load(archivo_logico_silos)
+            if registro_silos.codprod not in codprod:
+                codprod.append(registro_silos.codprod)
+            
+        
+        while archivo_logico_operaciones.tell() < longitud_operaciones:
+            cant_cupos_otorgados += 1
+            registro_operaciones = pickle.load(archivo_logico_operaciones)
+            if registro_operaciones.estado == "A":
+                cant_camiones_recibidos += 1
+                
+            
+            
+    print(f"Cupos otorgados: {cant_cupos_otorgados}")
+    print(f"Cantidad de productos con silos: {len(codprod)}, {codprod}")
+    
+    option = input_validation_TP3.check_int()
+    if option != 0:
+        print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
+                 
 # TERMINADO
 def menu_opciones(menu: str):
     clear_shell()
