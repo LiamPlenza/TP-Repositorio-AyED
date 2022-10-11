@@ -137,13 +137,13 @@ def alta(menu):
                 registro.codrub = codrub_ingresado
                 registro.codprod = codprod_ingresado
             
-            valor_maximo_ingresado = input_validation_TP3.check_float(f"Ingrese el valor mámixo correspondiente al rubro ({registro.codrub}, {registro.codprod})\nRecuerde que debe ser un valor menor a 100 y mayor a 0:")
+            valor_maximo_ingresado = input_validation_TP3.check_int(f"Ingrese el valor mámixo correspondiente al rubro ({registro.codrub}, {registro.codprod})\nRecuerde que debe ser un valor menor a 100 y mayor a 0:")
             while valor_maximo_ingresado > 100 or valor_maximo_ingresado < 1:
-                valor_maximo_ingresado = input_validation_TP3.check_float(f"{WARNING}El valor máximo no puede ser mayor a 100 ni menor a 0.{NORMAL}\nIngrese el valor mámixo correspondiente al rubro ({registro.codrub}, {registro.codprod})")
+                valor_maximo_ingresado = input_validation_TP3.check_int(f"{WARNING}El valor máximo no puede ser mayor a 100 ni menor a 0.{NORMAL}\nIngrese el valor mámixo correspondiente al rubro ({registro.codrub}, {registro.codprod})")
             
-            valor_minimo_ingresado = input_validation_TP3.check_float(f"Ingrese el valor mínimo correspondiente al rubro ({registro.codrub}, {registro.codprod})\nRecuerde que debe ser un valor mayor a 0 y menor a {valor_maximo_ingresado}")
+            valor_minimo_ingresado = input_validation_TP3.check_int(f"Ingrese el valor mínimo correspondiente al rubro ({registro.codrub}, {registro.codprod})\nRecuerde que debe ser un valor mayor a 0 y menor a {valor_maximo_ingresado}")
             while valor_minimo_ingresado < 0 or valor_maximo_ingresado < valor_minimo_ingresado:
-                valor_minimo_ingresado = input_validation_TP3.check_float(f"{WARNING}El valor mínimo no puede ser menor a 0 ni mayor a {valor_maximo_ingresado}.{NORMAL}\nIngrese el valor mínimo correspondiente al rubro ({registro.codrub}, {registro.codprod})")
+                valor_minimo_ingresado = input_validation_TP3.check_int(f"{WARNING}El valor mínimo no puede ser menor a 0 ni mayor a {valor_maximo_ingresado}.{NORMAL}\nIngrese el valor mínimo correspondiente al rubro ({registro.codrub}, {registro.codprod})")
                 
             registro.vmin = valor_minimo_ingresado
             registro.vmax = valor_maximo_ingresado        
@@ -240,9 +240,7 @@ def consulta():
         time.sleep(1.5)
         
 def baja():
-    if not (os.path.exists("SILOS.dat") or os.path.exists("RUBROS-X-PRODUCTO.dat")):
-        print(f"{WARNING}No puedes dar de baja productos una vez dado de alta silos o rubros por producto{NORMAL}")
-    else:
+    if not(os.path.exists("SILOS.dat") or os.path.exists("RUBROS-X-PRODUCTO.dat")):
         user_menu_TP3.clear_shell()
         if os.path.exists("PRODUCTOS.dat"):
             if input_validation_TP3.check_producto():# verifico si existen productos activados
@@ -281,6 +279,8 @@ def baja():
                 print(f"{WARNING}Todos los registros se encuentran desactivados. Para activarlos dirigase al menu ALTA{NORMAL}")
         else:
             print(f"{WARNING}No se ha cargado ningun producto.{NORMAL}")
+    else:
+        print(f"{WARNING}No puedes dar de baja productos una vez dado de alta silos o rubros por producto{NORMAL}")
     time.sleep(1.5)
 
 def modificacion():

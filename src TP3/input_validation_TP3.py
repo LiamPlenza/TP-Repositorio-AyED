@@ -31,26 +31,27 @@ def check_fecha () -> str:
     mes = check_int("Ingrese el mes (formato númerico): ")# pido el mes
     
     if año == int(datetime.today().year):# si el año es el actual verifico que el mes sea entre el actual y el último  
-        while not int(datetime.today().month) <= mes < 13:
+        while int(datetime.today().month) > mes or mes > 13:
             mes = check_int(f"{WARNING}Ingrese un mes válido (entre {datetime.today().month} y 12): {NORMAL}")
-            if mes == int(datetime.today().month):
-                dia = check_int("Ingrese el número del día: ")    
-                dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
-                while not int(datetime.today().day) <= dia <= dias_del_mes:# verifico que el día 
-                    dia = check_int(f"{WARNING}Ingrese un día valido (entre {datetime.today().day} y {dias_del_mes}): {NORMAL}")
-            else:
-                dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
-                while not 1 <=dia <= dias_del_mes:# verifico que el día 
-                    dia = check_int(f"{WARNING}Ingrese un día valido (entre 1 y {dias_del_mes}): {NORMAL}")
+        if mes == int(datetime.today().month):
+            dia = check_int("Ingrese el número del día: ")    
+            dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
+            while int(datetime.today().day) > dia or dia > dias_del_mes:# verifico que el día 
+                dia = check_int(f"{WARNING}Ingrese un día valido (entre {datetime.today().day} y {dias_del_mes}): {NORMAL}")
+        else:
+            dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
+            while  1 > dia or dia > dias_del_mes:# verifico que el día 
+                dia = check_int(f"{WARNING}Ingrese un día valido (entre 1 y {dias_del_mes}): {NORMAL}")
     else:
-        while not 0 < mes < 13:# si no es el año actual la única restricción es que sea entre 1 y 12   
-            mes = check_int(f"{WARNING}Ingrese un mes válido (entre {datetime.today().month} y 12): {NORMAL}")
+        while 0 > mes or mes > 13:# si no es el año actual la única restricción es que sea entre 1 y 12   
+            mes = check_int(f"{WARNING}Ingrese un mes válido (entre 1 y 12): {NORMAL}")
         
         dia = check_int("Ingrese el número del día: ")
         dias_del_mes = calendar.monthrange(año, mes)[1]# obento la cantidad de días del mes selección en el año correspondiente
-        while not 0 < dia < dias_del_mes: 
+        while 0 > dia or dia > dias_del_mes: 
             dia = check_int(f"{WARNING}Ingrese un día valido (entre 1 y {dias_del_mes}): {NORMAL}")
             
+
     return str(dia)+"/"+str(mes)+"/"+str(año)
 
 # valido que el ingreso de las opciones del menu sean numericos
@@ -88,10 +89,9 @@ def check_producto_valido () -> int:
     registro_silos = main_TP3.Silos()
     
     while True:   
+        archivos_TP3.consulta()# muestro los productos que hay
         archivo_logico_productos.seek(io.SEEK_SET) # me muevo al incio
         archivo_logico_silos.seek(io.SEEK_SET)
-        
-        archivos_TP3.consulta()# muestro los productos que hay
         producto_ingresado = input("Ingrese el nombre del producto que contiene el camion: ").capitalize().ljust(20)
         while archivo_logico_productos.tell() < longitud_archivo_productos:
             registro_productos = pickle.load(archivo_logico_productos)
