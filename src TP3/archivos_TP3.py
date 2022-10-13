@@ -215,30 +215,92 @@ def alta(menu):
     archivo_logico.close()# cierro el archivo
     print(f"{SUCCESS}El registro ha sido guardado con exito{NORMAL}")
               
-def consulta():
-    if os.path.exists("PRODUCTOS.dat"):
-        if input_validation_TP3.check_producto():
-            registro = main_TP3.Productos()
-            archivo_logico = open("PRODUCTOS.dat", "rb")
-            longitud_archivo = os.path.getsize("PRODUCTOS.dat")
+def consulta(menu):
+    posicion = 0
+    if menu == "productos":
+        if os.path.exists("PRODUCTOS.dat"):
+            if input_validation_TP3.check_producto():
+                registro = main_TP3.Productos()
+                archivo_logico = open("PRODUCTOS.dat", "rb")
+                longitud_archivo = os.path.getsize("PRODUCTOS.dat")
 
-            print("La actual lista de Productos es:")
-            print("*----------------------------------------*\n| {} | {:20} | {} |\n*----------------------------------------*".format("Código", "Nombre", "Estado"))
+                print("La actual lista de Productos es:")
+                print("*----------------------------------------*\n| {} | {:20} | {} |\n*----------------------------------------*".format("Código", "Nombre", "Estado"))
+                while archivo_logico.tell() < longitud_archivo:# recorro todo el archivo
+                    registro = pickle.load(archivo_logico)# traigo el primer registro
+                    print("   {:^3}   | {:20} | {}".format(registro.codprod, registro.nomprod, registro.activo))
+                    print("*----------------------------------------*")
+
+                archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
+                archivo_logico.close()# cierro el archivo       
+                print("|   0    | Volver al menu anterior       |\n*----------------------------------------*")
+            else:
+                print(f"{WARNING}Todos los registros se encuentran desactivados. Para activarlos dirigase al menu ALTA{NORMAL}")
+                time.sleep(1.5)
+        else:
+            print(f"{WARNING}No se ha cargado ningun producto.{NORMAL}")
+            time.sleep(1.5)
+    elif menu == "rubros":
+        if os.path.exists("RUBROS.dat"):
+            
+                registro = main_TP3.Rubros()
+                archivo_logico = open("RUBROS.dat", "rb")
+                longitud_archivo = os.path.getsize("RUBROS.dat")
+
+                print("La actual lista de Rubros es:")
+                print("*----------------------------------------*\n| {} | {:20} |\n*----------------------------------------*".format("Código", "Nombre"))
+                while archivo_logico.tell() < longitud_archivo:# recorro todo el archivo
+                    registro = pickle.load(archivo_logico)# traigo el primer registro
+                    print("   {:^3}   | {:20}   ".format(registro.codrub, registro.nomrub))
+                    print("*----------------------------------------*")
+
+                archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
+                archivo_logico.close()# cierro el archivo       
+                print("|   0    | Volver al menu anterior       |\n*----------------------------------------*")
+        else:
+            print(f"{WARNING}No se ha cargado ningun rubro.{NORMAL}")
+            time.sleep(1.5)
+
+    elif menu == "rubros por productos":
+        if os.path.exists("RUBROS-X-PRODUCTO.dat"):
+            registro = main_TP3.Productos()
+            archivo_logico = open("RUBROS-X-PRODUCTO.dat", "rb")
+            longitud_archivo = os.path.getsize("RUBROS-X-PRODUCTO.dat")
+
+            print("La actual lista de Rubros por producto es:")
+            print("*------------------------------------------*\n| {} | {} | {} | {} |\n*------------------------------------------*".format("Producto", "Rubro", "Valor Min","Valor Max"))
             while archivo_logico.tell() < longitud_archivo:# recorro todo el archivo
                 registro = pickle.load(archivo_logico)# traigo el primer registro
-                print("   {:^3}   | {:20} | {}".format(registro.codprod, registro.nomprod, registro.activo))
-                print("*----------------------------------------*")
+                print("   {:^7} | {:^5} | {:^9} | {:^9} |".format(registro.codprod, registro.codrub, registro.vmin, registro.vmax))
+                print("*------------------------------------------*")
 
             archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
             archivo_logico.close()# cierro el archivo       
-            print("|   0    | Volver al menu anterior       |\n*----------------------------------------*")
+            print("|     0    | Volver al menu anterior         |\n*------------------------------------------*")
+
         else:
-            print(f"{WARNING}Todos los registros se encuentran desactivados. Para activarlos dirigase al menu ALTA{NORMAL}")
+            print(f"{WARNING}No se ha cargado ningun rubro por producto.{NORMAL}")
             time.sleep(1.5)
-    else:
-        print(f"{WARNING}No se ha cargado ningun producto.{NORMAL}")
-        time.sleep(1.5)
-        
+    elif menu == "silos": 
+        if os.path.exists("SILOS.dat"):
+            registro = main_TP3.Silos()
+            archivo_logico = open("SILOS.dat", "rb")
+            longitud_archivo = os.path.getsize("SILOS.dat")
+
+            print("La actual lista de Silos es:")
+            print("*--------------------------------------------------*\n| {} | {:20} | {} | {} |\n*--------------------------------------------------*".format("Código", "Nombre", "Producto", "Stock"))
+            while archivo_logico.tell() < longitud_archivo:# recorro todo el archivo
+                registro = pickle.load(archivo_logico)# traigo el primer registro
+                print("|   {:^3}  | {:20} | {:^8} | {:^3} |".format(registro.codsil, registro.nomsil, registro.codprod, registro.stock))
+                print("*--------------------------------------------------*")
+
+            archivo_logico.flush() # me aseguro que no quede pendiente ningún registro en el bus
+            archivo_logico.close()# cierro el archivo       
+            print("|   0    | Volver al menu anterior                 |\n*--------------------------------------------------*")
+        else:
+            print(f"{WARNING}No se ha cargado ningun silo.{NORMAL}")
+            time.sleep(1.5)
+
 def baja():
     if not(os.path.exists("SILOS.dat") or os.path.exists("RUBROS-X-PRODUCTO.dat")):
         user_menu_TP3.clear_shell()

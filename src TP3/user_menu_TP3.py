@@ -417,12 +417,18 @@ def menu_opciones(menu: str):
         if 1 == option:
             archivos_TP3.alta(menu)
         elif 2 == option and menu == "productos":
-            archivos_TP3.baja()
-        elif option == 3 and menu == "productos":
-            archivos_TP3.consulta()
+            if os.path.exists("OPERACIONES.dat"):
+                print(f"{WARNING}Ya se han registrado camiones. Ya no es posible dar de baja los productos{NORMAL}")
+            else:
+                archivos_TP3.baja()
+        elif option == 3:
+            archivos_TP3.consulta(menu)
             input("Precione enter para continuar... ")
         elif option == 4 and menu == "productos":
-            archivos_TP3.modificacion()
+            if os.path.exists("OPERACIONES.dat"):
+                print(f"{WARNING}Ya se han registrado camiones. Ya no es posible dar de baja los productos{NORMAL}")
+            else:
+                archivos_TP3.modificacion()        
         elif option not in [x for x in range(5)]:
             print(f"{WARNING}La opcion elegida no se encuentra entre las dadas. Pruebe de nuevo{NORMAL}")
         else:
@@ -440,10 +446,7 @@ def menu_administraciones():
     option = input_validation_TP3.check_int()
     while option != 0:
         if option == 2:
-            if os.path.exists("OPERACIONES.dat"):
-                print(f"{WARNING}Ya se han registrado camiones. Ya no es posible modificar los productos{NORMAL}")
-            else:
-                menu_opciones("productos")
+            menu_opciones("productos")
         elif option == 3:
             menu_opciones("rubros")
         elif option == 4:
