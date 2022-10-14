@@ -133,104 +133,109 @@ def registrar_calidad():
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Registrar calidad")
     option = input_validation_TP3.check_int()
-    
+    razon = 0
     while option != 0:
         if option == 1: # verifico que existen todos los archivos necesarios
-            if not (os.path.exists("OPERACIONES.dat") and os.path.exists("RUBROS.dat") and os.path.exists("PRODUCTOS.dat") and os.path.exists("RUBROS-X-PRODUCTO.dat")):
-                print(f"{WARNING}No se cumplen todos los requerimientos para llevar a cabo este registro.{NORMAL}")
-            else:# abro todos los archivos necesarios
-                archivo_logico_operaciones = open ("OPERACIONES.dat", "r+b")
-                archivo_logico_rubros = open("RUBROS.dat", "r+b")
-                archivo_logico_productos= open("PRODUCTOS.dat", "r+b")
-                archivo_logico_rxp = open ("RUBROS-X-PRODUCTO.dat", "r+b")
-                # inicio todos los objetos
-                registro_operaciones = main_TP3.Operaciones()
-                registro_rubros = main_TP3.Rubros()
-                registro_productos = main_TP3.Productos()
-                registro_rxp = main_TP3.RubrosxProducto
-                # guardo la longitud de los archivos
-                longitud_archivo_operaciones = os.path.getsize("OPERACIONES.dat")
-                longitud_archivo_productos = os.path.getsize("PRODUCTOS.dat")
-                longitud_archivo_rubros = os.path.getsize("RUBROS.dat")
-                longitud_archivo_rxp = os.path.getsize("RUBROS-X-PRODUCTO.dat")
+            if not (os.path.exists("OPERACIONES.dat")):
+                print(f"{WARNING}Deben haber camiones ingresados para realizar esta tarea.{NORMAL}")
+            else:    
+                if not (os.path.exists("PRODUCTOS.dat")):
+                    print(f"{WARNING}Deben haber Productos ingresados para realizar esta tarea.{NORMAL}")
+                else:# abro todos los archivos necesarios
+                    archivo_logico_operaciones = open ("OPERACIONES.dat", "r+b")
+                    archivo_logico_rubros = open("RUBROS.dat", "r+b")
+                    archivo_logico_productos= open("PRODUCTOS.dat", "r+b")
+                    archivo_logico_rxp = open ("RUBROS-X-PRODUCTO.dat", "r+b")
+                    # inicio todos los objetos
+                    registro_operaciones = main_TP3.Operaciones()
+                    registro_rubros = main_TP3.Rubros()
+                    registro_productos = main_TP3.Productos()
+                    registro_rxp = main_TP3.RubrosxProducto
+                    # guardo la longitud de los archivos
+                    longitud_archivo_operaciones = os.path.getsize("OPERACIONES.dat")
+                    longitud_archivo_productos = os.path.getsize("PRODUCTOS.dat")
+                    longitud_archivo_rubros = os.path.getsize("RUBROS.dat")
+                    longitud_archivo_rxp = os.path.getsize("RUBROS-X-PRODUCTO.dat")
+                    print("Ingresar la patente del camión del cual desea ingresar")
+                    patente_ingresada = input_validation_TP3.check_pat().ljust(7)
+                    while archivo_logico_operaciones.tell() < longitud_archivo_operaciones:
+                        pos = archivo_logico_operaciones.tell()
+                        registro_operaciones = pickle.load(archivo_logico_operaciones)
+                        if patente_ingresada == registro_operaciones.patente:
+                            razon = 1
+                            if registro_operaciones.estado == "A": #Chequeo si el estado del camion es el correcto
+                                razon = 2
+                                rubros = []
+                                producto_camion = registro_operaciones.codprod
+                                posicion_final = pos
 
-                bandera = False
-                print("Ingresar la patente del camión del cual desea ingresar")
-                patente_ingresada = input_validation_TP3.check_pat().ljust(7)
-                while archivo_logico_operaciones.tell() < longitud_archivo_operaciones:
-                    pos = archivo_logico_operaciones.tell()
-                    registro_operaciones = pickle.load(archivo_logico_operaciones)
-                    
-                    if patente_ingresada == registro_operaciones.patente and registro_operaciones.estado == "A": #Chequeo si el estado del camion es el correcto
-                        bandera = True
-                        rubros = []
-                        producto_camion = registro_operaciones.codprod
-                        posicion_final = pos
+                                while archivo_logico_rxp.tell() < longitud_archivo_rxp:
+                                    registro_rxp = pickle.load(archivo_logico_rxp) 
+                                    if registro_operaciones.codprod == registro_rxp.codprod: #Busco el producto del camion dentro del archivo rubro por producto
+                                        rubros.append(registro_rxp.codrub)
+                                    
+                                if len(rubros) != 0: 
+                                    while archivo_logico_productos.tell() < longitud_archivo_productos:
+                                        registro_productos = pickle.load(archivo_logico_productos)
+                                        if registro_productos.codprod == producto_camion:
+                                            print(f"El camion contiene {registro_productos.nomprod.strip()} \nIngrese la calidad correspondiente a los siguientes rubros:")
+                                            r=0
+                                            g=0
+                                            #for codrubro in rubros:
+                                            #    while archivo_logico_rubros.tell() < longitud_archivo_rubros:
+                                            #        registro_rubros = pickle.load(archivo_logico_rubros)
+                                            #        if registro_rubros.codrub == codrubro:
+                                            #            pass
+                                                    
+                                            while g < len(rubros):
+                                                archivo_logico_rubros.seek(io.SEEK_SET)
+                                                while archivo_logico_rubros.tell() < longitud_archivo_rubros:
+                                                    registro_rubros = pickle.load(archivo_logico_rubros)
+                                                    if registro_rubros.codrub == rubros[g]:
+                                                        valor = input_validation_TP3.check_int(f"{registro_rubros.nomrub.strip()}:") 
+                                                        while valor > 100 or valor < 0 :
+                                                            valor = input_validation_TP3.check_int("Ingrese un valor entre 0 y 100:") 
+                                                        archivo_logico_rxp.seek(io.SEEK_SET) # me muevo al inicio del archivo
+                                                        while archivo_logico_rxp.tell() < longitud_archivo_rxp:
+                                                            registro_rxp = pickle.load(archivo_logico_rxp)
+                                                            if registro_rxp.codrub == rubros[g] and registro_productos.codprod == registro_rxp.codprod:
+                                                                if valor < registro_rxp.vmin or valor > registro_rxp.vmax:
+                                                                    r +=1
+                                                                    print(f"{WARNING}El valor ingresado se encuentra fuera del rango{NORMAL}")    
 
-                        while archivo_logico_rxp.tell() < longitud_archivo_rxp:
-                            registro_rxp = pickle.load(archivo_logico_rxp) 
-                            if registro_operaciones.codprod == registro_rxp.codprod: #Busco el producto del camion dentro del archivo rubro por producto
-                               rubros.append(registro_rxp.codrub)
-                               
-                        if len(rubros) != 0: 
-                            while archivo_logico_productos.tell() < longitud_archivo_productos:
-                                registro_productos = pickle.load(archivo_logico_productos)
-                                if registro_productos.codprod == producto_camion:
-                                    print(f"El camion contiene {registro_productos.nomprod.strip()} \nIngrese la calidad correspondiente a los siguientes rubros:")
-                                    r=0
-                                    g=0
-                                    #for codrubro in rubros:
-                                    #    while archivo_logico_rubros.tell() < longitud_archivo_rubros:
-                                    #        registro_rubros = pickle.load(archivo_logico_rubros)
-                                    #        if registro_rubros.codrub == codrubro:
-                                    #            pass
-                                            
-                                    while g < len(rubros):
-                                        archivo_logico_rubros.seek(io.SEEK_SET)
-                                        while archivo_logico_rubros.tell() < longitud_archivo_rubros:
-                                            registro_rubros = pickle.load(archivo_logico_rubros)
-                                            if registro_rubros.codrub == rubros[g]:
-                                                valor = input_validation_TP3.check_int(f"{registro_rubros.nomrub.strip()}:") 
-                                                while valor > 100 or valor < 0 :
-                                                    valor = input_validation_TP3.check_int("Ingrese un valor entre 0 y 100:") 
-                                                archivo_logico_rxp.seek(io.SEEK_SET) # me muevo al inicio del archivo
-                                                while archivo_logico_rxp.tell() < longitud_archivo_rxp:
-                                                    registro_rxp = pickle.load(archivo_logico_rxp)
-                                                    if registro_rxp.codrub == rubros[g] and registro_productos.codprod == registro_rxp.codprod:
-                                                        if valor < registro_rxp.vmin or valor > registro_rxp.vmax:
-                                                            r +=1
-                                                            print(f"{WARNING}El valor ingresado se encuentra fuera del rango{NORMAL}")    
+                                                if r == 2:
+                                                    archivo_logico_operaciones.seek(posicion_final)
+                                                    registro_operaciones = pickle.load(archivo_logico_operaciones)
+                                                    registro_operaciones.estado = "R"
+                                                    archivo_logico_operaciones.seek(posicion_final)
+                                                    pickle.dump(registro_operaciones,archivo_logico_operaciones)
+                                                    g = len(rubros)
+                                                    print(f"{WARNING}El camion ha sido rechazado{NORMAL}")    
 
-                                        if r == 2:
-                                            archivo_logico_operaciones.seek(pos)
-                                            registro_operaciones = pickle.load(archivo_logico_operaciones)
-                                            registro_operaciones.estado = "R"
-                                            archivo_logico_operaciones.seek(pos)
-                                            pickle.dump(registro_operaciones,archivo_logico_operaciones)
-                                            g = len(rubros)
-                                            print(f"{WARNING}El camion ha sido rechazado{NORMAL}")    
+                                                g += 1                            
+                                            if registro_operaciones.estado != "R":
+                                                archivo_logico_operaciones.seek(posicion_final)
+                                                registro_operaciones = pickle.load(archivo_logico_operaciones)
+                                                registro_operaciones.estado = "C"
+                                                archivo_logico_operaciones.seek(posicion_final)
+                                                pickle.dump(registro_operaciones,archivo_logico_operaciones)
+                                                g = len(rubros)
+                                                print(f"{SUCCESS}El camion ha sido aceptado{NORMAL}") 
+                                else:
+                                    print(f"{WARNING}No hay Rubros ingresados para el producto del camion en cuestion, por lo tanto, no se puede realizar el control de calidad.{NORMAL}")
+                    if razon == 0:
+                        print(f"{WARNING}No hay camiones ingresados para el producto del camion en cuestion, por lo tanto, no se  puede realizar el control de calidad.{NORMAL}")
+                    elif razon == 1:
+                        print(f"{WARNING}El estado del camion en cuestion no es el correcto, por lo tanto, no se  puede realizar el control de calidad.{NORMAL}")
 
-                                        g += 1                            
-                                    if registro_operaciones.estado != "R":
-                                        archivo_logico_operaciones.seek(pos)
-                                        registro_operaciones = pickle.load(archivo_logico_operaciones)
-                                        registro_operaciones.estado = "C"
-                                        archivo_logico_operaciones.seek(pos)
-                                        pickle.dump(registro_operaciones,archivo_logico_operaciones)
-                                        g = len(rubros)
-                                        print(f"{SUCCESS}El camion ha sido aceptado{NORMAL}") 
-                        else:
-                            print(f"{WARNING}No hay Rubros ingresados para el producto del camion en cuestion, por lo tanto, no se puede realizar el control de calidad.{NORMAL}")
-                archivo_logico_operaciones.flush()
-                archivo_logico_productos.flush()
-                archivo_logico_rubros.flush()
-                archivo_logico_rxp.flush()
-                archivo_logico_productos.close()
-                archivo_logico_rubros.close()
-                archivo_logico_rxp.close()
-                archivo_logico_operaciones.close()
-                if not bandera:
-                    print(f"{WARNING}El camion no cumple con los requisitos para realizar esta acción{NORMAL}")    
+                    archivo_logico_operaciones.flush()
+                    archivo_logico_productos.flush()
+                    archivo_logico_rubros.flush()
+                    archivo_logico_rxp.flush()
+                    archivo_logico_productos.close()
+                    archivo_logico_rubros.close()
+                    archivo_logico_rxp.close()
+                    archivo_logico_operaciones.close()  
         else:
             print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
             
@@ -374,34 +379,91 @@ def menu_reportes():
     clear_shell()
     print("0 - Volver al menu anterior \nEl reporte actual es: ")
     
-    codprod = []
+    codprod = [[],[],[],[],[]] # nombre del silo, codigo del producto, cantidad de camiones, cantidad de stock
     cant_cupos_otorgados = 0
     cant_camiones_recibidos = 0
-    registro_silos = main_TP3.Silos()
-    registro_operaciones = main_TP3.Operaciones()
+    mayor_stock = 0
+    nombre_silo_mayor_stock = ""
+    patentes_rechazadas = []
     
+    fecha_ingresada = input_validation_TP3.check_fecha("reportes").ljust(8)
+        
     if os.path.exists("OPERACIONES.dat"):
-        archivo_logico_silos = open("SILOS.dat", "rb")
+        registro_silos = main_TP3.Silos()
+        registro_operaciones = main_TP3.Operaciones()
+        archivo_logico_silos = open("SILOS.dat", "rb") # no verifico la existencia del archivo silos porque si se ingresa un camion al menos un silo debe existir
         archivo_logico_operaciones = open("OPERACIONES.dat", "rb")
         longitud_silos = os.path.getsize("SILOS.dat")
         longitud_operaciones = os.path.getsize("OPERACIONES.dat")
         
         while archivo_logico_silos.tell() < longitud_silos:
             registro_silos = pickle.load(archivo_logico_silos)
-            if registro_silos.codprod not in codprod:
-                codprod.append(registro_silos.codprod)
-            
+            if registro_silos.stock > mayor_stock:
+                nombre_silo_mayor_stock = registro_silos.nomsil
+                mayor_stock = registro_silos.stock
+                
+            if registro_silos.codprod not in codprod[0]:
+                codprod[0].append("")
+                codprod[1].append(registro_silos.codprod)
+                codprod[2].append(0)
+                codprod[3].append(0 + registro_silos.stock)
+                codprod[4].append(0)
         
         while archivo_logico_operaciones.tell() < longitud_operaciones:
             cant_cupos_otorgados += 1
             registro_operaciones = pickle.load(archivo_logico_operaciones)
+            
+            for x in codprod[1]:
+                menor = 100000000000
+                if registro_operaciones.codprod == x:
+                    indice = codprod[1].index(x)
+                    codprod[2][indice] += 1
+                    codprod[4][indice] = registro_operaciones.pesobruto - registro_operaciones.tara
+                    if registro_operaciones.pesobruto < menor:
+                        codprod[0][indice] = registro_operaciones.patente.strip()
+                    
             if registro_operaciones.estado == "A":
                 cant_camiones_recibidos += 1
+            elif registro_operaciones.estado == "R" and registro_operaciones.fecha == fecha_ingresada:
+                patentes_rechazadas.append(registro_operaciones.patente)
                 
-            
-            
-    print(f"Cupos otorgados: {cant_cupos_otorgados}")
-    print(f"Cantidad de productos con silos: {len(codprod)}, {codprod}")
+        archivo_logico_operaciones.flush()
+        archivo_logico_silos.flush()
+        archivo_logico_silos.close()
+        archivo_logico_operaciones.close()
+
+    print(f"Cantidad de cupos otorgados: {cant_cupos_otorgados}")
+    print(f"Cantidad de camiones recibidos: {cant_camiones_recibidos}")
+    
+    if os.path.exists("PRODUCTOS.dat"):
+        registro_productos = main_TP3.Productos()
+        archivo_logico_productos = open("PRODUCTOS.dat", "rb")
+        longitud_productos = os.path.getsize("PRODUCTOS.dat")
+        for prod in codprod[1]:
+            while archivo_logico_productos.tell() < longitud_productos:
+                registro_productos = pickle.load(archivo_logico_productos)
+                if registro_productos.codprod == prod:
+                    indice = codprod[1].index(prod)
+                    print(f"la cantidad de camiomnes del producto {registro_productos.nomprod.strip()}, de codigo {registro_productos.codprod}, es: {codprod[2][indice]}")
+                    if codprod[2][indice] == 0:
+                        print("No se registraron camiones de este producto")
+                    else: 
+                        print(f"La pantente del camión que menos descargó de ese producto es: {codprod[0][indice]}")
+                        print(f"El promedio del peso neto por camión de este producto es: {codprod[4][indice]/codprod[2][indice]}")
+                    print(f"El peso neto del stock del mismo producto es: {codprod[3][indice]}")
+                    print("----------------------------------------------")
+            archivo_logico_productos.seek(io.SEEK_SET)
+        archivo_logico_productos.flush()
+        archivo_logico_productos.close()
+    else:
+        print("No se han ingresados productos aún")
+        
+    if mayor_stock == 0:
+        print(f"No existen silos creados para los productos existentes o no existen productos")
+    else:
+        print(f"El nombre del silo con mayor stock es: {nombre_silo_mayor_stock.strip()}, con un stock de: {mayor_stock}")
+    
+    print(f"Listado de las patentes rechazadas el día {fecha_ingresada} es: {patentes_rechazadas}")
     
     option = input_validation_TP3.check_int()
     if option != 0:
