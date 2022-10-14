@@ -243,7 +243,6 @@ def registrar_calidad():
         clear_shell()
         print("0 - Volver al menu anterior\n1 - Registrar la calidad de otro camion")
         option = input_validation_TP3.check_int()    
-
 # TERMINADO
 def registro_peso_bruto():
     clear_shell()
@@ -300,7 +299,7 @@ def registro_peso_bruto():
         time.sleep(2.5)
         print("0 - Volver al menu anterior\n1 - Registrar peso bruto")
         option = input_validation_TP3.check_int()
-    
+# TERMINADO
 def registro_tara():
     clear_shell()
     print("0 - Volver al menu anterior\n1 - Registrar tara")
@@ -374,7 +373,7 @@ def registro_tara():
         clear_shell()
         print("0 - Volver al menu anterior\n1 - Ingresar la tara de otro camion")
         option = input_validation_TP3.check_int()   
- 
+# TERMINADO
 def menu_reportes():
     clear_shell()
     print("0 - Volver al menu anterior \nEl reporte actual es: ")
@@ -467,8 +466,7 @@ def menu_reportes():
     
     option = input_validation_TP3.check_int()
     if option != 0:
-        print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")   
-                 
+        print(f"{WARNING}Seleccione una opcion válida del menú{NORMAL}")                    
 # TERMINADO
 def menu_opciones(menu: str):
     clear_shell()
@@ -499,7 +497,6 @@ def menu_opciones(menu: str):
         clear_shell()
         print("0 - Volver al menu anterior \n1 - Alta \n2 - Baja \n3 - Consulta \n4 - Modificación")
         option = input_validation_TP3.check_int()
-
 # TERMINADO
 def menu_administraciones():
     clear_shell()
@@ -523,7 +520,6 @@ def menu_administraciones():
         clear_shell()
         print("1 - Titulares \n2 - Productos \n3 - Rubros \n4 - Rubros x Productos \n5 - Silos \n6 - Sucursales \n7 - Producto por Titular \n0 - Volver al menu principal")
         option = input_validation_TP3.check_int()
-
 # TERMINADO
 def menu_principal():
     clear_shell()
